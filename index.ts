@@ -6,18 +6,7 @@ const axios = require("axios");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Clip Thread API</title>
-      </head>
-      <body>
-        <h1>Clip Thread API</h1>
-        <p>Try going to /example</p>
-      </body>
-    </html>
-  `);
+  res.send(`Welcome to clip thread api`);
 });
 
 app.get("/data", async (req, res) => {
