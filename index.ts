@@ -1,20 +1,23 @@
 /** @format */
 
-const express = require("express");
-const axios = require("axios");
+import express, { Request, Response } from "express";
 
-const app = express();
+import axios, { AxiosResponse } from "axios";
 
-app.get("/", (req, res) => {
+const app: express.Application = express();
+
+app.get("/", (req: Request, res: Response) => {
   res.send(`Welcome to clip thread api`);
 });
 
-app.get("/data", async (req, res) => {
+app.get("/data", async (req: Request, res: Response) => {
   try {
-    const response = await axios.get("http://example.com/api");
+    const response: AxiosResponse = await axios.get("http://example.com/api");
+
     res.json(response.data);
   } catch (error) {
     console.error(error);
+
     res.status(500).send("Error fetching data");
   }
 });
