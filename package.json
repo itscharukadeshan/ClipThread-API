@@ -5,14 +5,14 @@
     "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
     "passport-twitch": "^1.0.3",
-    "passport-youtube-v3": "^2.1.0",
-    "pg": "^8.11.3"
+    "passport-youtube-v3": "^2.1.0"
   },
   "scripts": {
     "dev": "ts-node index.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "prisma": "^5.9.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
