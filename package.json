@@ -16,7 +16,8 @@
     "passport-youtube-v3": "^2.1.0"
   },
   "scripts": {
-    "dev": "ts-node index.ts"
+    "dev": "ts-node index.ts",
+    "prisma:migrate": "npx prisma migrate dev --name init"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
