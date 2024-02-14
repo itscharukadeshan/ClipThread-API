@@ -1,0 +1,49 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client/"
+}
+model User {
+  id    Int     @default(autoincrement()) @id
+  email String  @unique
+  name  String?
+  url String
+  fllowers Int?
+  cretorId Int
+  collections Thread[]
+}
+
+model Thread {
+  id        Int     @default(autoincrement()) @id
+  title     String
+  url   String
+  description String? 
+  published Boolean @default(false)
+  publishedTime DateTime @default(now())
+  author    User?   @relation(fields: [authorId], references: [id])
+  authorId  Int?
+}
+
+model Clip {
+  id Int @id @default(autoincrement())  
+  description String?
+  url String
+  tags Tag[]
+}
+
+model Tag {
+  id        Int     @id @default(autoincrement())
+  name      String  
+  topic     Topic?   @relation(fields: [topicId], references: [id])
+  topicId   Int? 
+  clips   Clip[]
+}
+
+model Topic {
+  id          Int        @id @default(autoincrement())
+  category    String
+  tags        Tag[]
+}

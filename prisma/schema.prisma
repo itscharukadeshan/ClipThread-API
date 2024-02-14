@@ -4,6 +4,7 @@ datasource db {
 }
 generator client {
   provider = "prisma-client-js"
+  output   = "./client/"
 }
 model User {
   id    Int     @default(autoincrement()) @id
