@@ -130,8 +130,6 @@ dist
 .pnp.*
 docker-compose.yml
 
-./prisma/migrations
+prisma/migrations/**
+prisma/client/**
 prisma/migrations/migration_lock.toml
-prisma/migrations/20240213104859_init/migration.sql
-
-prisma/client
