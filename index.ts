@@ -25,8 +25,8 @@ const app: express.Application = express();
 passport.use(
   new TwitchStrategy(
     {
-      clientID: TWITCH_CLIENT_ID,
-      clientSecret: TWITCH_CLIENT_SECRET,
+      clientID: TWITCH_CLIENT_ID as string,
+      clientSecret: TWITCH_CLIENT_SECRET as string,
       callbackURL: "/auth/twitch/callback",
     },
     verifyCallback
@@ -36,8 +36,8 @@ passport.use(
 passport.use(
   new YouTubeStrategy(
     {
-      clientID: YOUTUBE_CLIENT_ID,
-      clientSecret: YOUTUBE_CLIENT_SECRET,
+      clientID: YOUTUBE_CLIENT_ID as string,
+      clientSecret: YOUTUBE_CLIENT_SECRET as string,
       callbackURL: "/auth/youtube/callback",
     },
     verifyCallback
