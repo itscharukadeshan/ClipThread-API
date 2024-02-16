@@ -48,7 +48,7 @@ export const getAuthUrl = (scopeType: string) => {
   return `${AUTH_URL}?${query}`;
 };
 
-export const getAccessToken = async (code: string) => {
+export const getUserAuth = async (code: string) => {
   const response = await axios.post(TOKEN_URL, {
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
@@ -57,5 +57,5 @@ export const getAccessToken = async (code: string) => {
     redirect_uri: TWITCH_REDIRECT_URI,
   });
 
-  return response.data.access_token;
+  return response.data;
 };

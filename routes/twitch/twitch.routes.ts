@@ -1,12 +1,19 @@
 // auth.routes.ts
 
 import { Router, Response, Request } from "express";
+
 import {
   getAuthUrl,
-  getAccessToken,
+  getUserAuth,
 } from "../../services/twitch/twitchAuth.service";
+
 import { TwitchScope } from "./types";
+
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+
 import { TWITCH_CLIENT_ID } from "../../config/config";
+
 import axios from "axios";
 
 const router = Router();
@@ -41,7 +48,8 @@ router.get("/callback", async (req: Request, res: Response) => {
   }
 
   try {
-    const accessToken = await getAccessToken(code);
+    const userAuthData = await getUserAuth(code);
+    const accessToken = userAuthData.access_token;
 
     const userDataResponse = await axios.get(
       "https://api.twitch.tv/helix/users",
@@ -53,11 +61,12 @@ router.get("/callback", async (req: Request, res: Response) => {
       }
     );
 
-    const userData = userDataResponse.data.data[0];
+    const user = userDataResponse.data;
 
-    // ? Handle the data
+    // ? Store the data in database
+    // ? Fix the en / de cryptData
 
-    res.json(userData);
+    res.json({ user, userAuthData });
   } catch (error) {
     console.error("Error getting access token:", error);
     res.status(500).json({ error: "Internal server error" });
