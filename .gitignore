@@ -133,3 +133,14 @@ docker-compose.yml
 prisma/migrations/**
 prisma/client/**
 prisma/migrations/migration_lock.toml
+
+
+# ESLint
+.eslintrc.*
+.eslintcache
+.eslintignore
+
+# Ignore generated JS files
+*.js
+
+.prettierrc
