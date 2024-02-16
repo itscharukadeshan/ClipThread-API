@@ -34,12 +34,13 @@ export const getAuthUrl = (scopeType: string) => {
   }
 
   const encodedScope = encodeURIComponent(scope);
+  const decodedScope = decodeURIComponent(encodedScope);
 
   const params = {
     client_id: CLIENT_ID,
     redirect_uri: TWITCH_REDIRECT_URI,
     response_type: "code",
-    scope: encodedScope,
+    scope: decodedScope,
   };
 
   const query = new URLSearchParams(params).toString();
