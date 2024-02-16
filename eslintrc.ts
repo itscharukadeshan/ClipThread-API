@@ -1,3 +1,5 @@
+const { typed } = require("eslint-plugin-typescript");
+
 module.exports = {
   env: {
     browser: true,
