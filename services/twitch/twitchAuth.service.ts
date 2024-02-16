@@ -19,23 +19,27 @@ export const getAuthUrl = (scopeType: string) => {
 
   switch (scopeType) {
     case "user":
-      scope = "user:read:email";
+      scope = "user:edit user:read:blocked_users user:read:email";
       break;
     case "moderator":
-      scope = "channel:moderate";
+      scope =
+        "user:edit user:read:blocked_users user:read:email user:read:moderated_channels moderator:read:blocked_terms";
       break;
     case "creator":
-      scope = "channel:read:subscriptions";
+      scope =
+        "user:edit user:read:blocked_users user:read:email user:read:moderated_channels moderator:read:blocked_terms";
       break;
     default:
-      scope = "user:read:email";
+      scope = "user:edit user:read:blocked_users user:read:email";
   }
+
+  const encodedScope = encodeURIComponent(scope);
 
   const params = {
     client_id: CLIENT_ID,
     redirect_uri: TWITCH_REDIRECT_URI,
     response_type: "code",
-    scope,
+    scope: encodedScope,
   };
 
   const query = new URLSearchParams(params).toString();
