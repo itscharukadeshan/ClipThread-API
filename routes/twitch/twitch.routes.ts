@@ -6,6 +6,8 @@ import {
   getAccessToken,
 } from "../../services/twitch/twitchAuth.service";
 import { TwitchScope } from "./types";
+import { TWITCH_CLIENT_ID } from "../../config/config";
+import axios from "axios";
 
 const router = Router();
 
@@ -41,8 +43,21 @@ router.get("/callback", async (req: Request, res: Response) => {
   try {
     const accessToken = await getAccessToken(code);
 
-    // ? Handle the access token, for example, you can send it in the response
-    res.json({ accessToken });
+    const userDataResponse = await axios.get(
+      "https://api.twitch.tv/helix/users",
+      {
+        headers: {
+          "Client-ID": TWITCH_CLIENT_ID,
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const userData = userDataResponse.data.data[0];
+
+    // ? Handle the data
+
+    res.json(userData);
   } catch (error) {
     console.error("Error getting access token:", error);
     res.status(500).json({ error: "Internal server error" });
