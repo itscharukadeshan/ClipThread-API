@@ -8,11 +8,19 @@ generator client {
 }
 model User {
   id        Int       @id @default(autoincrement())
-  email     String    @unique
-  name      String?
-  url       String
+  twitchId         String?     @unique
+  youtubeId        String?     @unique
+  login            String?
+  displayName      String?
+  type             String?
+  broadcasterType  String?
+  description      String?
+  profileImageUrl  String?
+  offlineImageUrl  String?
+  viewCount        Int?
+  email            String?
+  createdAt        DateTime?
   followers Int?
-  creatorId Int
   collections Thread[]
 
   twitchAuth TwitchAuth? 
