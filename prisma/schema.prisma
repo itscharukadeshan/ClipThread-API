@@ -7,13 +7,34 @@ generator client {
   output   = "./client/"
 }
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String?
-  url String
-  fllowers Int?
-  cretorId Int
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  url       String
+  followers Int?
+  creatorId Int
   collections Thread[]
+
+  twitchAuth TwitchAuth? 
+  youtubeAuth YouTubeAuth?
+}
+
+model TwitchAuth {
+  id Int @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+  accessToken  String @db.VarChar(500)
+  refreshToken String @db.VarChar(500)
+  expiryTime   DateTime
+}
+
+model YouTubeAuth {
+  id Int @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id])
+  userId Int @unique
+  accessToken  String @db.VarChar(500) 
+  refreshToken String @db.VarChar(500)
+  expiryTime   DateTime
 }
 
 model Thread {
