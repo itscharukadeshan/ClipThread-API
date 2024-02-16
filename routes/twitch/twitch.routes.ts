@@ -1,7 +1,10 @@
 // auth.routes.ts
 
 import { Router } from "express";
-import { getAuthUrl } from "../../services/twitch/twitchAuth.service";
+import {
+  getAuthUrl,
+  getAccessToken,
+} from "../../services/twitch/twitchAuth.service";
 import { TwitchScope } from "./types";
 
 const router = Router();
@@ -24,6 +27,26 @@ router.get("/login", (req, res) => {
 
   const url = getAuthUrl(scope);
   res.redirect(url);
+});
+
+router.get("/callback", async (req, res) => {
+  const code = req.query.code;
+
+  if (!code || typeof code !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Authorization code is missing or invalid" });
+  }
+
+  try {
+    const accessToken = await getAccessToken(code);
+
+    // ? Handle the access token, for example, you can send it in the response
+    res.json({ accessToken });
+  } catch (error) {
+    console.error("Error getting access token:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 export default router;
