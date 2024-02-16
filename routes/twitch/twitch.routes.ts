@@ -1,6 +1,6 @@
 // auth.routes.ts
 
-import { Router } from "express";
+import { Router, Response, Request } from "express";
 import {
   getAuthUrl,
   getAccessToken,
@@ -9,7 +9,7 @@ import { TwitchScope } from "./types";
 
 const router = Router();
 
-router.get("/login", (req, res) => {
+router.get("/login", (req: Request, res: Response) => {
   const scopeParam = req.query.scope;
 
   let scope: TwitchScope = "user";
@@ -29,7 +29,7 @@ router.get("/login", (req, res) => {
   res.redirect(url);
 });
 
-router.get("/callback", async (req, res) => {
+router.get("/callback", async (req: Request, res: Response) => {
   const code = req.query.code;
 
   if (!code || typeof code !== "string") {
