@@ -51,6 +51,7 @@ router.get("/callback", async (req: Request, res: Response) => {
   try {
     const userAuthData = await getUserAuth(code);
     const accessToken = userAuthData.access_token;
+    const refreshToken = userAuthData.refresh_token;
 
     const userDataResponse = await axios.get(
       "https://api.twitch.tv/helix/users",
@@ -64,16 +65,23 @@ router.get("/callback", async (req: Request, res: Response) => {
 
     const user = userDataResponse.data;
 
-    const encryptedAccessToken = encryptData(user.access_token);
-    const encryptedRefreshToken = encryptData(user.refresh_token);
-    const encryptedEmail = encryptData(user.email);
+    // const email = userDataResponse.data[0].email;
 
-    res.json({
+    // if (!email || !accessToken || !refreshToken) {
+    //   console.log(email, accessToken, refreshToken);
+    //   throw new Error("Email , accessToken or refreshToken missing ");
+    // }
+
+    const encryptedAccessToken = encryptData(accessToken);
+    const encryptedRefreshToken = encryptData(refreshToken);
+    // const encryptedEmail = encryptData(email);
+
+    return res.json({
       user,
       userAuthData,
       encryptedAccessToken,
       encryptedRefreshToken,
-      encryptedEmail,
+      // encryptedEmail,
     });
   } catch (error) {
     console.error("Error getting access token:", error);
