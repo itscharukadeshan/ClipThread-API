@@ -64,24 +64,30 @@ router.get("/callback", async (req: Request, res: Response) => {
     );
 
     const user = userDataResponse.data;
+    const email = user.data[0].email;
 
-    // const email = userDataResponse.data[0].email;
-
-    // if (!email || !accessToken || !refreshToken) {
-    //   console.log(email, accessToken, refreshToken);
-    //   throw new Error("Email , accessToken or refreshToken missing ");
-    // }
+    if (!email || !accessToken || !refreshToken) {
+      console.log(email, accessToken, refreshToken);
+      throw new Error("Email , accessToken or refreshToken missing ");
+    }
 
     const encryptedAccessToken = encryptData(accessToken);
     const encryptedRefreshToken = encryptData(refreshToken);
-    // const encryptedEmail = encryptData(email);
+    const encryptedEmail = encryptData(email);
+
+    const decryptedAccessToken = decryptData(encryptedAccessToken);
+    const decryptedRefreshToken = decryptData(encryptedRefreshToken);
+    const decryptedEmail = decryptData(encryptedEmail);
 
     return res.json({
       user,
       userAuthData,
       encryptedAccessToken,
       encryptedRefreshToken,
-      // encryptedEmail,
+      encryptedEmail,
+      decryptedAccessToken,
+      decryptedRefreshToken,
+      decryptedEmail,
     });
   } catch (error) {
     console.error("Error getting access token:", error);
