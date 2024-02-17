@@ -13,6 +13,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 import { TWITCH_CLIENT_ID } from "../../config/config";
+import { encryptData, decryptData } from "../../utils/utils";
 
 import axios from "axios";
 
@@ -63,10 +64,17 @@ router.get("/callback", async (req: Request, res: Response) => {
 
     const user = userDataResponse.data;
 
-    // ? Store the data in database
-    // ? Fix the en / de cryptData
+    const encryptedAccessToken = encryptData(user.access_token);
+    const encryptedRefreshToken = encryptData(user.refresh_token);
+    const encryptedEmail = encryptData(user.email);
 
-    res.json({ user, userAuthData });
+    res.json({
+      user,
+      userAuthData,
+      encryptedAccessToken,
+      encryptedRefreshToken,
+      encryptedEmail,
+    });
   } catch (error) {
     console.error("Error getting access token:", error);
     res.status(500).json({ error: "Internal server error" });
