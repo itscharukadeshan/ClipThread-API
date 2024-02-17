@@ -12,7 +12,7 @@ const TWITCH_REDIRECT_URI = process.env.TWITCH_REDIRECT_URI as string;
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY as string;
 const SECRET_IV = process.env.SECRET_IV as string;
 const ENCRYPTION_METHOD = process.env.ENCRYPTION_METHOD as string;
-
+const YOUTUBE_REDIRECT_URI = process.env.YOUTUBE_REDIRECT_URI as string;
 /*
 console.log(`SECRET_IV length = ${SECRET_IV.length} || Should be 16 `);
 console.log(
@@ -38,4 +38,5 @@ export {
   ENCRYPTION_KEY,
   ENCRYPTION_METHOD,
   SECRET_IV,
+  YOUTUBE_REDIRECT_URI,
 };
