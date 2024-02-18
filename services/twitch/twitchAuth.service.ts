@@ -9,6 +9,7 @@ import {
 
 const CLIENT_ID = TWITCH_CLIENT_ID;
 const CLIENT_SECRET = TWITCH_CLIENT_SECRET;
+const REDIRECT_URI = TWITCH_REDIRECT_URI;
 
 // OAuth URLs
 const AUTH_URL = "https://id.twitch.tv/oauth2/authorize";
@@ -38,7 +39,7 @@ export const getAuthUrl = (scopeType: string) => {
 
   const params = {
     client_id: CLIENT_ID,
-    redirect_uri: TWITCH_REDIRECT_URI,
+    redirect_uri: REDIRECT_URI,
     response_type: "code",
     scope: decodedScope,
   };
@@ -54,7 +55,7 @@ export const getUserAuth = async (code: string) => {
     client_secret: CLIENT_SECRET,
     code,
     grant_type: "authorization_code",
-    redirect_uri: TWITCH_REDIRECT_URI,
+    redirect_uri: REDIRECT_URI,
   });
 
   return response.data;
