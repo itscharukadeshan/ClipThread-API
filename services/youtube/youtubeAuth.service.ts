@@ -13,12 +13,12 @@ const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const USER_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
-export const getAuthUrl = (scope: string) => {
+export const getAuthUrl = (scopes: string[]) => {
   const query = new URLSearchParams({
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URI,
     response_type: "code",
-    scope,
+    scope: scopes.join(" "),
     access_type: "offline",
   });
 
