@@ -9,7 +9,10 @@ import {
 const router = Router();
 
 router.get("/login", (req: Request, res: Response) => {
-  const url = getAuthUrl("https://www.googleapis.com/auth/youtube.readonly");
+  const url = getAuthUrl([
+    "https://www.googleapis.com/auth/youtube.readonly",
+    "https://www.googleapis.com/auth/userinfo.email",
+  ]);
   res.redirect(url);
 });
 
@@ -23,8 +26,9 @@ router.get("/callback", async (req: Request, res: Response) => {
     }
 
     const token = await getAccessToken(code);
+    const user = await getUser(token);
 
-    return res.json(token);
+    return res.json(user);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
