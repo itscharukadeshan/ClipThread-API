@@ -4,6 +4,7 @@ import {
   getAuthUrl,
   getAccessToken,
   getUser,
+  getChannelData,
 } from "../../services/youtube/youtubeAuth.service";
 
 const router = Router();
@@ -27,8 +28,9 @@ router.get("/callback", async (req: Request, res: Response) => {
 
     const token = await getAccessToken(code);
     const user = await getUser(token);
+    const channelData = await getChannelData(token);
 
-    return res.json(user);
+    return res.json({ channelData, token, user });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
