@@ -19,15 +19,11 @@ async function createUser(userData: Omit<User, "id">): Promise<User> {
     });
 
     if (existingUsers.length > 0) {
-      throw new Error(`User with same Twitch ID or YouTube ID already exists`);
+      throw new Error(`User with same Twitch or YouTube already exists`);
     }
 
-    const userDataWithType = {
-      ...userData,
-    };
-
     const newUser = await prisma.user.create({
-      data: userDataWithType,
+      data: userData,
     });
     return newUser;
   } catch (error) {
