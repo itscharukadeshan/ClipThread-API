@@ -15,6 +15,8 @@ const prisma = new PrismaClient();
 import { TWITCH_CLIENT_ID } from "../../config/config";
 import { encryptData, decryptData } from "../../utils/utils";
 
+import { createUser } from "../../controllers/usersController";
+
 import axios from "axios";
 
 const router = Router();
@@ -52,6 +54,7 @@ router.get("/callback", async (req: Request, res: Response) => {
     const userAuthData = await getUserAuth(code);
     const accessToken = userAuthData.access_token;
     const refreshToken = userAuthData.refresh_token;
+    const expires_in = userAuthData.expires_in;
 
     const userDataResponse = await axios.get(
       "https://api.twitch.tv/helix/users",
@@ -64,7 +67,20 @@ router.get("/callback", async (req: Request, res: Response) => {
     );
 
     const user = userDataResponse.data;
-    const email = user.data[0].email;
+
+    const {
+      email,
+      id,
+      display_name,
+      type,
+      broadcaster_type,
+      description,
+      profile_image_url,
+      offline_image_url,
+      view_count,
+      created_at,
+      followers,
+    } = user.data[0];
 
     if (!email || !accessToken || !refreshToken) {
       console.log(email, accessToken, refreshToken);
@@ -75,13 +91,26 @@ router.get("/callback", async (req: Request, res: Response) => {
     const encryptedRefreshToken = encryptData(refreshToken);
     const encryptedEmail = encryptData(email);
 
-    return res.json({
-      user,
-      userAuthData,
-      encryptedAccessToken,
-      encryptedRefreshToken,
-      encryptedEmail,
-    });
+    const userData = {
+      userId: id,
+      displayName: display_name,
+      type: type,
+      broadcasterType: broadcaster_type,
+      description: description,
+      profileImage_url: profile_image_url,
+      offlineImage_url: offline_image_url,
+      viewCount: view_count,
+      createdAt: created_at,
+      Followers: followers || 0,
+      email: encryptedEmail,
+      accessToken: encryptedAccessToken,
+      refreshToken: encryptedRefreshToken,
+      expiryTime: expires_in,
+    };
+
+    const newUser = createUser(userData);
+
+    return res.json(newUser);
   } catch (error) {
     console.error("Error getting access token:", error);
     res.status(500).json({ error: "Internal server error" });

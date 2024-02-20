@@ -1,13 +1,9 @@
-import { Prisma } from "@prisma/client";
-
 const { PrismaClient } = require("@prisma/client");
 
-const prisma = new PrismaClient();
+import { User } from "./types";
 
-const userEmail: Prisma.UserSelect = {
-  email: true,
-};
-async function createUser(userData: Omit<User, "id">): Promise<User> {
+const prisma = new PrismaClient();
+export async function createUser(userData: Omit<User, "id">): Promise<User> {
   try {
     const existingUsers = await prisma.user.findMany({
       where: {
