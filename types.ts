@@ -1,17 +1,17 @@
 // User table
 interface User {
-  id: number;
+  id?: number;
   twitchId?: string;
   youtubeId?: string;
   login?: string;
-  displayName?: string;
+  displayName: string;
   type?: string;
   broadcasterType?: string;
   description?: string;
   profileImageUrl?: string;
   offlineImageUrl?: string;
   viewCount?: number;
-  email?: string;
+  email: string;
   createdAt?: Date;
   followers?: number;
 }
