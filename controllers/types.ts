@@ -1,6 +1,6 @@
 // User table
 export interface User {
-  id?: number;
+  id?: string;
   twitchId?: string;
   youtubeId?: string;
   login?: string;
