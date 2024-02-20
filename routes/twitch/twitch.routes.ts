@@ -75,19 +75,12 @@ router.get("/callback", async (req: Request, res: Response) => {
     const encryptedRefreshToken = encryptData(refreshToken);
     const encryptedEmail = encryptData(email);
 
-    const decryptedAccessToken = decryptData(encryptedAccessToken);
-    const decryptedRefreshToken = decryptData(encryptedRefreshToken);
-    const decryptedEmail = decryptData(encryptedEmail);
-
     return res.json({
       user,
       userAuthData,
       encryptedAccessToken,
       encryptedRefreshToken,
       encryptedEmail,
-      decryptedAccessToken,
-      decryptedRefreshToken,
-      decryptedEmail,
     });
   } catch (error) {
     console.error("Error getting access token:", error);
