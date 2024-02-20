@@ -29,9 +29,9 @@ interface TwitchAuth {
 interface YouTubeAuth {
   id: number;
   userId: number;
-  accessToken: string;
-  refreshToken: string;
-  expiryTime: Date;
+  accessToken?: string;
+  refreshToken?: string;
+  expiryTime?: Date;
 }
 
 // Thread table
