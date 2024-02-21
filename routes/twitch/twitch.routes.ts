@@ -13,8 +13,7 @@ import { encryptData, decryptData } from "../../utils/utils";
 
 import { createUser } from "../../controllers/usersController";
 
-import { TwitchScope } from "./types";
-import { User, TwitchAuth } from "@prisma/client";
+import { TwitchScope, UserWithoutId, TwitchAuthWithoutId } from "./types";
 
 const router = Router();
 
@@ -87,8 +86,9 @@ router.get("/callback", async (req: Request, res: Response) => {
     const encryptedAccessToken = encryptData(accessToken);
     const encryptedRefreshToken = encryptData(refreshToken);
     const encryptedEmail = encryptData(email);
+    const dateTimeInput = new Date("2024-02-21T12:30:00Z");
 
-    const userData: User = {
+    const userData: UserWithoutId = {
       twitchId: id,
       displayName: display_name,
       type: type,
@@ -100,20 +100,18 @@ router.get("/callback", async (req: Request, res: Response) => {
       createdAt: created_at,
       followers: followers || 0,
       email: encryptedEmail,
-      id: "",
       youtubeId: null,
       login: null,
     };
 
-    const authData: TwitchAuth = {
+    const authData: TwitchAuthWithoutId = {
       accessToken: encryptedAccessToken,
       refreshToken: encryptedRefreshToken,
-      expiryTime: expires_in,
-      id: "",
-      userId: "",
+      expiryTime: dateTimeInput,
+      userId: id,
     };
 
-    const newUser = createUser(userData);
+    const newUser = createUser(userData, authData);
 
     return res.json(newUser);
   } catch (error) {
