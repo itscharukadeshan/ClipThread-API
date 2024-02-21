@@ -1,6 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-
-import { User } from "./types";
+import { User } from "../prisma/client";
 
 const prisma = new PrismaClient();
 export async function createUser(userData: Omit<User, "id">): Promise<User> {
