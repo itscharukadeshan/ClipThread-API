@@ -23,6 +23,8 @@ export async function createUser(
       );
     }
 
+    // TODO - Fix the auth  flow
+
     if (twitchAuth) {
       await prisma.twitchAuth.create({
         data: {
@@ -40,6 +42,8 @@ export async function createUser(
         },
       });
     }
+
+    // TODO - Find a way to get the users data before update the user auth
 
     const newUser = await prisma.user.findUnique({
       where: {

@@ -9,6 +9,8 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// TODO - Fix the expiryTime type and remove or resarch login prop
 model User {
   id               String     @id @default(uuid())
   twitchId         String?     @unique
