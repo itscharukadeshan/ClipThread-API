@@ -47,6 +47,8 @@ model YouTubeAuth {
 
 model Thread {
   id        String     @id @default(uuid())
+  user   Clip @relation(fields: [clipId], references: [id])
+  clipId String
   title     String
   url   String
   description String? 
@@ -61,6 +63,7 @@ model Clip {
   description String?
   url String
   tags Tag[]
+  threads Thread []
 }
 
 model Tag {
