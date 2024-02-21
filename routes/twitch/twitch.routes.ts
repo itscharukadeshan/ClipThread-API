@@ -1,23 +1,20 @@
 // auth.routes.ts
 
 import { Router, Response, Request } from "express";
+import axios from "axios";
 
 import {
   getAuthUrl,
   getUserAuth,
 } from "../../services/twitch/twitchAuth.service";
 
-import { TwitchScope } from "./types";
-
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-
 import { TWITCH_CLIENT_ID } from "../../config/config";
 import { encryptData, decryptData } from "../../utils/utils";
 
 import { createUser } from "../../controllers/usersController";
 
-import axios from "axios";
+import { TwitchScope } from "./types";
+import { User, TwitchAuth } from "@prisma/client";
 
 const router = Router();
 
@@ -91,21 +88,29 @@ router.get("/callback", async (req: Request, res: Response) => {
     const encryptedRefreshToken = encryptData(refreshToken);
     const encryptedEmail = encryptData(email);
 
-    const userData = {
-      userId: id,
+    const userData: User = {
+      twitchId: id,
       displayName: display_name,
       type: type,
       broadcasterType: broadcaster_type,
       description: description,
-      profileImage_url: profile_image_url,
-      offlineImage_url: offline_image_url,
+      profileImageUrl: profile_image_url,
+      offlineImageUrl: offline_image_url,
       viewCount: view_count,
       createdAt: created_at,
-      Followers: followers || 0,
+      followers: followers || 0,
       email: encryptedEmail,
+      id: "",
+      youtubeId: null,
+      login: null,
+    };
+
+    const authData: TwitchAuth = {
       accessToken: encryptedAccessToken,
       refreshToken: encryptedRefreshToken,
       expiryTime: expires_in,
+      id: "",
+      userId: "",
     };
 
     const newUser = createUser(userData);
