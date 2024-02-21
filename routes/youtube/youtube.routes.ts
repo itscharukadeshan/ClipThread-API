@@ -1,4 +1,4 @@
-import { Router, Response, Request } from "express";
+import { Router, Response, Request, NextFunction } from "express";
 
 import {
   getAuthUrl,
@@ -19,27 +19,27 @@ router.get("/login", (req: Request, res: Response) => {
   res.redirect(url);
 });
 
-router.get("/callback", async (req: Request, res: Response) => {
-  try {
-    const code = req.query.code;
-    const data = req.query;
+router.get(
+  "/callback",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const code = req.query.code;
+      const data = req.query;
 
-    if (!code) {
-      throw new Error("No code in request");
+      if (!code) {
+        throw new Error("No code in request");
+      }
+
+      const token = await getAccessToken(code);
+      const user = await getUser(token);
+      const channelData = await getChannelData(token);
+      const encryptEmail = encryptData(user.email);
+
+      return res.json({ channelData, token, user, encryptEmail });
+    } catch (error) {
+      next(error);
     }
-
-    const token = await getAccessToken(code);
-    const user = await getUser(token);
-    const channelData = await getChannelData(token);
-    const encryptEmail = encryptData(user.email);
-
-    return res.json({ channelData, token, user, encryptEmail });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: "Something went wrong",
-    });
   }
-});
+);
 
 export default router;
