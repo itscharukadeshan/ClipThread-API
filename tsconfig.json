@@ -5,6 +5,6 @@
     "strict": true,
     "lib": ["esnext"],
     "esModuleInterop": true,
-    "types": ["prisma/client"]
+    "types": ["./prisma/client"]
   }
 }
