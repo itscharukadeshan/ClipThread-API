@@ -14,10 +14,7 @@
     "dotenv": "^16.4.4",
     "express": "^4.18.2",
     "express-jwt": "^8.4.1",
-    "google-auth-library": "^9.6.3",
-    "jsonwebtoken": "^9.0.2",
-    "pg": "^8.11.3",
-    "twitch-js": "^2.0.0-beta.45"
+    "pg": "^8.11.3"
   },
   "scripts": {
     "dev": "nodemon --config nodemon.json ./index.ts",
