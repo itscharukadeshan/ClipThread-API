@@ -12,6 +12,8 @@ export async function createUser(
   twitchAuth?: TwitchAuthWithoutId,
   youtubeAuth?: YoutubeAuthWithoutId
 ): Promise<User> {
+  // TODO Fix the invalid byte sequence for encoding
+
   try {
     const user = await prisma.user.create({
       data: userData,

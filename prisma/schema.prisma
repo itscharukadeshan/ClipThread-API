@@ -12,21 +12,21 @@ datasource db {
 
 
 model User {
-  id               String     @id @default(uuid())
-  twitchId         String?     @unique
-  youtubeId        String?     @unique
-  login            String?
-  displayName      String?
-  type             String?
-  broadcasterType  String?
-  description      String?
-  profileImageUrl  String?
-  offlineImageUrl  String?
-  viewCount        Int?
-  email            String?
-  createdAt        String?
-  followers Int?
-  collections Thread[]
+  id               String      @id @default(uuid())
+  twitchId         String?     @unique @default(dbgenerated())
+  youtubeId        String?     @unique @default(dbgenerated()) 
+  displayName      String?     @default(dbgenerated())
+  login            String?     @default(dbgenerated())
+  type             String?     @default(dbgenerated())
+  broadcasterType  String?     @default(dbgenerated())
+  description      String?     @default(dbgenerated())
+  profileImageUrl  String?     @default(dbgenerated())
+  offlineImageUrl  String?     @default(dbgenerated())
+  viewCount        Int?        @default(dbgenerated())
+  email            Bytes?      @default(dbgenerated()) 
+  createdAt        String?     @default(dbgenerated())
+  followers Int?               @default(dbgenerated())
+  collections Thread[]        
 
   twitchAuth TwitchAuth? 
   youtubeAuth YouTubeAuth?
@@ -36,8 +36,8 @@ model TwitchAuth {
   id            String     @id @default(uuid())
   user   User @relation(fields: [userId], references: [id])
   userId String  @unique
-  accessToken  String @db.VarChar(500)
-  refreshToken String @db.VarChar(500)
+  accessToken  Bytes
+  refreshToken Bytes
   expiryTime   String
 }
 
@@ -45,8 +45,8 @@ model YouTubeAuth {
   id           String     @id @default(uuid())
   user   User @relation(fields: [userId], references: [id])
   userId String @unique
-  accessToken  String @db.VarChar(500) 
-  refreshToken String @db.VarChar(500)
+  accessToken  Bytes 
+  refreshToken Bytes
   expiryTime   String
 }
 
@@ -59,13 +59,13 @@ model Thread {
   description String? 
   published Boolean @default(false)
   publishedTime DateTime @default(now())
-  author    User?   @relation(fields: [authorId], references: [id])
+  author    User?   @relation(fields: [authorId], references: [id]) 
   authorId  String?
 }
 
 model Clip {
   id          String     @id @default(uuid())
-  description String?
+  description String?    @default(dbgenerated())
   url String
   tags Tag[]
   threads Thread []

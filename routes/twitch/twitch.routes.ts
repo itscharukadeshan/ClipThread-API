@@ -101,8 +101,8 @@ router.get(
         createdAt: created_at,
         followers: followers || 0,
         email: encryptedEmail,
-        youtubeId: null,
-        login: null,
+        youtubeId: "",
+        login: "",
       };
 
       const authData: TwitchAuthWithoutId = {
