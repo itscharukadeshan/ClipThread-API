@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// TODO - Fix the expiryTime type and remove or resarch login prop
+
 model User {
   id               String     @id @default(uuid())
   twitchId         String?     @unique
@@ -24,7 +24,7 @@ model User {
   offlineImageUrl  String?
   viewCount        Int?
   email            String?
-  createdAt        DateTime?
+  createdAt        String?
   followers Int?
   collections Thread[]
 
@@ -38,7 +38,7 @@ model TwitchAuth {
   userId String  @unique
   accessToken  String @db.VarChar(500)
   refreshToken String @db.VarChar(500)
-  expiryTime   DateTime
+  expiryTime   String
 }
 
 model YouTubeAuth {
@@ -47,7 +47,7 @@ model YouTubeAuth {
   userId String @unique
   accessToken  String @db.VarChar(500) 
   refreshToken String @db.VarChar(500)
-  expiryTime   DateTime
+  expiryTime   String
 }
 
 model Thread {

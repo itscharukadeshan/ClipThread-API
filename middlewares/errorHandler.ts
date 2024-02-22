@@ -1,13 +1,16 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction } from "express";
 
-export const errorHandler = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+// Import types
+const { NextFunction } = require("express");
+
+function errorHandler(err: Error, req: Request, res: any, next: NextFunction) {
   console.error(err);
-  res.status(500).send("Internal Server Error");
-};
+  res.status(500);
+  if (!res.headersSent) {
+    res.json({ message: err.message });
+  } else {
+    next(err);
+  }
+}
 
 module.exports = errorHandler;

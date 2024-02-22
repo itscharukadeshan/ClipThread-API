@@ -89,10 +89,6 @@ router.get(
       const encryptedRefreshToken = encryptData(refreshToken);
       const encryptedEmail = encryptData(email);
 
-      //TODO - Fix the date time
-
-      const dateTimeInput = new Date("2024-02-21T12:30:00Z");
-
       const userData: UserWithoutId = {
         twitchId: id,
         displayName: display_name,
@@ -112,7 +108,7 @@ router.get(
       const authData: TwitchAuthWithoutId = {
         accessToken: encryptedAccessToken,
         refreshToken: encryptedRefreshToken,
-        expiryTime: dateTimeInput,
+        expiryTime: expires_in,
         userId: id,
       };
 
