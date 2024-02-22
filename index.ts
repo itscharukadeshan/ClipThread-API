@@ -3,7 +3,7 @@
 import express, { Request, Response } from "express";
 import twitchRoutes from "./routes/twitch/twitch.routes";
 import youtubeRoutes from "./routes/youtube/youtube.routes";
-import { errorHandler } from "./middlewares/errorHandler";
+const errorHandler = require("./middlewares/errorHandler");
 
 const app: express.Application = express();
 
