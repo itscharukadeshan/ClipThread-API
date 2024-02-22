@@ -14,6 +14,3 @@ export interface AuthUrlOptions {
   redirectUri: string;
   responseType: string;
 }
-
-export type UserWithoutId = Omit<User, "id">;
-export type TwitchAuthWithoutId = Omit<TwitchAuth, "id">;

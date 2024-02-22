@@ -7,7 +7,7 @@ import {
   getChannelData,
 } from "../../services/youtube/youtubeAuth.service";
 
-import { encryptData, decryptData } from "../../utils/utils";
+import { encryptData, decryptData } from "../../utils/encryptDecryptUtils";
 
 const router = Router();
 
