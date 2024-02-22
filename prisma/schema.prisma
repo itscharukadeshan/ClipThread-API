@@ -23,7 +23,7 @@ model User {
   profileImageUrl  String?     @default(dbgenerated())
   offlineImageUrl  String?     @default(dbgenerated())
   viewCount        Int?        @default(dbgenerated())
-  email            Bytes?      @default(dbgenerated()) 
+  email            String?     @default(dbgenerated()) 
   createdAt        String?     @default(dbgenerated())
   followers Int?               @default(dbgenerated())
   collections Thread[]        
@@ -36,8 +36,8 @@ model TwitchAuth {
   id            String     @id @default(uuid())
   user   User @relation(fields: [userId], references: [id])
   userId String  @unique
-  accessToken  Bytes
-  refreshToken Bytes
+  accessToken  String
+  refreshToken String
   expiryTime   String
 }
 
@@ -45,8 +45,8 @@ model YouTubeAuth {
   id           String     @id @default(uuid())
   user   User @relation(fields: [userId], references: [id])
   userId String @unique
-  accessToken  Bytes 
-  refreshToken Bytes
+  accessToken  String 
+  refreshToken String
   expiryTime   String
 }
 
