@@ -55,5 +55,5 @@ export function formatUserDataFromTwitch(
     userId: id,
   };
 
-  return { userData: userDataObject, authData: authDataObject };
+  return { userData: userDataObject, twitchAuth: authDataObject };
 }

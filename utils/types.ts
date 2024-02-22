@@ -5,5 +5,5 @@ export type TwitchAuthWithoutId = Omit<TwitchAuth, "id">;
 
 export interface CreateUserReturn {
   userData: UserWithoutId;
-  authData: TwitchAuthWithoutId;
+  twitchAuth: TwitchAuthWithoutId;
 }

@@ -55,11 +55,11 @@ router.get(
           },
         }
       );
-      const { userData, authData } = formatUserDataFromTwitch(
+      const { userData, twitchAuth } = formatUserDataFromTwitch(
         userAuthData,
         userDataResponse
       );
-      const newUser = createUser(userData, authData);
+      const newUser = createUser(userData, twitchAuth);
 
       return res.json(newUser);
     } catch (error) {
