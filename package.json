@@ -20,7 +20,12 @@
   "scripts": {
     "dev": "nodemon --config nodemon.json ./index.ts",
     "test": "jest",
-    "prisma:migrate": "npx prisma migrate dev --name init",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:pull": "npx prisma db pull",
+    "prisma:push": "npx prisma db push",
+    "prisma:studio": "npx prisma studio",
+    "docker:compose": "docker-compose -f docker-compose.yml up",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
   },
