@@ -1,8 +1,8 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  output          = "./client"
   previewFeatures = ["driverAdapters"]
-  output = "./client" 
-  language = "typescript"
+  language        = "typescript"
 }
 
 datasource db {
@@ -10,77 +10,72 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id               String      @id @default(uuid())
-  twitchId         String?     @unique @default(dbgenerated())
-  youtubeId        String?     @unique @default(dbgenerated()) 
-  displayName      String?     @default(dbgenerated())
-  login            String?     @default(dbgenerated())
-  type             String?     @default(dbgenerated())
-  broadcasterType  String?     @default(dbgenerated())
-  description      String?     @default(dbgenerated())
-  profileImageUrl  String?     @default(dbgenerated())
-  offlineImageUrl  String?     @default(dbgenerated())
-  viewCount        Int?        @default(dbgenerated())
-  email            String?     @default(dbgenerated()) 
-  createdAt        String?     @default(dbgenerated())
-  followers Int?               @default(dbgenerated())
-  collections Thread[]        
-
-  twitchAuth TwitchAuth? 
-  youtubeAuth YouTubeAuth?
+  id              String       @id @default(uuid())
+  twitchId        String?      @unique
+  youtubeId       String?      @unique
+  displayName     String
+  login           String?
+  type            String?
+  broadcasterType String?
+  description     String?
+  profileImageUrl String?
+  offlineImageUrl String?
+  viewCount       Int?
+  email           String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  followers       Int?
+  collections     Thread?
+  twitchAuth      TwitchAuth?
+  youtubeAuth     YouTubeAuth?
 }
 
 model TwitchAuth {
-  id            String     @id @default(uuid())
-  user   User @relation(fields: [userId], references: [id])
-  userId String  @unique
+  id           String   @id @default(cuid())
+  userId       String   @unique
   accessToken  String
   refreshToken String
-  expiryTime   String
+  expiryTime   DateTime
+  user         User     @relation(fields: [userId], references: [id])
 }
 
 model YouTubeAuth {
-  id           String     @id @default(uuid())
-  user   User @relation(fields: [userId], references: [id])
-  userId String @unique
-  accessToken  String 
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  accessToken  String
   refreshToken String
-  expiryTime   String
+  expiryTime   DateTime
+  user         User     @relation(fields: [userId], references: [id])
 }
 
 model Thread {
-  id        String     @id @default(uuid())
-  user   Clip @relation(fields: [clipId], references: [id])
-  clipId String
-  title     String
-  url   String
-  description String? 
-  published Boolean @default(false)
+  id            String   @id @default(cuid())
+  clipId        String
+  title         String
+  url           String
+  description   String?
+  published     Boolean  @default(false)
   publishedTime DateTime @default(now())
-  author    User?   @relation(fields: [authorId], references: [id]) 
-  authorId  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  authorId      String?  @unique
+  author        User?    @relation(fields: [authorId], references: [id])
+  user          Clip     @relation(fields: [clipId], references: [id])
 }
 
 model Clip {
-  id          String     @id @default(uuid())
-  description String?    @default(dbgenerated())
-  url String
-  tags Tag[]
-  threads Thread []
+  id          String   @id @default(cuid())
+  description String?
+  url         String
+  tagId       String?
+  tags        Tag?     @relation(fields: [tagId], references: [id])
+  threads     Thread[]
 }
 
 model Tag {
- id         String     @id @default(uuid())
-  name      String  
-  topic     Topic?   @relation(fields: [topicId], references: [id])
-  topicId   String? 
+  id      String  @id @default(cuid())
+  name    String
+  topicId String?
   clips   Clip[]
-}
-
-model Topic {
- id           String     @id @default(uuid())
-  category    String
-  tags        Tag[]
 }
