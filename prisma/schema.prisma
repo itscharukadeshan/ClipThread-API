@@ -10,7 +10,7 @@ datasource db {
 }
 
 model User {
-  id              String       @id @default(uuid())
+  id              String       @id @default(cuid())
   twitchId        String?      @unique
   youtubeId       String?      @unique
   displayName     String
@@ -31,8 +31,7 @@ model User {
 }
 
 model TwitchAuth {
-  id           String   @id @default(cuid())
-  userId       String   @unique
+  userId       String   @id @unique
   accessToken  String
   refreshToken String
   expiryTime   DateTime
@@ -40,8 +39,7 @@ model TwitchAuth {
 }
 
 model YouTubeAuth {
-  id           String   @id @default(cuid())
-  userId       String   @unique
+  userId       String   @id @unique
   accessToken  String
   refreshToken String
   expiryTime   DateTime
