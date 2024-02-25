@@ -47,6 +47,11 @@ router.get(
 
       const userDataResponse = await getUserData(accessToken);
 
+      // TODO Check if we need more data userData.data[0].scope
+      // TODO Add The get req for relevant end point if require more data to build user
+      // TODO user:read:blocked_users for everyone
+      // TODO user:read:blocked_users , user:read:moderated_channels , moderator:read:blocked_terms for moderator and creators
+
       const { userData, twitchAuth } = formatUserDataFromTwitch(
         userAuthData,
         userDataResponse
