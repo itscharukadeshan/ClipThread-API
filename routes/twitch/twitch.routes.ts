@@ -1,11 +1,10 @@
 import { Router, Response, Request, NextFunction } from "express";
-import axios from "axios";
 import {
   getAuthUrl,
   getUserAuth,
+  getUserData,
 } from "../../services/twitch/twitchAuth.service";
 import { formatUserDataFromTwitch } from "../../utils/userUtils";
-import { TWITCH_CLIENT_ID } from "../../config/config";
 import { createUser } from "../../controllers/usersController";
 import { TwitchScope } from "./types";
 
@@ -46,15 +45,8 @@ router.get(
       const userAuthData = await getUserAuth(code);
       const accessToken = userAuthData.access_token;
 
-      const userDataResponse = await axios.get(
-        "https://api.twitch.tv/helix/users",
-        {
-          headers: {
-            "Client-ID": TWITCH_CLIENT_ID,
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const userDataResponse = await getUserData(accessToken);
+
       const { userData, twitchAuth } = formatUserDataFromTwitch(
         userAuthData,
         userDataResponse

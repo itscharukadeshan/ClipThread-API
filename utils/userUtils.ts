@@ -13,7 +13,7 @@ export function formatUserDataFromTwitch(
   const accessToken = userAuthData.access_token;
   const refreshToken = userAuthData.refresh_token;
   const expires_in = userAuthData.expires_in;
-  const userData = userDataResponse.data.data[0];
+  const userData = userDataResponse.data[0];
   const email = userData.email;
   const id = userData.id;
 

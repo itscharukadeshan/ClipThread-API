@@ -14,6 +14,7 @@ const REDIRECT_URI = TWITCH_REDIRECT_URI;
 // OAuth URLs
 const AUTH_URL = "https://id.twitch.tv/oauth2/authorize";
 const TOKEN_URL = "https://id.twitch.tv/oauth2/token";
+const USER_URL = "https://api.twitch.tv/helix/users";
 
 export const getAuthUrl = (scopeType: string) => {
   let scope = "";
@@ -58,5 +59,15 @@ export const getUserAuth = async (code: string) => {
     redirect_uri: REDIRECT_URI,
   });
 
+  return response.data;
+};
+
+export const getUserData = async (accessToken: string) => {
+  const response = await axios.get(USER_URL, {
+    headers: {
+      "Client-ID": TWITCH_CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
   return response.data;
 };
