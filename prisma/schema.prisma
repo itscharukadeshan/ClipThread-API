@@ -8,18 +8,13 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum UserRole {
-  user
-  moderator
-  creator
-}
 
 model User {
   id              String       @id @default(cuid())
   twitchId        String?      @unique
   youtubeId       String?      @unique
   displayName     String
-  login           UserRole 
+  login           UserRole
   type            String?
   broadcasterType String?
   description     String?
@@ -80,4 +75,10 @@ model Tag {
   name    String
   topicId String?
   clips   Clip[]
+}
+
+enum UserRole {
+  user
+  moderator
+  creator
 }
