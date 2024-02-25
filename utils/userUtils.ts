@@ -1,5 +1,5 @@
 import { encryptData } from "./encryptDecryptUtils";
-import { CreateUserReturn } from "./types";
+import { CreateUserReturn, TwitchAuthWithoutId, UserWithoutId } from "./types";
 
 export function formatUserDataFromTwitch(
   userAuthData: any,
@@ -32,7 +32,7 @@ export function formatUserDataFromTwitch(
   const encryptedRefreshToken = encryptData(refreshToken);
   const encryptedEmail = encryptData(email);
 
-  const userDataObject = {
+  const userDataObject: UserWithoutId = {
     twitchId: id,
     displayName: display_name,
     type,
@@ -42,13 +42,14 @@ export function formatUserDataFromTwitch(
     offlineImageUrl: offline_image_url,
     viewCount: view_count,
     createdAt: created_at,
+    updatedAt: created_at,
     followers: followers || 0,
     email: encryptedEmail,
     youtubeId: "",
     login: "",
   };
 
-  const authDataObject = {
+  const authDataObject: TwitchAuthWithoutId = {
     accessToken: encryptedAccessToken,
     refreshToken: encryptedRefreshToken,
     expiryTime: expires_in,
