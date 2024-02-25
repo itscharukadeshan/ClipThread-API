@@ -59,7 +59,7 @@ router.get(
         userAuthData,
         userDataResponse
       );
-      const newUser = createUser(userData, twitchAuth);
+      const newUser = await createUser(userData, twitchAuth);
 
       return res.json(newUser);
     } catch (error) {

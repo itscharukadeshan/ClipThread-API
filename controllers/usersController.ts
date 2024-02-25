@@ -41,7 +41,15 @@ export async function createUser(
       });
     }
 
-    return user;
+    const userWithAuthData = await prisma.user.findUnique({
+      where: { id: user.id },
+      include: {
+        twitchAuth: true,
+        youtubeAuth: true,
+      },
+    });
+
+    return userWithAuthData;
   } catch (error) {
     throw new Error(`Failed to create user: ${error}`);
   }
