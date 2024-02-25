@@ -59,7 +59,7 @@ export function formatUserDataFromTwitch(
     followers: followers || 0,
     email: encryptedEmail,
     youtubeId: "",
-    login: "",
+    login: "user",
   };
 
   const authDataObject: TwitchAuthWithoutId = {

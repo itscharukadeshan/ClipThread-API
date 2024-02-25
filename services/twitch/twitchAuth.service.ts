@@ -20,7 +20,7 @@ export const getAuthUrl = (scopeType: string) => {
   let scope = "";
 
   switch (scopeType) {
-    case "creator":
+    case "user":
       scope = "user:edit user:read:follows user:read:email";
       break;
     case "moderator":
