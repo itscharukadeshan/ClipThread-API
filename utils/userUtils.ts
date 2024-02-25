@@ -32,6 +32,9 @@ export function formatUserDataFromTwitch(
   const encryptedRefreshToken = encryptData(refreshToken);
   const encryptedEmail = encryptData(email);
 
+  const expiryTimeInSeconds = expires_in;
+  const expirationTime = new Date(Date.now() + expiryTimeInSeconds * 1000);
+
   const userDataObject: UserWithoutId = {
     twitchId: id,
     displayName: display_name,
@@ -52,8 +55,7 @@ export function formatUserDataFromTwitch(
   const authDataObject: TwitchAuthWithoutId = {
     accessToken: encryptedAccessToken,
     refreshToken: encryptedRefreshToken,
-    expiryTime: expires_in,
-    userId: id,
+    expiryTime: expirationTime,
   };
 
   return { userData: userDataObject, twitchAuth: authDataObject };
