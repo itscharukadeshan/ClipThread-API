@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-import { User } from "../prisma/client";
+import { User } from "@prisma/client";
 import {
   UserWithoutId,
   TwitchAuthWithoutId,
