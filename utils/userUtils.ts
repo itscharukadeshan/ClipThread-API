@@ -1,16 +1,22 @@
 import { encryptData } from "./encryptDecryptUtils";
-import { CreateUserReturn, TwitchAuthWithoutId, UserWithoutId } from "./types";
+import {
+  TwitchUserReturn,
+  YouTubeUserReturn,
+  TwitchAuthWithoutId,
+  UserWithoutId,
+} from "./types";
 
 export function formatUserDataFromTwitch(
   userAuthData: any,
   userDataResponse: any
-): CreateUserReturn {
+): TwitchUserReturn {
   const accessToken = userAuthData.access_token;
   const refreshToken = userAuthData.refresh_token;
   const expires_in = userAuthData.expires_in;
   const userData = userDataResponse.data.data[0];
   const email = userData.email;
   const id = userData.id;
+
   const {
     display_name,
     type,
@@ -60,3 +66,5 @@ export function formatUserDataFromTwitch(
 
   return { userData: userDataObject, twitchAuth: authDataObject };
 }
+
+export function formatUserDataFromYouTube() {}

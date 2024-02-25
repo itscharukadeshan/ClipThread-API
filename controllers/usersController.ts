@@ -12,8 +12,6 @@ export async function createUser(
   twitchAuth?: TwitchAuthWithoutId,
   youtubeAuth?: YoutubeAuthWithoutId
 ): Promise<User> {
-  console.log({ userData, twitchAuth, youtubeAuth });
-
   try {
     const user = await prisma.user.create({
       data: userData,
@@ -43,13 +41,7 @@ export async function createUser(
       });
     }
 
-    const newUser = await prisma.user.findUnique({
-      where: {
-        id: user.id,
-      },
-    });
-
-    return newUser;
+    return user;
   } catch (error) {
     throw new Error(`Failed to create user: ${error}`);
   }
