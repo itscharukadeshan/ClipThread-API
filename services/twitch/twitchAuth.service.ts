@@ -15,6 +15,9 @@ const REDIRECT_URI = TWITCH_REDIRECT_URI;
 const AUTH_URL = "https://id.twitch.tv/oauth2/authorize";
 const TOKEN_URL = "https://id.twitch.tv/oauth2/token";
 const USER_URL = "https://api.twitch.tv/helix/users";
+const MODERATED_URL = "https://api.twitch.tv/helix/moderation/channels";
+const TERMS_URL = "https://api.twitch.tv/helix/moderation/blocked_terms";
+const BLOCKED_USERS_URL = "https://api.twitch.tv/helix/users/blocks";
 
 export const getAuthUrl = (scopeType: string) => {
   let scope = "";
@@ -64,6 +67,25 @@ export const getUserAuth = async (code: string) => {
 
 export const getUserData = async (accessToken: string) => {
   const response = await axios.get(USER_URL, {
+    headers: {
+      "Client-ID": TWITCH_CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+};
+
+export const getModeratedChannels = async (
+  accessToken: string,
+  user_id: string,
+  after?: string
+) => {
+  const response = await axios.get(MODERATED_URL, {
+    params: {
+      user_id: user_id,
+      after,
+      first: 95,
+    },
     headers: {
       "Client-ID": TWITCH_CLIENT_ID,
       Authorization: `Bearer ${accessToken}`,
