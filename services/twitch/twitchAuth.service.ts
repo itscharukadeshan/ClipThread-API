@@ -93,3 +93,22 @@ export const getModeratedChannels = async (
   });
   return response.data;
 };
+
+export const getBlockedUsers = async (
+  accessToken: string,
+  broadcaster_id: string,
+  after?: string
+) => {
+  const response = await axios.get(BLOCKED_USERS_URL, {
+    params: {
+      broadcaster_id: broadcaster_id,
+      after,
+      first: 95,
+    },
+    headers: {
+      "Client-ID": TWITCH_CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+};
