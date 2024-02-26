@@ -6,25 +6,14 @@ import {
 } from "../../services/twitch/twitchAuth.service";
 import { formatUserDataFromTwitch } from "../../utils/userUtils";
 import { createUser } from "../../controllers/usersController";
-import { TwitchScope } from "./types";
+import { UserRole } from "@prisma/client";
 
 const router = Router();
 
 router.get("/login", (req: Request, res: Response, next: NextFunction) => {
-  const scopeParam = req.query.scope;
+  const scopeParam = (req.query.scope as UserRole) || UserRole.user;
 
-  let scope: TwitchScope = "user";
-
-  if (scopeParam) {
-    if (
-      typeof scopeParam === "string" &&
-      (scopeParam === "user" ||
-        scopeParam === "moderator" ||
-        scopeParam === "creator")
-    ) {
-      scope = scopeParam as TwitchScope;
-    }
-  }
+  let scope: UserRole = scopeParam;
 
   const url = getAuthUrl(scope);
   res.redirect(url);
@@ -46,11 +35,6 @@ router.get(
       const accessToken = userAuthData.access_token;
 
       const userDataResponse = await getUserData(accessToken);
-
-      // TODO Check if we need more data userData.data[0].scope
-      // TODO Add The get req for relevant end point if require more data to build user
-      // TODO user:read:blocked_users for everyone
-      // TODO user:read:blocked_users , user:read:moderated_channels , moderator:read:blocked_terms for moderator and creators
 
       const { userData, twitchAuth } = formatUserDataFromTwitch(
         userAuthData,
