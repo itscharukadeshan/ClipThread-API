@@ -6,6 +6,8 @@ import {
   UserWithoutId,
 } from "./types";
 
+import { getScopeType } from "./checkScope";
+
 export function formatUserDataFromTwitch(
   userAuthData: any,
   userDataResponse: any
@@ -16,6 +18,8 @@ export function formatUserDataFromTwitch(
   const userData = userDataResponse.data[0];
   const email = userData.email;
   const id = userData.id;
+  const scope = userAuthData.scope;
+  const scopeType = getScopeType(scope);
 
   const {
     display_name,
@@ -55,7 +59,7 @@ export function formatUserDataFromTwitch(
     followers: followers || 0,
     email: encryptedEmail,
     youtubeId: "",
-    login: "user",
+    login: scopeType,
   };
 
   const authDataObject: TwitchAuthWithoutId = {
