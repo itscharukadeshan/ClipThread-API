@@ -6,10 +6,6 @@ import {
   UserWithoutId,
 } from "./types";
 
-// TODO Add login type by checking the userData.scope [] and add login to enum => user | moderator | creator
-// TODO Update the login to take enum in prisma and Update auth tables to take relevant data
-// TODO ADD data to Twitch or youtube auth data
-
 export function formatUserDataFromTwitch(
   userAuthData: any,
   userDataResponse: any
