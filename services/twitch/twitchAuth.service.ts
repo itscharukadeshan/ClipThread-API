@@ -112,3 +112,24 @@ export const getBlockedUsers = async (
   });
   return response.data;
 };
+
+export const getBlockedTerms = async (
+  accessToken: string,
+  broadcaster_id: string,
+  moderator_id: string,
+  after?: string
+) => {
+  const response = await axios.get(TERMS_URL, {
+    params: {
+      broadcaster_id: broadcaster_id,
+      moderator_id: moderator_id,
+      after,
+      first: 95,
+    },
+    headers: {
+      "Client-ID": TWITCH_CLIENT_ID,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+};
