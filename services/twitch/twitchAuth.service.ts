@@ -24,18 +24,20 @@ export const getAuthUrl = (scopeType: string) => {
 
   switch (scopeType) {
     case "user":
-      scope = "user:edit user:read:follows user:read:email";
+      scope =
+        "user:edit user:read:follows user:read:blocked_users user:read:email";
       break;
     case "moderator":
       scope =
-        "user:edit user:read:follows user:read:email user:read:moderated_channels";
+        "user:edit user:read:follows user:read:email user:read:moderated_channels user:read:blocked_users moderation:read";
       break;
     case "creator":
       scope =
-        "user:edit user:read:follows user:read:blocked_users user:read:email user:read:moderated_channels moderator:read:blocked_terms moderation:read";
+        "user:edit user:read:follows user:read:blocked_users user:read:email user:read:moderated_channels moderation:read";
       break;
     default:
-      scope = "user:edit user:read:blocked_users user:read:email";
+      scope =
+        "user:edit user:read:follows user:read:blocked_users user:read:email ";
   }
 
   const encodedScope = encodeURIComponent(scope);
