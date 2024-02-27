@@ -1,6 +1,9 @@
 import { Router, Response, Request, NextFunction } from "express";
 import {
   getAuthUrl,
+  getBlockedTerms,
+  getBlockedUsers,
+  getModeratedChannels,
   getUserAuth,
   getUserData,
 } from "../../services/twitch/twitchAuth.service";
@@ -40,9 +43,27 @@ router.get(
         userAuthData,
         userDataResponse
       );
-      const newUser = await createUser(userData, twitchAuth);
+      const scope = userData.login;
 
-      return res.json(newUser);
+      let newUser, blockedUsers, moderatedChannels;
+
+      if (scope === UserRole.user) {
+        newUser = await createUser(userData, twitchAuth);
+      } else if (scope === UserRole.moderator) {
+        newUser = await createUser(userData, twitchAuth);
+        moderatedChannels = await getModeratedChannels(
+          accessToken,
+          newUser.twitchId as string
+        );
+      } else if (scope === UserRole.creator) {
+        newUser = await createUser(userData, twitchAuth);
+        blockedUsers = await getBlockedUsers(
+          accessToken,
+          newUser.twitchId as string
+        );
+      }
+
+      return res.json({ newUser, blockedUsers, moderatedChannels });
     } catch (error) {
       next(error);
     }
