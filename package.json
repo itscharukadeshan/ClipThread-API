@@ -6,6 +6,7 @@
   "author": "charuka deshan",
   "license": "MIT",
   "dependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@prisma/adapter-pg": "^5.10.1",
     "@prisma/client": "^5.9.1",
     "@types/node": "^20.11.17",
