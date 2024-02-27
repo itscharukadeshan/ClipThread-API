@@ -14,7 +14,7 @@ import { UserRole } from "@prisma/client";
 const router = Router();
 
 router.get("/login", (req: Request, res: Response, next: NextFunction) => {
-  const scopeParam = (req.query.scope as UserRole) || UserRole.user;
+  const scopeParam = (req.query.scope as UserRole) || UserRole.moderator;
 
   let scope: UserRole = scopeParam;
 
@@ -49,9 +49,17 @@ router.get(
 
       if (scope === UserRole.user) {
         newUser = await createUser(userData, twitchAuth);
+        blockedUsers = await getBlockedUsers(
+          accessToken,
+          newUser.twitchId as string
+        );
       } else if (scope === UserRole.moderator) {
         newUser = await createUser(userData, twitchAuth);
         moderatedChannels = await getModeratedChannels(
+          accessToken,
+          newUser.twitchId as string
+        );
+        blockedUsers = await getBlockedUsers(
           accessToken,
           newUser.twitchId as string
         );
