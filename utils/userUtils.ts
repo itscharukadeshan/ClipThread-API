@@ -58,7 +58,7 @@ export function formatUserDataFromTwitch(
     updatedAt: created_at,
     followers: followers || 0,
     email: encryptedEmail,
-    youtubeId: "",
+    youtubeId: null,
     login: scopeType,
   };
 
