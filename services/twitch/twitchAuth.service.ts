@@ -1,6 +1,6 @@
 // twitch.service.ts
 
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import {
   TWITCH_CLIENT_ID,
   TWITCH_CLIENT_SECRET,
@@ -79,59 +79,98 @@ export const getUserData = async (accessToken: string) => {
 
 export const getModeratedChannels = async (
   accessToken: string,
-  user_id: string,
-  after?: string
+  user_id: string
 ) => {
-  const response = await axios.get(MODERATED_URL, {
-    params: {
-      user_id: user_id,
-      after,
-      first: 95,
-    },
-    headers: {
-      "Client-ID": TWITCH_CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  return response.data;
+  let allModeratedChannels = [];
+  let cursor = null;
+
+  while (true) {
+    const response: AxiosResponse = await axios.get(MODERATED_URL, {
+      params: {
+        user_id: user_id,
+        first: 100,
+        after: cursor,
+      },
+      headers: {
+        "Client-ID": TWITCH_CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const { data, pagination } = response.data;
+
+    allModeratedChannels.push(...data);
+
+    if (!pagination || Object.keys(pagination).length === 0) break;
+
+    cursor = pagination.cursor;
+  }
+
+  return allModeratedChannels;
 };
 
 export const getBlockedUsers = async (
   accessToken: string,
-  broadcaster_id: string,
-  after?: string
+  broadcaster_id: string
 ) => {
-  const response = await axios.get(BLOCKED_USERS_URL, {
-    params: {
-      broadcaster_id: broadcaster_id,
-      after,
-      first: 95,
-    },
-    headers: {
-      "Client-ID": TWITCH_CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  return response.data;
+  let allBlockedUsers = [];
+  let cursor = null;
+
+  while (true) {
+    const response: AxiosResponse = await axios.get(BLOCKED_USERS_URL, {
+      params: {
+        broadcaster_id: broadcaster_id,
+        first: 100,
+        after: cursor,
+      },
+      headers: {
+        "Client-ID": TWITCH_CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const { data, pagination } = response.data;
+
+    allBlockedUsers.push(...data);
+
+    if (!pagination || Object.keys(pagination).length === 0) break;
+
+    cursor = pagination.cursor;
+  }
+
+  return allBlockedUsers;
 };
 
 export const getBlockedTerms = async (
   accessToken: string,
   broadcaster_id: string,
-  moderator_id: string,
-  after?: string
+  moderator_id: string
 ) => {
-  const response = await axios.get(TERMS_URL, {
-    params: {
-      broadcaster_id: broadcaster_id,
-      moderator_id: moderator_id,
-      after,
-      first: 95,
-    },
-    headers: {
-      "Client-ID": TWITCH_CLIENT_ID,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  return response.data;
+  let allBlockedTerms = [];
+  let cursor = null;
+
+  while (true) {
+    const response: AxiosResponse = await axios.get(TERMS_URL, {
+      params: {
+        broadcaster_id: broadcaster_id,
+        moderator_id: moderator_id,
+        first: 100,
+        after: cursor,
+      },
+      headers: {
+        "Client-ID": TWITCH_CLIENT_ID,
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const { data, pagination } = response.data;
+
+    allBlockedTerms.push(...data);
+
+    if (!pagination || Object.keys(pagination).length === 0) break;
+
+    cursor = pagination.cursor;
+  }
+
+  return allBlockedTerms;
 };
