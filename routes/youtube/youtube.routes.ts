@@ -7,7 +7,7 @@ import {
   getChannelData,
 } from "../../services/youtube/youtubeAuth.service";
 
-import { encryptData, decryptData } from "../../utils/encryptDecryptUtils";
+import { formatUserDataFromYouTube } from "../../utils/userUtils";
 
 const router = Router();
 
@@ -31,19 +31,15 @@ router.get(
       }
 
       const authData = await getAccessToken(code);
-      const user = await getUser(authData.access_token);
+      const userDataResponse = await getUser(authData.access_token);
       const channelData = await getChannelData(authData.access_token);
-      const encryptEmail = encryptData(user.email);
-      const refreshToken = encryptData(authData.refresh_token);
-      const accessToken = encryptData(authData.access_token);
+      const formatUserData = formatUserDataFromYouTube(
+        authData,
+        userDataResponse,
+        channelData
+      );
 
-      return res.json({
-        channelData,
-        refreshToken,
-        accessToken,
-        user,
-        encryptEmail,
-      });
+      return res.json({ formatUserData });
     } catch (error) {
       next(error);
     }

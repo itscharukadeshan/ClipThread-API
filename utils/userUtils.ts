@@ -3,6 +3,7 @@ import {
   TwitchUserReturn,
   YouTubeUserReturn,
   TwitchAuthWithoutId,
+  YouTubeAuthWithoutId,
   UserWithoutId,
 } from "./types";
 
@@ -76,4 +77,51 @@ export function formatUserDataFromTwitch(
   return { userData: userDataObject, twitchAuth: authDataObject };
 }
 
-export function formatUserDataFromYouTube() {}
+export function formatUserDataFromYouTube(
+  authData: any,
+  userDataResponse: any,
+  channelData: any
+) {
+  const encryptedEmail = encryptData(userDataResponse.email);
+  const refreshToken = encryptData(authData.refresh_token);
+  const accessToken = encryptData(authData.access_token);
+  const userData = channelData.items[0];
+
+  const expiryTimeInSeconds = authData.expires_in;
+  const expirationTime = new Date(Date.now() + expiryTimeInSeconds * 1000);
+
+  const { id, customUrl, publishedAt } = userData;
+
+  const { title, description } = userData.snippet;
+  const profileImageUrl = userDataResponse.picture;
+
+  const userDataObject: UserWithoutId = {
+    twitchId: null,
+    displayName: title,
+    type: customUrl,
+    broadcasterType: "",
+    description,
+    profileImageUrl: profileImageUrl,
+    offlineImageUrl: profileImageUrl,
+    viewCount: 0,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    followers: 0,
+    email: encryptedEmail,
+    youtubeId: id,
+    login: "user",
+    moderatedChannels: [],
+    blockedUsers: [],
+    blockedTerms: [],
+    whitelist: [],
+    blacklist: [],
+  };
+
+  const authDataObject: YouTubeAuthWithoutId = {
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    expiryTime: expirationTime,
+  };
+
+  return { userData: userDataObject, twitchAuth: authDataObject };
+}
