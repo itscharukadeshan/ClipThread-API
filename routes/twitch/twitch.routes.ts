@@ -8,7 +8,7 @@ import {
   getUserData,
 } from "../../services/twitch/twitchAuth.service";
 import { formatUserDataFromTwitch } from "../../utils/userUtils";
-import { createUser } from "../../controllers/usersController";
+import { createUser, updateUser } from "../../controllers/usersController";
 import { UserRole } from "@prisma/client";
 
 const router = Router();
@@ -45,7 +45,7 @@ router.get(
       );
       const scope = userData.login;
 
-      let newUser, blockedUsers, moderatedChannels;
+      let newUser, blockedUsers, moderatedChannels, user;
 
       if (scope === UserRole.user) {
         newUser = await createUser(userData, twitchAuth);
@@ -53,22 +53,30 @@ router.get(
           accessToken,
           newUser.twitchId as string
         );
+        user = await updateUser(newUser.id, { blockedUsers });
       } else if (scope === UserRole.moderator) {
         newUser = await createUser(userData, twitchAuth);
         moderatedChannels = await getModeratedChannels(
           accessToken,
           newUser.twitchId as string
         );
+
         blockedUsers = await getBlockedUsers(
           accessToken,
           newUser.twitchId as string
         );
+
+        user = await updateUser(newUser.id, {
+          blockedUsers,
+          moderatedChannels,
+        });
       } else if (scope === UserRole.creator) {
         newUser = await createUser(userData, twitchAuth);
         blockedUsers = await getBlockedUsers(
           accessToken,
           newUser.twitchId as string
         );
+        user = await updateUser(newUser.id, { blockedUsers });
       }
 
       return res.json({ newUser, blockedUsers, moderatedChannels });

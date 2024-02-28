@@ -55,4 +55,18 @@ export async function createUser(
   }
 }
 
-module.exports = { createUser };
+export async function updateUser(
+  userId: string,
+  userData: Partial<User>
+): Promise<User | null> {
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: userData,
+    });
+    return updatedUser;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return null;
+  }
+}
