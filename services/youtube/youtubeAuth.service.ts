@@ -21,6 +21,7 @@ export const getAuthUrl = (scopes: string[]) => {
     response_type: "code",
     scope: scopes.join(" "),
     access_type: "offline",
+    prompt: "consent",
   });
 
   return `${AUTH_URL}?${query}`;
@@ -33,9 +34,10 @@ export const getAccessToken = async (code: any) => {
     code,
     grant_type: "authorization_code",
     redirect_uri: REDIRECT_URI,
+    access_type: "offline",
   });
 
-  return response.data.access_token;
+  return response.data;
 };
 
 export const getUser = async (accessToken: string) => {
