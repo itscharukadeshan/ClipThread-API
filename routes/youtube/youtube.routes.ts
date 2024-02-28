@@ -30,12 +30,12 @@ router.get(
         throw new Error("No code in request");
       }
 
-      const token = await getAccessToken(code);
-      const user = await getUser(token);
-      const channelData = await getChannelData(token);
+      const authData = await getAccessToken(code);
+      const user = await getUser(authData.access_token);
+      const channelData = await getChannelData(authData.access_token);
       const encryptEmail = encryptData(user.email);
 
-      return res.json({ channelData, token, user, encryptEmail });
+      return res.json({ channelData, authData, user, encryptEmail });
     } catch (error) {
       next(error);
     }
