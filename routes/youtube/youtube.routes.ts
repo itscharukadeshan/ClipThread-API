@@ -34,8 +34,16 @@ router.get(
       const user = await getUser(authData.access_token);
       const channelData = await getChannelData(authData.access_token);
       const encryptEmail = encryptData(user.email);
+      const refreshToken = encryptData(authData.refresh_token);
+      const accessToken = encryptData(authData.access_token);
 
-      return res.json({ channelData, authData, user, encryptEmail });
+      return res.json({
+        channelData,
+        refreshToken,
+        accessToken,
+        user,
+        encryptEmail,
+      });
     } catch (error) {
       next(error);
     }
