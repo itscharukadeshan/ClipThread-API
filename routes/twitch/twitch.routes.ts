@@ -14,7 +14,7 @@ import { UserRole } from "@prisma/client";
 const router = Router();
 
 router.get("/login", (req: Request, res: Response, next: NextFunction) => {
-  const scopeParam = (req.query.scope as UserRole) || UserRole.moderator;
+  const scopeParam = req.query.scope as UserRole;
 
   let scope: UserRole = scopeParam;
 
@@ -79,7 +79,7 @@ router.get(
         user = await updateUser(newUser.id, { blockedUsers });
       }
 
-      return res.json({ newUser, blockedUsers, moderatedChannels });
+      return res.json({ newUser });
     } catch (error) {
       next(error);
     }
