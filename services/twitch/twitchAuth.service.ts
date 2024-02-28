@@ -33,7 +33,7 @@ export const getAuthUrl = (scopeType: string) => {
       break;
     case "creator":
       scope =
-        "user:edit user:read:follows user:read:blocked_users user:read:email user:read:moderated_channels moderation:read";
+        "user:edit user:read:follows user:read:blocked_users user:read:email user:read:moderated_channels moderation:read channel:read:editors";
       break;
     default:
       scope =
