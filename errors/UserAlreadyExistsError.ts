@@ -1,4 +1,4 @@
-import CustomError from "../CustomError";
+import CustomError from "./CustomError";
 
 export default class UserAlreadyExistsError extends CustomError {
   constructor(message: string = "User already exists") {
