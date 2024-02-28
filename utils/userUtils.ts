@@ -60,6 +60,11 @@ export function formatUserDataFromTwitch(
     email: encryptedEmail,
     youtubeId: null,
     login: scopeType,
+    moderatedChannels: [],
+    blockedUsers: [],
+    blockedTerms: [],
+    whitelist: [],
+    blacklist: [],
   };
 
   const authDataObject: TwitchAuthWithoutId = {
