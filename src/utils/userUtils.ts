@@ -123,5 +123,5 @@ export function formatUserDataFromYouTube(
     expiryTime: expirationTime,
   };
 
-  return { userData: userDataObject, twitchAuth: authDataObject };
+  return { userData: userDataObject, youtubeAuth: authDataObject };
 }

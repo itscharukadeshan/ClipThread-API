@@ -8,6 +8,7 @@ import {
 } from "../../services/youtube/youtubeAuth.service";
 
 import { formatUserDataFromYouTube } from "../../utils/userUtils";
+import { createUser } from "../../controllers/usersController";
 
 const router = Router();
 
@@ -33,18 +34,15 @@ router.get(
       const authData = await getAccessToken(code);
       const userDataResponse = await getUser(authData.access_token);
       const channelData = await getChannelData(authData.access_token);
-      const formatUserData = formatUserDataFromYouTube(
+      const { userData, youtubeAuth } = formatUserDataFromYouTube(
         authData,
         userDataResponse,
         channelData
       );
 
-      // TODO Check for missing data and update the schema if needed
-      // TODO Add error correction
-      // TODO Build the test for database crud and api req
-      // TODO Create a documentation for config
+      const newUser = await createUser(userData, youtubeAuth);
 
-      return res.json({ formatUserData });
+      return res.json({ newUser });
     } catch (error) {
       next(error);
     }
