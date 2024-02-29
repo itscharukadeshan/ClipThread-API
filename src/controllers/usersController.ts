@@ -6,6 +6,8 @@ import {
   YoutubeAuthWithoutId,
 } from "./types";
 
+import bcrypt from "bcrypt";
+
 const prisma = new PrismaClient();
 export async function createUser(
   userData: UserWithoutId,
