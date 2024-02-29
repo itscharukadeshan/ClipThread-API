@@ -1,6 +1,7 @@
 /** @format */
 
 import express, { Request, Response } from "express";
+import chalk from "chalk";
 import twitchRoutes from "./routes/twitch/twitch.routes";
 import youtubeRoutes from "./routes/youtube/youtube.routes";
 const errorHandler = require("./middlewares/errorHandler");
@@ -21,5 +22,5 @@ app.use("/twitch", twitchRoutes);
 app.use("/youtube", youtubeRoutes);
 
 app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+  console.log(`${chalk.bgBlue.bold(" App is successfully deployed ! ")}`);
 });
