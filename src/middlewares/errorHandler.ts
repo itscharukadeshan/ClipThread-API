@@ -1,8 +1,4 @@
 import { NextFunction } from "express";
-
-// Import types
-const { NextFunction } = require("express");
-
 function errorHandler(err: Error, req: Request, res: any, next: NextFunction) {
   console.error(err);
   res.status(500);
