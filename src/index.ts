@@ -4,6 +4,7 @@ import express, { Request, Response } from "express";
 import twitchRoutes from "./routes/twitch/twitch.routes";
 import youtubeRoutes from "./routes/youtube/youtube.routes";
 const errorHandler = require("./middlewares/errorHandler");
+const requestLogger = require("./middlewares/requestLogger");
 
 const app: express.Application = express();
 
@@ -14,6 +15,7 @@ app.get("/", (req: Request, res: Response) => {
 const port = 3000;
 
 app.use(errorHandler);
+app.use(requestLogger);
 
 app.use("/twitch", twitchRoutes);
 app.use("/youtube", youtubeRoutes);
