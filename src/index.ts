@@ -15,8 +15,8 @@ app.get("/", (req: Request, res: Response) => {
 
 const port = 3000;
 
-app.use(errorHandler);
 app.use(requestLogger);
+app.use(errorHandler);
 
 app.use("/twitch", twitchRoutes);
 app.use("/youtube", youtubeRoutes);
