@@ -20,7 +20,7 @@
   },
   "scripts": {
     "dev": "nodemon --config nodemon.json ./src/index.ts",
-    "test": "jest",
+    "test": "jest --watch",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:pull": "npx prisma db pull",
