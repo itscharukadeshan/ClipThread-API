@@ -39,6 +39,11 @@ router.get(
         channelData
       );
 
+      // TODO Check for missing data and update the schema if needed
+      // TODO Add error correction
+      // TODO Build the test for database crud and api req
+      // TODO Create a documentation for config
+
       return res.json({ formatUserData });
     } catch (error) {
       next(error);

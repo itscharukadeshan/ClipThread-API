@@ -130,9 +130,9 @@ dist
 .pnp.*
 docker-compose.yml
 
-prisma/migrations/**
-prisma/client/**
-prisma/migrations/migration_lock.toml
+src/prisma/migrations/**
+src/prisma/client/**
+src/prisma/migrations/migration_lock.toml
 
 
 # ESLint
@@ -144,3 +144,5 @@ prisma/migrations/migration_lock.toml
 *.js
 
 .prettierrc
+
+
