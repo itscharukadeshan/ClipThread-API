@@ -43,9 +43,10 @@ router.get(
         userDataResponse,
         channelData
       );
+      const newRefreshToken = generateRefreshToken();
+      userData.refreshToken = newRefreshToken;
 
       const newUser = await createUser(userData, youtubeAuth);
-      const newRefreshToken = generateRefreshToken();
       const newAccessToken = generateAccessToken(newUser.id, newUser.login);
 
       return res.json({ newUser });
