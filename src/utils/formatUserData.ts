@@ -66,6 +66,7 @@ export function formatUserDataFromTwitch(
     blockedTerms: [],
     whitelist: [],
     blacklist: [],
+    refreshToken: "",
   };
 
   const authDataObject: TwitchAuthWithoutId = {
@@ -115,6 +116,7 @@ export function formatUserDataFromYouTube(
     blockedTerms: [],
     whitelist: [],
     blacklist: [],
+    refreshToken: "",
   };
 
   const authDataObject: YouTubeAuthWithoutId = {
