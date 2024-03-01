@@ -7,7 +7,7 @@ import {
   getUserAuth,
   getUserData,
 } from "../../services/twitch/twitchAuth.service";
-import { formatUserDataFromTwitch } from "../../utils/userUtils";
+import { formatUserDataFromTwitch } from "../../utils/formatUserData";
 import { createUser, updateUser } from "../../controllers/usersController";
 import { UserRole } from "@prisma/client";
 

@@ -7,7 +7,7 @@ import {
   getChannelData,
 } from "../../services/youtube/youtubeAuth.service";
 
-import { formatUserDataFromYouTube } from "../../utils/userUtils";
+import { formatUserDataFromYouTube } from "../../utils/formatUserData";
 import { createUser } from "../../controllers/usersController";
 
 const router = Router();
