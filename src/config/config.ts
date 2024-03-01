@@ -13,6 +13,10 @@ const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY as string;
 const SECRET_IV = process.env.SECRET_IV as string;
 const ENCRYPTION_METHOD = process.env.ENCRYPTION_METHOD as string;
 const YOUTUBE_REDIRECT_URI = process.env.YOUTUBE_REDIRECT_URI as string;
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET as string;
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
+const AUTH_TOKEN_EXPIRATION = process.env.AUTH_TOKEN_EXPIRATION as string;
+const REFRESH_TOKEN_EXPIRATION = process.env.REFRESH_TOKEN_EXPIRATION as string;
 /*
 console.log(`SECRET_IV length = ${SECRET_IV.length} || Should be 16 `);
 console.log(
@@ -39,4 +43,8 @@ export {
   ENCRYPTION_METHOD,
   SECRET_IV,
   YOUTUBE_REDIRECT_URI,
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET,
+  AUTH_TOKEN_EXPIRATION,
+  REFRESH_TOKEN_EXPIRATION,
 };
