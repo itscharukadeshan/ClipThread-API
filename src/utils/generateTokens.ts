@@ -7,7 +7,7 @@ import {
 } from "../config/config";
 const jwt = require("jsonwebtoken");
 
-export function generateAuthToken(userId: string, role: UserRole) {
+export function generateAccessToken(userId: string, role: UserRole) {
   return jwt.sign({ userId: userId, role: UserRole }, ACCESS_TOKEN_SECRET, {
     expiresIn: AUTH_TOKEN_EXPIRATION,
   });
