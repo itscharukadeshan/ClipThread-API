@@ -9,6 +9,10 @@ import {
 
 import { formatUserDataFromYouTube } from "../../utils/formatUserData";
 import { createUser } from "../../controllers/usersController";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../utils/generateTokens";
 
 const router = Router();
 
@@ -41,6 +45,8 @@ router.get(
       );
 
       const newUser = await createUser(userData, youtubeAuth);
+      const newRefreshToken = generateRefreshToken();
+      const newAccessToken = generateAccessToken(newUser.id, newUser.login);
 
       return res.json({ newUser });
     } catch (error) {
