@@ -32,6 +32,7 @@ model User {
   blockedTerms      String[]     @default([])
   whitelist         String[]     @default([])
   blacklist         String[]     @default([])
+  refreshToken      String       @unique
 }
 
 model TwitchAuth {
