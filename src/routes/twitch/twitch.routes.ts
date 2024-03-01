@@ -1,16 +1,16 @@
 import { Router, Response, Request, NextFunction } from "express";
+import { formatUserDataFromTwitch } from "../../utils/formatUserData";
+import { UserRole } from "@prisma/client";
+import {
+  handleCreatorScope,
+  handleModeratorScope,
+  handleUserScope,
+} from "../../utils/authUtils";
 import {
   getAuthUrl,
-  getBlockedTerms,
-  getBlockedUsers,
-  getModeratedChannels,
   getUserAuth,
   getUserData,
 } from "../../services/twitch/twitchAuth.service";
-import { formatUserDataFromTwitch } from "../../utils/formatUserData";
-import { createUser, updateUser } from "../../controllers/usersController";
-import { UserRole } from "@prisma/client";
-
 const router = Router();
 
 router.get("/login", (req: Request, res: Response, next: NextFunction) => {
@@ -45,41 +45,31 @@ router.get(
       );
       const scope = userData.login;
 
-      let newUser, blockedUsers, moderatedChannels, user;
+      let user, newAccessToken;
 
       if (scope === UserRole.user) {
-        newUser = await createUser(userData, twitchAuth);
-        blockedUsers = await getBlockedUsers(
-          accessToken,
-          newUser.twitchId as string
-        );
-        user = await updateUser(newUser.id, { blockedUsers });
+        ({ user, newAccessToken } = await handleUserScope(
+          userData,
+          twitchAuth,
+          accessToken
+        ));
       } else if (scope === UserRole.moderator) {
-        newUser = await createUser(userData, twitchAuth);
-        moderatedChannels = await getModeratedChannels(
-          accessToken,
-          newUser.twitchId as string
-        );
-
-        blockedUsers = await getBlockedUsers(
-          accessToken,
-          newUser.twitchId as string
-        );
-
-        user = await updateUser(newUser.id, {
-          blockedUsers,
-          moderatedChannels,
-        });
+        ({ user, newAccessToken } = await handleModeratorScope(
+          userData,
+          twitchAuth,
+          accessToken
+        ));
       } else if (scope === UserRole.creator) {
-        newUser = await createUser(userData, twitchAuth);
-        blockedUsers = await getBlockedUsers(
-          accessToken,
-          newUser.twitchId as string
-        );
-        user = await updateUser(newUser.id, { blockedUsers });
+        ({ user, newAccessToken } = await handleCreatorScope(
+          userData,
+          twitchAuth,
+          accessToken
+        ));
+      } else {
+        throw new Error("Invalid user role");
       }
 
-      return res.json({ newUser });
+      res.json({ user });
     } catch (error) {
       next(error);
     }
