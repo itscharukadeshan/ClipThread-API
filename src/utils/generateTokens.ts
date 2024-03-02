@@ -8,7 +8,7 @@ import {
 const jwt = require("jsonwebtoken");
 
 export function generateAccessToken(userId: string, role: UserRole) {
-  return jwt.sign({ userId: userId, role: UserRole }, ACCESS_TOKEN_SECRET, {
+  return jwt.sign({ userId: userId, role: role }, ACCESS_TOKEN_SECRET, {
     expiresIn: AUTH_TOKEN_EXPIRATION,
   });
 }
