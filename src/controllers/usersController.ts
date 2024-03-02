@@ -1,12 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
-import { User } from "@prisma/client";
+import { User, PrismaClient } from "@prisma/client";
 import {
   UserWithoutId,
   TwitchAuthWithoutId,
   YoutubeAuthWithoutId,
 } from "./types";
-
-import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 export async function createUser(
@@ -35,7 +32,7 @@ export async function createUser(
     }
 
     if (youtubeAuth) {
-      await prisma.youtubeAuth.create({
+      await prisma.youTubeAuth.create({
         data: {
           user: { connect: { id: user.id } },
           ...youtubeAuth,
