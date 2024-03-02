@@ -29,7 +29,6 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const code = req.query.code;
-      const data = req.query;
 
       if (!code) {
         throw new Error("No code in request");
