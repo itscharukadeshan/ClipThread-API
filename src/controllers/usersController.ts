@@ -3,6 +3,7 @@ import {
   UserWithoutId,
   TwitchAuthWithoutId,
   YoutubeAuthWithoutId,
+  UserWithAuth,
 } from "./types";
 
 const prisma = new PrismaClient();
@@ -10,19 +11,13 @@ export async function createUser(
   userData: UserWithoutId,
   twitchAuth?: TwitchAuthWithoutId,
   youtubeAuth?: YoutubeAuthWithoutId
-): Promise<User> {
+): Promise<UserWithAuth | null> {
   try {
     const user = await prisma.user.create({
       data: userData,
     });
 
-    if (twitchAuth && youtubeAuth) {
-      throw new Error(
-        "Something went wrong please try again : Missing authCredentials"
-      );
-    }
-
-    if (twitchAuth) {
+    if (twitchAuth && userData.twitchId) {
       await prisma.twitchAuth.create({
         data: {
           user: { connect: { id: user.id } },
@@ -31,7 +26,7 @@ export async function createUser(
       });
     }
 
-    if (youtubeAuth) {
+    if (youtubeAuth && userData.youtubeId) {
       await prisma.youTubeAuth.create({
         data: {
           user: { connect: { id: user.id } },
