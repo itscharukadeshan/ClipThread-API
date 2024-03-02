@@ -5,8 +5,8 @@ import chalk from "chalk";
 import twitchRoutes from "./routes/twitch/twitch.routes";
 import youtubeRoutes from "./routes/youtube/youtube.routes";
 import { API_PORT } from "./config/config";
+import authHandler from "./middlewares/authHandler";
 
-const authHandler = require("./middlewares/authHandler");
 const errorHandler = require("./middlewares/errorHandler");
 const requestLogger = require("./middlewares/requestLogger");
 const cookieParser = require("cookie-parser");
@@ -19,6 +19,7 @@ app.use(requestLogger);
 app.use(errorHandler);
 
 app.get("/", authHandler, (req: Request, res: Response) => {
+  console.log(req);
   res.send(`Welcome to clip thread api`);
 });
 

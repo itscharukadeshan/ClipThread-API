@@ -1,16 +1,15 @@
-import { NextFunction, Request } from "express";
-
-const jwt = require("jsonwebtoken");
+import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
 import { getUser } from "../controllers/usersController";
 import { User } from "@prisma/client";
 
-async function authHandler(
-  err: Error,
-  req: Request,
-  res: any,
-  next: NextFunction
-) {
+interface TokenPayload {
+  userId: string;
+  role: string;
+}
+
+async function authHandler(req: Request, res: Response, next: NextFunction) {
   try {
     const authHeader: string | undefined = req.headers.authorization;
 
@@ -21,13 +20,13 @@ async function authHandler(
     const token: string = authHeader.split(" ")[1];
 
     const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
-    const { payload: userId, role } = decodedToken;
+    const { userId, role } = decodedToken as TokenPayload;
 
     if (!userId || !role) {
       return res.status(403).json({ message: "Invalid access token" });
     }
 
-    const user: User = await getUser(userId);
+    const user: User | null = await getUser(userId);
 
     if (!user) {
       return res.status(403).json({ message: "Failed to find user" });
@@ -57,4 +56,4 @@ function verifyToken(token: string, secretKey: string) {
   }
 }
 
-module.exports = authHandler;
+export default authHandler;
