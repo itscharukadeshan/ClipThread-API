@@ -46,6 +46,9 @@ router.get(
       userData.refreshToken = newRefreshToken;
 
       const newUser = await createUser(userData, youtubeAuth);
+      if (newUser === null) {
+        throw new Error("Failed to create user");
+      }
       const newAccessToken = generateAccessToken(newUser.id, newUser.login);
 
       return res.json({ newUser });

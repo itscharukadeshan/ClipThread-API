@@ -14,6 +14,9 @@ export const handleUserScope = async (
   let newUser, blockedUsers, user, newRefreshToken, newAccessToken;
 
   newUser = await createUser(userData, twitchAuth);
+  if (newUser === null) {
+    throw new Error("Failed to create user");
+  }
   blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
   newAccessToken = generateAccessToken(newUser.id, newUser.login);
   newRefreshToken = generateRefreshToken();
@@ -39,6 +42,9 @@ export const handleModeratorScope = async (
     newAccessToken;
 
   newUser = await createUser(userData, twitchAuth);
+  if (newUser === null) {
+    throw new Error("Failed to create user");
+  }
   blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
   moderatedChannels = await getModeratedChannels(
     accessToken,
@@ -64,6 +70,9 @@ export const handleCreatorScope = async (
   let newUser, blockedUsers, user, newRefreshToken, newAccessToken;
 
   newUser = await createUser(userData, twitchAuth);
+  if (newUser === null) {
+    throw new Error("Failed to create user");
+  }
   blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
   newAccessToken = generateAccessToken(newUser.id, newUser.login);
   newRefreshToken = generateRefreshToken();
