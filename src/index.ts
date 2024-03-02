@@ -19,7 +19,6 @@ app.use(requestLogger);
 app.use(errorHandler);
 
 app.get("/", authHandler, (req: Request, res: Response) => {
-  console.log(req);
   res.send(`Welcome to clip thread api`);
 });
 
