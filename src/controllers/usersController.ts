@@ -24,15 +24,15 @@ export async function createUser(
           ...twitchAuth,
         },
       });
-    }
-
-    if (youtubeAuth && userData.youtubeId) {
+    } else if (youtubeAuth && userData.youtubeId) {
       await prisma.youTubeAuth.create({
         data: {
           user: { connect: { id: user.id } },
           ...youtubeAuth,
         },
       });
+    } else {
+      throw new Error(`User auth data not found`);
     }
 
     const userWithAuthData = await prisma.user.findUnique({
