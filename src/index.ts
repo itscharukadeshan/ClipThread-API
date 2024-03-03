@@ -6,6 +6,8 @@ import twitchRoutes from "./routes/twitch/twitch.routes";
 import youtubeRoutes from "./routes/youtube/youtube.routes";
 import { API_PORT } from "./config/config";
 import authHandler from "./middlewares/authHandler";
+import roleHandler from "./middlewares/roleHandler";
+import { UserRole } from "@prisma/client";
 
 const errorHandler = require("./middlewares/errorHandler");
 const requestLogger = require("./middlewares/requestLogger");
@@ -18,9 +20,14 @@ app.use(cookieParser());
 app.use(requestLogger);
 app.use(errorHandler);
 
-app.get("/", authHandler, (req: Request, res: Response) => {
-  res.send(`Welcome to clip thread api`);
-});
+app.get(
+  "/",
+  roleHandler(UserRole.creator),
+  authHandler,
+  (req: Request, res: Response) => {
+    res.send(`Welcome to clip thread api`);
+  }
+);
 
 app.use("/twitch", twitchRoutes);
 app.use("/youtube", youtubeRoutes);
