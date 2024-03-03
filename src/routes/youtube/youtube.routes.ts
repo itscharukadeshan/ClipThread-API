@@ -51,6 +51,20 @@ router.get(
       }
       const newAccessToken = generateAccessToken(newUser.id, newUser.login);
 
+      res.cookie("access_token", newAccessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 900000,
+      });
+
+      res.cookie("refresh_token", newUser.refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 2592000000,
+      });
+
       res.json({ newUser });
     } catch (error) {
       next(error);
