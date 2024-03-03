@@ -18,12 +18,7 @@ const roleHandler = (permission?: UserRole, secondPermission?: UserRole) => {
       const { userId, role } = decodedToken as TokenPayload;
       const userRole = role;
 
-      if (
-        !role ||
-        userRole === permission ||
-        !role ||
-        userRole === secondPermission
-      ) {
+      if (!role || userRole === permission || userRole === secondPermission) {
         next();
       } else {
         res.status(403).json({
