@@ -9,9 +9,13 @@ import {
 const prisma = new PrismaClient();
 export async function createUser(
   userData: UserWithoutId,
-  twitchAuth?: TwitchAuthWithoutId,
-  youtubeAuth?: YoutubeAuthWithoutId
+  twitchAuth?: TwitchAuthWithoutId | undefined,
+  youtubeAuth?: YoutubeAuthWithoutId | undefined
 ): Promise<UserWithAuth | null> {
+  if (!twitchAuth && !youtubeAuth) {
+    throw new Error(`Missing auth data`);
+  }
+
   try {
     const user = await prisma.user.create({
       data: userData,
