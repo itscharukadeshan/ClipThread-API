@@ -54,4 +54,4 @@ const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-module.exports = requestLogger;
+export default requestLogger;

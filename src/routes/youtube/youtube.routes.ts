@@ -51,7 +51,7 @@ router.get(
       }
       const newAccessToken = generateAccessToken(newUser.id, newUser.login);
 
-      return res.json({ newUser });
+      res.json({ newUser });
     } catch (error) {
       next(error);
     }

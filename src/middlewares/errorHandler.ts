@@ -1,5 +1,10 @@
-import { NextFunction } from "express";
-function errorHandler(err: Error, req: Request, res: any, next: NextFunction) {
+import { NextFunction, Request, Response } from "express";
+function errorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   console.error(err);
   res.status(500);
   if (!res.headersSent) {
@@ -9,4 +14,4 @@ function errorHandler(err: Error, req: Request, res: any, next: NextFunction) {
   }
 }
 
-module.exports = errorHandler;
+export default errorHandler;
