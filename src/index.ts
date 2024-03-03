@@ -2,19 +2,29 @@
 
 import express, { Request, Response } from "express";
 import chalk from "chalk";
+import cors from "cors";
+
 import twitchRoutes from "./routes/twitch/twitch.routes";
 import youtubeRoutes from "./routes/youtube/youtube.routes";
-import { API_PORT } from "./config/config";
+import { API_PORT, FRONT_END_URL } from "./config/config";
 import authHandler from "./middlewares/authHandler";
 import roleHandler from "./middlewares/roleHandler";
 import { UserRole } from "@prisma/client";
 
-const errorHandler = require("./middlewares/errorHandler");
-const requestLogger = require("./middlewares/requestLogger");
-const cookieParser = require("cookie-parser");
+import errorHandler from "./middlewares/errorHandler";
+import requestLogger from "./middlewares/requestLogger";
+import cookieParser from "cookie-parser";
 
 const app: express.Application = express();
 
+app.use(
+  cors({
+    origin: FRONT_END_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 app.use(requestLogger);
