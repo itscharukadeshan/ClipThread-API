@@ -4,7 +4,7 @@ import { ACCESS_TOKEN_SECRET } from "../config/config";
 import { TokenPayload } from "./types";
 import { verifyToken } from "../utils/authUtils";
 
-const roleHandler = (permission?: UserRole) => {
+const roleHandler = (permission?: UserRole, secondPermission?: UserRole) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const authHeader: string | undefined = req.headers.authorization;
 
@@ -18,7 +18,12 @@ const roleHandler = (permission?: UserRole) => {
       const { userId, role } = decodedToken as TokenPayload;
       const userRole = role;
 
-      if (!role || userRole === permission) {
+      if (
+        !role ||
+        userRole === permission ||
+        !role ||
+        userRole === secondPermission
+      ) {
         next();
       } else {
         res.status(403).json({
