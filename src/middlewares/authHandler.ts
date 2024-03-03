@@ -1,13 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
 import { getUser } from "../controllers/usersController";
 import { User } from "@prisma/client";
-
-interface TokenPayload {
-  userId: string;
-  role: string;
-}
+import { TokenPayload } from "./types";
+import { verifyToken } from "../utils/authUtils";
 
 async function authHandler(req: Request, res: Response, next: NextFunction) {
   try {
@@ -44,15 +40,6 @@ async function authHandler(req: Request, res: Response, next: NextFunction) {
     } else {
       return res.status(403).json({ message: "Invalid token" });
     }
-  }
-}
-
-function verifyToken(token: string, secretKey: string) {
-  try {
-    const decoded = jwt.verify(token, secretKey);
-    return decoded;
-  } catch (error) {
-    return null;
   }
 }
 
