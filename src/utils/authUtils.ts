@@ -3,6 +3,7 @@ import {
   getBlockedUsers,
   getModeratedChannels,
 } from "../services/twitch/twitchAuth.service";
+import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
 import { TwitchAuthWithoutId, UserWithoutId } from "./types";
 
@@ -84,3 +85,12 @@ export const handleCreatorScope = async (
 
   return { user, newAccessToken };
 };
+
+export function verifyToken(token: string, secretKey: string) {
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    return decoded;
+  } catch (error) {
+    return null;
+  }
+}
