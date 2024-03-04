@@ -5,7 +5,7 @@ import {
   getAccessToken,
   getUser,
   getChannelData,
-} from "../../services/youtube/youtubeAuth.service";
+} from "../../services/youtube/youtubeAuth.services";
 
 import { formatUserDataFromYouTube } from "../../utils/formatUserData";
 import { createUser } from "../../controllers/usersController";

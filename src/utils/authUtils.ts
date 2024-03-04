@@ -2,7 +2,7 @@ import { createUser, updateUser } from "../controllers/usersController";
 import {
   getBlockedUsers,
   getModeratedChannels,
-} from "../services/twitch/twitchAuth.service";
+} from "../services/twitch/twitchAuth.services";
 import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
 import { TwitchAuthWithoutId, UserWithoutId } from "./types";

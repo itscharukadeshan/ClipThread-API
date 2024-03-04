@@ -10,7 +10,7 @@ import {
   getAuthUrl,
   getUserAuth,
   getUserData,
-} from "../../services/twitch/twitchAuth.service";
+} from "../../services/twitch/twitchAuth.services";
 const router = Router();
 
 router.get("/login", (req: Request, res: Response, next: NextFunction) => {
