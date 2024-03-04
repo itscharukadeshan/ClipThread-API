@@ -4,8 +4,8 @@ import express, { Request, Response } from "express";
 import chalk from "chalk";
 import cors from "cors";
 
-import twitchRoutes from "./routes/twitch/twitch.routes";
-import youtubeRoutes from "./routes/youtube/youtube.routes";
+import twitchRoutes from "./routes/twitch.routes";
+import youtubeRoutes from "./routes/youtube.routes";
 import { API_PORT, FRONT_END_URL } from "./config/config";
 import authHandler from "./middlewares/authHandler";
 import roleHandler from "./middlewares/roleHandler";

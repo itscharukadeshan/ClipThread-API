@@ -3,7 +3,7 @@ import {
   YOUTUBE_CLIENT_ID,
   YOUTUBE_CLIENT_SECRET,
   YOUTUBE_REDIRECT_URI,
-} from "../../config/config";
+} from "../config/config";
 
 const CLIENT_ID = YOUTUBE_CLIENT_ID;
 const CLIENT_SECRET = YOUTUBE_CLIENT_SECRET;

@@ -5,14 +5,14 @@ import {
   getAccessToken,
   getUser,
   getChannelData,
-} from "../../services/youtube/youtubeAuth.services";
+} from "../services/youtubeAuth.services";
 
-import { formatUserDataFromYouTube } from "../../utils/formatUserData";
-import { createUser } from "../../controllers/usersController";
+import { formatUserDataFromYouTube } from "../utils/formatUserData";
+import { createUser } from "../controllers/usersController";
 import {
   generateAccessToken,
   generateRefreshToken,
-} from "../../utils/generateTokens";
+} from "../utils/generateTokens";
 
 const router = Router();
 

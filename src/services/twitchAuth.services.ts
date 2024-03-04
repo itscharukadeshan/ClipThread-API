@@ -5,7 +5,7 @@ import {
   TWITCH_CLIENT_ID,
   TWITCH_CLIENT_SECRET,
   TWITCH_REDIRECT_URI,
-} from "../../config/config";
+} from "../config/config";
 
 const CLIENT_ID = TWITCH_CLIENT_ID;
 const CLIENT_SECRET = TWITCH_CLIENT_SECRET;

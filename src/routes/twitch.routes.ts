@@ -1,16 +1,16 @@
 import { Router, Response, Request, NextFunction } from "express";
-import { formatUserDataFromTwitch } from "../../utils/formatUserData";
+import { formatUserDataFromTwitch } from "../utils/formatUserData";
 import { UserRole } from "@prisma/client";
 import {
   handleCreatorScope,
   handleModeratorScope,
   handleUserScope,
-} from "../../utils/authUtils";
+} from "../utils/authUtils";
 import {
   getAuthUrl,
   getUserAuth,
   getUserData,
-} from "../../services/twitch/twitchAuth.services";
+} from "../services/twitchAuth.services";
 const router = Router();
 
 router.get("/login", (req: Request, res: Response, next: NextFunction) => {
