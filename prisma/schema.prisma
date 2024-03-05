@@ -24,15 +24,15 @@ model User {
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
   followers         Int?
-  collections       Thread?
-  twitchAuth        TwitchAuth?
-  youtubeAuth       YouTubeAuth?
   moderatedChannels String[]     @default([])
   blockedUsers      String[]     @default([])
   blockedTerms      String[]     @default([])
   whitelist         String[]     @default([])
   blacklist         String[]     @default([])
   refreshToken      String       @unique
+  collections       Thread?
+  twitchAuth        TwitchAuth?
+  youtubeAuth       YouTubeAuth?
 }
 
 model TwitchAuth {
@@ -84,10 +84,10 @@ model Clip {
 
 model ThreadClip {
   id       String @id @default(cuid())
-  thread   Thread @relation(fields: [threadId], references: [id])
   threadId String
-  clip     Clip   @relation(fields: [clipId], references: [id])
   clipId   String
+  clip     Clip   @relation(fields: [clipId], references: [id])
+  thread   Thread @relation(fields: [threadId], references: [id])
 }
 
 model Tag {
@@ -97,12 +97,12 @@ model Tag {
   clips   Clip[]
 }
 
+model DefaultBadWord {
+  words Json @unique
+}
+
 enum UserRole {
   user
   moderator
   creator
-}
-
-model DefaultBadWord {
-  words Json @unique
 }
