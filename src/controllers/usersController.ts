@@ -68,13 +68,26 @@ export async function updateUser(
     return null;
   }
 }
-export async function getUser(userId: string) {
+export async function getUserById(userId: string) {
   try {
     const foundUser = await prisma.user.findUnique({ where: { id: userId } });
 
     return foundUser;
   } catch (error) {
     console.error("Error updating user:", error);
+    return null;
+  }
+}
+
+export async function getUserByRefreshToken(refreshToken: string) {
+  try {
+    const foundUser = await prisma.user.findUnique({
+      where: { refreshToken: refreshToken },
+    });
+
+    return foundUser;
+  } catch (error) {
+    console.error("Error finding user:", error);
     return null;
   }
 }
