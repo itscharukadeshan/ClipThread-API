@@ -94,3 +94,12 @@ export function verifyToken(token: string, secretKey: string) {
     return null;
   }
 }
+
+export function verifyRefreshToken(refreshToken: string, secretKey: string) {
+  try {
+    jwt.verify(refreshToken, secretKey);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
