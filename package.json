@@ -27,6 +27,8 @@
     "prisma:pull": "npx prisma db pull",
     "prisma:push": "npx prisma db push",
     "prisma:studio": "npx prisma studio",
+    "database:generate": "ts-node scripts/generate_test_data.ts",
+    "database:depopulate": "ts-node scripts/depopulate_database.ts",
     "docker:compose": "docker-compose -f docker-compose.yml up",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write ."
