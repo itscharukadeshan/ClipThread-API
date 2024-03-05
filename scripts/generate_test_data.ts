@@ -50,7 +50,7 @@ const generateFakeData = async (count: number) => {
         whitelist: [],
         blacklist: [],
         refreshToken: faker.string.alphanumeric({
-          length: { min: 5, max: 10 },
+          length: { min: 68, max: 100 },
         }),
       };
 
