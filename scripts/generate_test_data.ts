@@ -35,7 +35,7 @@ const generateFakeData = async (count: number) => {
         type: "",
         broadcasterType: "",
         description: faker.lorem.paragraph(),
-        profileImageUrl: faker.image.urlPlaceholder(),
+        profileImageUrl: faker.image.avatar(),
         offlineImageUrl: faker.image.urlPlaceholder(),
         viewCount: faker.number.int({ max: 10000 }),
         createdAt: faker.date.recent(),
