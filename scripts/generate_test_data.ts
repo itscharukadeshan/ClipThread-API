@@ -1,12 +1,15 @@
-import { faker } from "@faker-js/faker";
 import { PrismaClient, User, UserRole } from "@prisma/client";
-const jwt = require("jsonwebtoken");
+import { faker } from "@faker-js/faker";
+import crypto from "crypto";
+import chalk from "chalk";
+
 import {
   AuthData,
   TwitchAuthWithoutId,
   UserWithoutId,
   YoutubeAuthWithoutId,
 } from "./types";
+
 import {
   REFRESH_TOKEN_EXPIRATION,
   REFRESH_TOKEN_SECRET,
@@ -16,10 +19,12 @@ import {
   ACCESS_TOKEN_SECRET,
   AUTH_TOKEN_EXPIRATION,
 } from "../src/config/config";
-import crypto from "crypto";
-import chalk from "chalk";
+
+const jwt = require("jsonwebtoken");
 
 const prisma = new PrismaClient();
+
+// Generate randomIndex for user role
 
 const randomizeArrayElement = (array: any[]) => {
   const randomIndex = Math.floor(Math.random() * array.length);
@@ -29,6 +34,8 @@ const randomizeArrayElement = (array: any[]) => {
 const loginRoles = ["user", "creator", "moderator"];
 
 const count = parseInt(process.argv[2]) || 100;
+
+// Generate accessToke for the testUser
 
 function generateAccessToken(userId: string, role: UserRole) {
   const accessToken = jwt.sign(
@@ -40,6 +47,8 @@ function generateAccessToken(userId: string, role: UserRole) {
   );
   return accessToken;
 }
+
+// Decrypt refreshToken for the testUser
 
 function decryptData(data: string) {
   let encryptedText = Buffer.from(data, "hex");
@@ -53,17 +62,22 @@ function decryptData(data: string) {
   return decrypted.toString();
 }
 
+// Test user going to be the last user in the fake user inserted
+
 let testUser: User;
 
 const generateFakeData = async (count: number) => {
   await Promise.all(
     Array.from({ length: count }).map(async (_, i) => {
+      // generateRefreshToken Need count value.refreshToken is not going to be unique outside
       function generateRefreshToken() {
         const refreshToken = jwt.sign({ count: i }, REFRESH_TOKEN_SECRET, {
           expiresIn: REFRESH_TOKEN_EXPIRATION,
         });
         return refreshToken;
       }
+
+      // Use to generate encryptedEmail , encryptedTwitchAccessToken  .....
 
       function encryptData(data: string) {
         let cipher = crypto.createCipheriv(
@@ -83,6 +97,8 @@ const generateFakeData = async (count: number) => {
       const encryptedYoutubeRefreshToken = encryptData(faker.string.uuid());
       const encryptedTwitchAccessToken = encryptData(faker.string.uuid());
       const encryptedYoutubeAccessToken = encryptData(faker.string.uuid());
+
+      // Give login role randomly
 
       const loginRole = randomizeArrayElement(loginRoles);
 
@@ -140,6 +156,7 @@ const generateFakeData = async (count: number) => {
       }
 
       const user = await prisma.user.create({ data: userData });
+
       testUser = user;
 
       if (userData.twitchId) {
