@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User, UserRole } from "@prisma/client";
 const jwt = require("jsonwebtoken");
 import {
   AuthData,
@@ -10,7 +10,13 @@ import {
 import {
   REFRESH_TOKEN_EXPIRATION,
   REFRESH_TOKEN_SECRET,
+  ENCRYPTION_METHOD,
+  ENCRYPTION_KEY,
+  SECRET_IV,
+  ACCESS_TOKEN_SECRET,
+  AUTH_TOKEN_EXPIRATION,
 } from "../src/config/config";
+import crypto from "crypto";
 import chalk from "chalk";
 
 const prisma = new PrismaClient();
@@ -24,9 +30,60 @@ const loginRoles = ["user", "creator", "moderator"];
 
 const count = parseInt(process.argv[2]) || 10;
 
+function generateAccessToken(userId: string, role: UserRole) {
+  const accessToken = jwt.sign(
+    { userId: userId, role: role },
+    ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: AUTH_TOKEN_EXPIRATION,
+    }
+  );
+  return accessToken;
+}
+
+function decryptData(data: string) {
+  let encryptedText = Buffer.from(data, "hex");
+  let decipher = crypto.createDecipheriv(
+    ENCRYPTION_METHOD,
+    Buffer.from(ENCRYPTION_KEY),
+    SECRET_IV
+  );
+  let decrypted = decipher.update(encryptedText);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted.toString();
+}
+
+let testUser: User;
+
 const generateFakeData = async (count: number) => {
   await Promise.all(
     Array.from({ length: count }).map(async (_, i) => {
+      function generateRefreshToken() {
+        const refreshToken = jwt.sign({ count: i }, REFRESH_TOKEN_SECRET, {
+          expiresIn: REFRESH_TOKEN_EXPIRATION,
+        });
+        return refreshToken;
+      }
+
+      function encryptData(data: string) {
+        let cipher = crypto.createCipheriv(
+          ENCRYPTION_METHOD,
+          Buffer.from(ENCRYPTION_KEY),
+          SECRET_IV
+        );
+        let encrypted = cipher.update(data);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+        return encrypted.toString("hex");
+      }
+
+      const encryptedEmail = encryptData(faker.internet.email());
+      const encryptedRefreshToken = encryptData(generateRefreshToken());
+      const encryptedTwitchRefreshToken = encryptData(faker.string.uuid());
+      const encryptedYoutubeRefreshToken = encryptData(faker.string.uuid());
+      const encryptedTwitchAccessToken = encryptData(faker.string.uuid());
+      const encryptedYoutubeAccessToken = encryptData(faker.string.uuid());
+
       const loginRole = randomizeArrayElement(loginRoles);
 
       const userData: UserWithoutId = {
@@ -41,7 +98,7 @@ const generateFakeData = async (count: number) => {
         createdAt: faker.date.recent(),
         updatedAt: faker.date.recent(),
         followers: faker.number.int({ max: 10000 }),
-        email: faker.internet.email(),
+        email: encryptedEmail,
         youtubeId: null,
         login: loginRole,
         moderatedChannels: [],
@@ -49,9 +106,7 @@ const generateFakeData = async (count: number) => {
         blockedTerms: [],
         whitelist: [],
         blacklist: [],
-        refreshToken: faker.string.alphanumeric({
-          length: { min: 68, max: 100 },
-        }),
+        refreshToken: encryptedRefreshToken,
       };
 
       let authData: AuthData;
@@ -59,8 +114,8 @@ const generateFakeData = async (count: number) => {
       if (faker.datatype.boolean()) {
         authData = {
           twitchAuthData: {
-            refreshToken: faker.string.uuid(),
-            accessToken: faker.string.uuid(),
+            refreshToken: encryptedTwitchRefreshToken,
+            accessToken: encryptedTwitchAccessToken,
             expiryTime: faker.date.future(),
           },
           youtubeAuthData: undefined,
@@ -73,8 +128,8 @@ const generateFakeData = async (count: number) => {
         authData = {
           twitchAuthData: undefined,
           youtubeAuthData: {
-            refreshToken: faker.string.uuid(),
-            accessToken: faker.string.uuid(),
+            refreshToken: encryptedYoutubeRefreshToken,
+            accessToken: encryptedYoutubeAccessToken,
             expiryTime: faker.date.future(),
           },
         };
@@ -85,6 +140,7 @@ const generateFakeData = async (count: number) => {
       }
 
       const user = await prisma.user.create({ data: userData });
+      testUser = user;
 
       if (userData.twitchId) {
         const twitchAuth = authData.twitchAuthData as TwitchAuthWithoutId;
@@ -109,7 +165,25 @@ const generateFakeData = async (count: number) => {
 
 generateFakeData(count)
   .then(() => {
+    const accessToken = generateAccessToken(testUser.id, testUser.login);
+    const refreshToken = decryptData(testUser.refreshToken);
+
     console.log(chalk.green.bold(`${count} fake users created successfully.`));
+    console.log(
+      chalk.yellow.bold(
+        `Test user (${testUser.displayName}) => ${chalk.green(`${testUser.id}`)} `
+      )
+    );
+    console.log(
+      chalk.yellow.bold(
+        ` ${testUser.displayName}'s accessToke => ${chalk.green(`${accessToken}`)} `
+      )
+    );
+    console.log(
+      chalk.yellow.bold(
+        `${testUser.displayName}'s refreshToken => ${chalk.green(`${refreshToken}`)} `
+      )
+    );
   })
   .catch((error) => {
     console.error("Error generating fake users:", error);
