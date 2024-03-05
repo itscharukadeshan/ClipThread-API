@@ -5,7 +5,7 @@
     "strict": true,
     "lib": ["esnext", "dom"],
     "esModuleInterop": true,
-    "types": ["@prisma/client", "jest"]
+    "types": ["@prisma/client", "jest", "node"]
   },
   "include": ["src/**/*.ts"]
 }
