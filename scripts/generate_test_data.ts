@@ -35,7 +35,7 @@ const loginRoles = ["user", "creator", "moderator"];
 
 const count = parseInt(process.argv[2]) || 100;
 
-// Generate accessToke for the testUser
+// Generate accessToken for the testUser
 
 function generateAccessToken(userId: string, role: UserRole) {
   const accessToken = jwt.sign(
