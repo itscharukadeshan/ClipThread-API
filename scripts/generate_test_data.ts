@@ -28,7 +28,7 @@ const randomizeArrayElement = (array: any[]) => {
 
 const loginRoles = ["user", "creator", "moderator"];
 
-const count = parseInt(process.argv[2]) || 10;
+const count = parseInt(process.argv[2]) || 100;
 
 function generateAccessToken(userId: string, role: UserRole) {
   const accessToken = jwt.sign(
