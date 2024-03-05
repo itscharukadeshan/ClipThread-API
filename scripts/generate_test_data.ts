@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { faker } from "@faker-js/faker";
 import { UserWithoutId, AuthData, FakeData } from "./types";
+import { createUser } from "../src/controllers/usersController";
 
 const prisma = new PrismaClient();
 
@@ -46,13 +47,13 @@ const generateFakeData = (count: number) => {
           accessToken: faker.string.uuid(),
           expiryTime: faker.date.future(),
         },
-        youtubeAuthData: null,
+        youtubeAuthData: undefined,
       };
       userData.twitchId = faker.string.sample();
       userData.youtubeId = null;
     } else {
       authData = {
-        twitchAuthData: null,
+        twitchAuthData: undefined,
         youtubeAuthData: {
           refreshToken: faker.string.uuid(),
           accessToken: faker.string.uuid(),
@@ -70,28 +71,11 @@ const generateFakeData = (count: number) => {
 
 const insertFakeData = async (data: FakeData) => {
   for (const { userData, authData } of data) {
-    const user = await prisma.user.create({
-      data: userData,
-    });
-
-    if (authData.twitchAuthData) {
-      await prisma.twitchAuth.create({
-        data: {
-          ...authData.twitchAuthData,
-          userId: user.id,
-        },
-      });
-    } else if (authData.youtubeAuthData) {
-      await prisma.youTubeAuth.create({
-        data: {
-          ...authData.youtubeAuthData,
-          userId: user.id,
-        },
-      });
-    }
+    createUser(userData, authData.twitchAuthData, authData.youtubeAuthData);
   }
 };
 async function generateTestData(count: number) {
+  count = 10;
   const fakeData = generateFakeData(count);
   await insertFakeData(fakeData);
   await prisma.$disconnect();

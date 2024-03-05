@@ -5,21 +5,25 @@ export type TwitchAuthWithoutId = Omit<TwitchAuth, "userId">;
 export type YoutubeAuthWithoutId = Omit<YouTubeAuth, "userId">;
 
 export type UserWithAuth = User & {
-  twitchAuth: TwitchAuth | null;
-  youtubeAuth: YouTubeAuth | null;
+  twitchAuth: TwitchAuth | undefined;
+  youtubeAuth: YouTubeAuth | undefined;
 };
 
 export type AuthData = {
-  twitchAuthData: {
-    refreshToken: string;
-    accessToken: string;
-    expiryTime: Date;
-  } | null;
-  youtubeAuthData: {
-    refreshToken: string;
-    accessToken: string;
-    expiryTime: Date;
-  } | null;
+  twitchAuthData:
+    | {
+        refreshToken: string;
+        accessToken: string;
+        expiryTime: Date;
+      }
+    | undefined;
+  youtubeAuthData:
+    | {
+        refreshToken: string;
+        accessToken: string;
+        expiryTime: Date;
+      }
+    | undefined;
 };
 
 export type FakeData = Array<{ userData: UserWithoutId; authData: AuthData }>;
