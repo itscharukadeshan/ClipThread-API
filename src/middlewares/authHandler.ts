@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
-import { getUser } from "../controllers/usersController";
+import { getUserById } from "../controllers/usersController";
 import { User } from "@prisma/client";
 import { TokenPayload } from "./types";
 import { verifyToken } from "../utils/authUtils";
@@ -22,7 +22,7 @@ async function authHandler(req: Request, res: Response, next: NextFunction) {
       return res.status(403).json({ message: "Invalid access token" });
     }
 
-    const user: User | null = await getUser(userId);
+    const user: User | null = await getUserById(userId);
 
     if (!user) {
       return res.status(403).json({ message: "Failed to find user" });
