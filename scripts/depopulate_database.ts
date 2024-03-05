@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import chalk from "chalk";
 
 const prisma = new PrismaClient();
 
@@ -7,12 +8,7 @@ const depopulateDatabase = async () => {
   await prisma.youTubeAuth.deleteMany({});
   await prisma.thread.deleteMany({});
   await prisma.user.deleteMany({});
-  console.log("Database depopulated");
+  console.log(chalk.green(`Depopulated database`));
 };
 
-async function depopulate() {
-  await depopulateDatabase();
-  await prisma.$disconnect();
-}
-
-export default depopulate;
+depopulateDatabase();
