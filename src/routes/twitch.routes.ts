@@ -69,12 +69,7 @@ router.get(
         throw new Error("Invalid user role");
       }
 
-      res.cookie("access_token", newAccessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        maxAge: 900000,
-      });
+      res.status(200).json({ access_token: newAccessToken });
 
       res.cookie("refresh_token", user?.refreshToken, {
         httpOnly: true,
