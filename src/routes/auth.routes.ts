@@ -16,15 +16,7 @@ router.get(
       return res.status(401).json({ message: "Missing refresh token" });
     }
 
-    let decryptRefreshToken;
-
-    try {
-      decryptRefreshToken = decryptData(refreshToken);
-    } catch (error) {
-      return res.status(401).json({ message: "Problem with decrypting" });
-    }
-
-    if (!verifyRefreshToken(decryptRefreshToken, REFRESH_TOKEN_SECRET)) {
+    if (!verifyRefreshToken(refreshToken, REFRESH_TOKEN_SECRET)) {
       return res.status(401).json({ message: "Invalid refresh token" });
     }
 
