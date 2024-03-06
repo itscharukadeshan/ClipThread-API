@@ -6,6 +6,7 @@ import cors from "cors";
 
 import twitchRoutes from "./routes/twitch.routes";
 import youtubeRoutes from "./routes/youtube.routes";
+import authRoutes from "./routes/auth.routes";
 import { API_PORT, FRONT_END_URL } from "./config/config";
 import authHandler from "./middlewares/authHandler";
 import roleHandler from "./middlewares/roleHandler";
@@ -30,17 +31,13 @@ app.use(cookieParser());
 app.use(requestLogger);
 app.use(errorHandler);
 
-app.get(
-  "/",
-  roleHandler(UserRole.creator),
-  authHandler,
-  (req: Request, res: Response) => {
-    res.send(`Welcome to clip thread api`);
-  }
-);
+app.get("/", (req: Request, res: Response) => {
+  res.send(`Welcome to clip thread api`);
+});
 
 app.use("/twitch", twitchRoutes);
 app.use("/youtube", youtubeRoutes);
+app.use("/auth", authRoutes);
 
 app.listen(API_PORT, () => {
   console.log(`${chalk.bgBlue.bold(" App is successfully deployed ! ")}`);
