@@ -48,20 +48,6 @@ function generateAccessToken(userId: string, role: UserRole) {
   return accessToken;
 }
 
-// Decrypt refreshToken for the testUser
-
-function decryptData(data: string) {
-  let encryptedText = Buffer.from(data, "hex");
-  let decipher = crypto.createDecipheriv(
-    ENCRYPTION_METHOD,
-    Buffer.from(ENCRYPTION_KEY),
-    SECRET_IV
-  );
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
-}
-
 // Use to generate encryptedEmail , encryptedTwitchAccessToken  .....
 
 function encryptData(data: string) {
@@ -79,7 +65,6 @@ function encryptData(data: string) {
 // Test user going to be the last user in the fake user inserted
 
 let testUser: User;
-let encryptedRefreshToken: string;
 
 const generateFakeData = async (count: number) => {
   await Promise.all(
@@ -93,7 +78,6 @@ const generateFakeData = async (count: number) => {
       }
 
       const encryptedEmail = encryptData(faker.internet.email());
-      encryptedRefreshToken = encryptData(generateRefreshToken());
       const encryptedTwitchRefreshToken = encryptData(faker.string.uuid());
       const encryptedYoutubeRefreshToken = encryptData(faker.string.uuid());
       const encryptedTwitchAccessToken = encryptData(faker.string.uuid());
@@ -123,7 +107,7 @@ const generateFakeData = async (count: number) => {
         blockedTerms: [],
         whitelist: [],
         blacklist: [],
-        refreshToken: encryptedRefreshToken,
+        refreshToken: generateRefreshToken(),
       };
 
       let authData: AuthData;
@@ -184,8 +168,7 @@ const generateFakeData = async (count: number) => {
 generateFakeData(count)
   .then(() => {
     const accessToken = generateAccessToken(testUser.id, testUser.login);
-    const encryptedAccessToken = encryptData(accessToken);
-    const refreshToken = decryptData(testUser.refreshToken);
+    const refreshToken = testUser.refreshToken;
 
     console.log(chalk.green.bold(`${count} fake users created successfully.`));
     console.log(
@@ -198,19 +181,10 @@ generateFakeData(count)
         ` ${testUser.displayName}'s accessToke => ${chalk.green(`${accessToken}`)} `
       )
     );
-    console.log(
-      chalk.yellow.bold(
-        ` ${testUser.displayName}'s encryptedAccessToken => ${chalk.green(`${encryptedAccessToken}`)} `
-      )
-    );
+
     console.log(
       chalk.yellow.bold(
         `${testUser.displayName}'s refreshToken => ${chalk.green(`${refreshToken}`)} `
-      )
-    );
-    console.log(
-      chalk.yellow.bold(
-        `${testUser.displayName}'s encryptedRefreshToken => ${chalk.green(`${encryptedRefreshToken}`)} `
       )
     );
   })
