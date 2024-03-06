@@ -6,6 +6,7 @@ import {
 import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
 import { TwitchAuthWithoutId, UserWithoutId } from "./types";
+import { encryptData } from "./encryptDecryptUtils";
 
 export const handleUserScope = async (
   userData: UserWithoutId,
@@ -20,7 +21,7 @@ export const handleUserScope = async (
   }
   blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
   newAccessToken = generateAccessToken(newUser.id, newUser.login);
-  newRefreshToken = generateRefreshToken();
+  newRefreshToken = encryptData(generateRefreshToken());
 
   user = await updateUser(newUser.id, {
     blockedUsers,
@@ -52,7 +53,7 @@ export const handleModeratorScope = async (
     newUser.twitchId as string
   );
   newAccessToken = generateAccessToken(newUser.id, newUser.login);
-  newRefreshToken = generateRefreshToken();
+  newRefreshToken = encryptData(generateRefreshToken());
 
   user = await updateUser(newUser.id, {
     blockedUsers,
@@ -76,7 +77,7 @@ export const handleCreatorScope = async (
   }
   blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
   newAccessToken = generateAccessToken(newUser.id, newUser.login);
-  newRefreshToken = generateRefreshToken();
+  newRefreshToken = encryptData(generateRefreshToken());
 
   user = await updateUser(newUser.id, {
     blockedUsers,

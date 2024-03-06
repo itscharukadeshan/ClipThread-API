@@ -13,6 +13,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateTokens";
+import { encryptData } from "../utils/encryptDecryptUtils";
 
 const router = Router();
 
@@ -42,7 +43,7 @@ router.get(
         userDataResponse,
         channelData
       );
-      const newRefreshToken = generateRefreshToken();
+      const newRefreshToken = encryptData(generateRefreshToken());
       userData.refreshToken = newRefreshToken;
 
       const newUser = await createUser(userData, undefined, youtubeAuth);
