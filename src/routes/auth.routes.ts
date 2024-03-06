@@ -30,14 +30,7 @@ router.get(
 
     const accessToken = generateAccessToken(user.id, user.login);
 
-    res.cookie("access_token", accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 900000,
-    });
-
-    return res.status(200).json({ message: "Send access Token " });
+    return res.status(200).json({ access_token: accessToken });
   }
 );
 
