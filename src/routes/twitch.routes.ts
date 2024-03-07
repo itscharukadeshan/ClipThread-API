@@ -13,7 +13,7 @@ import {
 } from "../services/twitchAuth.services";
 const router = Router();
 
-router.get("/login", (req: Request, res: Response, next: NextFunction) => {
+router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
   const scopeParam = req.query.scope as UserRole;
 
   let scope: UserRole = scopeParam;
@@ -69,8 +69,6 @@ router.get(
         throw new Error("Invalid user role");
       }
 
-      res.status(200).json({ access_token: `'Bearer ${newAccessToken}` });
-
       res.cookie("refresh_token", user?.refreshToken, {
         httpOnly: true,
         secure: true,
@@ -78,7 +76,15 @@ router.get(
         maxAge: 2592000000,
       });
 
-      res.json({ user });
+      res.status(200).json({
+        access_token: `Bearer ${newAccessToken}`,
+        username: user?.displayName,
+        userId: user?.id,
+        profileImage: user?.profileImageUrl,
+        twitchId: user?.twitchId,
+        role: user?.login,
+        followers: user?.followers,
+      });
     } catch (error) {
       next(error);
     }

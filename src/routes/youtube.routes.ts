@@ -13,11 +13,10 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateTokens";
-import moment from "moment";
 
 const router = Router();
 
-router.get("/login", (req: Request, res: Response) => {
+router.get("/auth", (req: Request, res: Response) => {
   const url = getAuthUrl([
     "https://www.googleapis.com/auth/youtube.readonly",
     "https://www.googleapis.com/auth/userinfo.email",
@@ -52,8 +51,6 @@ router.get(
       }
       const newAccessToken = generateAccessToken(newUser.id, newUser.login);
 
-      res.status(200).json({ access_token: `'Bearer ${newAccessToken}` });
-
       res.cookie("refresh_token", newUser.refreshToken, {
         httpOnly: true,
         secure: true,
@@ -61,7 +58,15 @@ router.get(
         maxAge: 2592000000,
       });
 
-      res.json({ newUser });
+      res.status(200).json({
+        access_token: `Bearer ${newAccessToken}`,
+        username: newUser?.displayName,
+        userId: newUser?.id,
+        profileImage: newUser?.profileImageUrl,
+        youtubeId: newUser?.youtubeId,
+        role: newUser?.login,
+        followers: newUser?.followers,
+      });
     } catch (error) {
       next(error);
     }
