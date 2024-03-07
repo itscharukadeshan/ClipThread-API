@@ -13,7 +13,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateTokens";
-import { encryptData } from "../utils/encryptDecryptUtils";
+import moment from "moment";
 
 const router = Router();
 
@@ -52,7 +52,7 @@ router.get(
       }
       const newAccessToken = generateAccessToken(newUser.id, newUser.login);
 
-      res.status(200).json({ access_token: newAccessToken });
+      res.status(200).json({ access_token: `'Bearer ${newAccessToken}` });
 
       res.cookie("refresh_token", newUser.refreshToken, {
         httpOnly: true,

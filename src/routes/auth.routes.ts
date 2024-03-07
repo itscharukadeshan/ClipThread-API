@@ -30,7 +30,7 @@ router.get(
 
     const accessToken = generateAccessToken(user.id, user.login);
 
-    return res.status(200).json({ access_token: accessToken });
+    return res.status(200).json({ access_token: `'Bearer ${accessToken}` });
   }
 );
 

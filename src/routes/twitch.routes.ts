@@ -69,7 +69,7 @@ router.get(
         throw new Error("Invalid user role");
       }
 
-      res.status(200).json({ access_token: newAccessToken });
+      res.status(200).json({ access_token: `'Bearer ${newAccessToken}` });
 
       res.cookie("refresh_token", user?.refreshToken, {
         httpOnly: true,
