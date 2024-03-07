@@ -105,3 +105,19 @@ export async function getUserByTwitchId(twitchId: string | null) {
     return null;
   }
 }
+
+export async function getUserByYoutubeId(youtubeId: string | null) {
+  try {
+    if (youtubeId === null) {
+      return null;
+    }
+
+    const foundUser = await prisma.user.findUnique({
+      where: { twitchId: youtubeId },
+    });
+
+    return foundUser;
+  } catch (error) {
+    return null;
+  }
+}
