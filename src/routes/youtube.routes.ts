@@ -8,7 +8,7 @@ import {
 } from "../services/youtubeAuth.services";
 
 import { formatUserDataFromYouTube } from "../utils/formatUserData";
-import { createUser } from "../controllers/usersController";
+import { createUser, getUserByYoutubeId } from "../controllers/usersController";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -45,18 +45,27 @@ router.get(
       const newRefreshToken = generateRefreshToken();
       userData.refreshToken = newRefreshToken;
 
-      const newUser = await createUser(userData, undefined, youtubeAuth);
-      if (newUser === null) {
-        throw new Error("Failed to create user");
-      }
-      const newAccessToken = generateAccessToken(newUser.id, newUser.login);
+      let user, newUser, newAccessToken;
 
-      res.cookie("refresh_token", newUser.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        maxAge: 2592000000,
-      });
+      user = await getUserByYoutubeId(userData.youtubeId);
+
+      if (!user) {
+        newUser = await createUser(userData, undefined, youtubeAuth);
+        if (newUser === null) {
+          throw new Error("Failed to create user");
+        }
+      }
+
+      if (newUser) {
+        newAccessToken = generateAccessToken(newUser.id, newUser.login);
+
+        res.cookie("refresh_token", newUser.refreshToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+          maxAge: 2592000000,
+        });
+      }
 
       res.status(200).json({
         access_token: `Bearer ${newAccessToken}`,
