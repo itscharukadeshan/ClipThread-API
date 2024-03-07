@@ -1,7 +1,6 @@
 import { Router, Response, Request, NextFunction } from "express";
 import { verifyRefreshToken } from "../utils/authUtils";
 import { REFRESH_TOKEN_SECRET } from "../config/config";
-import { decryptData } from "../utils/encryptDecryptUtils";
 import { getUserByRefreshToken } from "../controllers/usersController";
 import { generateAccessToken } from "../utils/generateTokens";
 
