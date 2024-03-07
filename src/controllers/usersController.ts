@@ -74,7 +74,6 @@ export async function getUserById(userId: string) {
 
     return foundUser;
   } catch (error) {
-    console.error("Error updating user:", error);
     return null;
   }
 }
@@ -87,7 +86,22 @@ export async function getUserByRefreshToken(refreshToken: string) {
 
     return foundUser;
   } catch (error) {
-    console.error("Error finding user:", error);
+    return null;
+  }
+}
+
+export async function getUserByTwitchId(twitchId: string | null) {
+  try {
+    if (twitchId === null) {
+      return null;
+    }
+
+    const foundUser = await prisma.user.findUnique({
+      where: { twitchId: twitchId },
+    });
+
+    return foundUser;
+  } catch (error) {
     return null;
   }
 }
