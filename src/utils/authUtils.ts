@@ -25,6 +25,9 @@ export const handleUserScope = async (
     if (!newUser) {
       throw new Error("Failed to create user");
     }
+  } else {
+    newAccessToken = generateAccessToken(user.id, user.login);
+    newRefreshToken = user.refreshToken;
   }
 
   if (newUser) {
@@ -63,6 +66,9 @@ export const handleModeratorScope = async (
     if (!newUser) {
       throw new Error("Failed to create user");
     }
+  } else {
+    newAccessToken = generateAccessToken(user.id, user.login);
+    newRefreshToken = user.refreshToken;
   }
 
   if (newUser) {
@@ -101,6 +107,9 @@ export const handleCreatorScope = async (
     if (!newUser) {
       throw new Error("Failed to create user");
     }
+  } else {
+    newAccessToken = generateAccessToken(user.id, user.login);
+    newRefreshToken = user.refreshToken;
   }
 
   if (newUser) {
