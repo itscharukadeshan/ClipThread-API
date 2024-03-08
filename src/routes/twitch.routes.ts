@@ -2,15 +2,11 @@ import { Router, Response, Request, NextFunction } from "express";
 import { formatUserDataFromTwitch } from "../utils/formatUserData";
 import { UserRole } from "@prisma/client";
 import {
-  handleCreatorScope,
-  handleModeratorScope,
-  handleUserScope,
-} from "../utils/authUtils";
-import {
   getAuthUrl,
   getUserAuth,
   getUserData,
 } from "../services/twitchAuth.services";
+import handleTwitchUser from "../utils/createTwitchUser";
 const router = Router();
 
 router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
@@ -45,29 +41,12 @@ router.get(
       );
       const scope = userData.login;
 
-      let user, newAccessToken;
-
-      if (scope === UserRole.user) {
-        ({ user, newAccessToken } = await handleUserScope(
-          userData,
-          twitchAuth,
-          accessToken
-        ));
-      } else if (scope === UserRole.moderator) {
-        ({ user, newAccessToken } = await handleModeratorScope(
-          userData,
-          twitchAuth,
-          accessToken
-        ));
-      } else if (scope === UserRole.creator) {
-        ({ user, newAccessToken } = await handleCreatorScope(
-          userData,
-          twitchAuth,
-          accessToken
-        ));
-      } else {
-        throw new Error("Invalid user role");
-      }
+      const { newAccessToken, user } = await handleTwitchUser(
+        userData,
+        twitchAuth,
+        accessToken,
+        scope
+      );
 
       res.cookie("refresh_token", user?.refreshToken, {
         httpOnly: true,
