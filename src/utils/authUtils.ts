@@ -1,8 +1,4 @@
-import {
-  createUser,
-  updateUser,
-  getUserByTwitchId,
-} from "../controllers/usersController";
+import { createUser, updateUser } from "../controllers/usersController";
 import {
   getBlockedUsers,
   getModeratedChannels,
@@ -11,43 +7,33 @@ import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
 import { TwitchAuthWithoutId, UserWithoutId } from "./types";
 
-export const handleUserScope = async (
+export const handleTwitchUserScope = async (
   userData: UserWithoutId,
   twitchAuth: TwitchAuthWithoutId,
   accessToken: string
 ) => {
   let newUser, blockedUsers, user, newRefreshToken, newAccessToken;
 
-  user = await getUserByTwitchId(userData.twitchId);
+  newUser = await createUser(userData, twitchAuth);
 
-  if (!user) {
-    newUser = await createUser(userData, twitchAuth);
-    if (!newUser) {
-      throw new Error("Failed to create user");
-    }
-  } else {
-    newAccessToken = generateAccessToken(user.id, user.login);
-    newRefreshToken = user.refreshToken;
+  if (!newUser) {
+    throw new Error("Failed to create user");
   }
 
-  if (newUser) {
-    blockedUsers = await getBlockedUsers(
-      accessToken,
-      newUser.twitchId as string
-    );
-    newAccessToken = generateAccessToken(newUser.id, newUser.login);
-    newRefreshToken = generateRefreshToken();
+  blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
 
-    user = await updateUser(newUser.id, {
-      blockedUsers,
-      refreshToken: newRefreshToken,
-    });
-  }
+  newAccessToken = generateAccessToken(newUser.id, newUser.login);
+  newRefreshToken = generateRefreshToken();
+
+  user = await updateUser(newUser.id, {
+    blockedUsers,
+    refreshToken: newRefreshToken,
+  });
 
   return { user, newAccessToken };
 };
 
-export const handleModeratorScope = async (
+export const handleTwitchModeratorScope = async (
   userData: UserWithoutId,
   twitchAuth: TwitchAuthWithoutId,
   accessToken: string
@@ -59,72 +45,49 @@ export const handleModeratorScope = async (
     newRefreshToken,
     newAccessToken;
 
-  user = await getUserByTwitchId(userData.twitchId);
-
-  if (!user) {
-    newUser = await createUser(userData, twitchAuth);
-    if (!newUser) {
-      throw new Error("Failed to create user");
-    }
-  } else {
-    newAccessToken = generateAccessToken(user.id, user.login);
-    newRefreshToken = user.refreshToken;
+  newUser = await createUser(userData, twitchAuth);
+  if (!newUser) {
+    throw new Error("Failed to create user");
   }
 
-  if (newUser) {
-    blockedUsers = await getBlockedUsers(
-      accessToken,
-      newUser.twitchId as string
-    );
-    moderatedChannels = await getModeratedChannels(
-      accessToken,
-      newUser.twitchId as string
-    );
-    newAccessToken = generateAccessToken(newUser.id, newUser.login);
-    newRefreshToken = generateRefreshToken();
+  blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
+  moderatedChannels = await getModeratedChannels(
+    accessToken,
+    newUser.twitchId as string
+  );
 
-    user = await updateUser(newUser.id, {
-      blockedUsers,
-      moderatedChannels,
-      refreshToken: newRefreshToken,
-    });
-  }
+  newAccessToken = generateAccessToken(newUser.id, newUser.login);
+  newRefreshToken = generateRefreshToken();
+
+  user = await updateUser(newUser.id, {
+    blockedUsers,
+    moderatedChannels,
+    refreshToken: newRefreshToken,
+  });
 
   return { user, newAccessToken };
 };
 
-export const handleCreatorScope = async (
+export const handleTwitchCreatorScope = async (
   userData: UserWithoutId,
   twitchAuth: TwitchAuthWithoutId,
   accessToken: string
 ) => {
   let newUser, blockedUsers, user, newRefreshToken, newAccessToken;
 
-  user = await getUserByTwitchId(userData.twitchId);
-
-  if (!user) {
-    newUser = await createUser(userData, twitchAuth);
-    if (!newUser) {
-      throw new Error("Failed to create user");
-    }
-  } else {
-    newAccessToken = generateAccessToken(user.id, user.login);
-    newRefreshToken = user.refreshToken;
+  newUser = await createUser(userData, twitchAuth);
+  if (!newUser) {
+    throw new Error("Failed to create user");
   }
 
-  if (newUser) {
-    blockedUsers = await getBlockedUsers(
-      accessToken,
-      newUser.twitchId as string
-    );
-    newAccessToken = generateAccessToken(newUser.id, newUser.login);
-    newRefreshToken = generateRefreshToken();
+  blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
+  newAccessToken = generateAccessToken(newUser.id, newUser.login);
+  newRefreshToken = generateRefreshToken();
 
-    user = await updateUser(newUser.id, {
-      blockedUsers,
-      refreshToken: newRefreshToken,
-    });
-  }
+  user = await updateUser(newUser.id, {
+    blockedUsers,
+    refreshToken: newRefreshToken,
+  });
 
   return { user, newAccessToken };
 };
