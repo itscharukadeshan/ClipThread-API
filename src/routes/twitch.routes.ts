@@ -6,7 +6,7 @@ import {
   getUserAuth,
   getUserData,
 } from "../services/twitchAuth.services";
-import handleTwitchUser from "../utils/createTwitchUser";
+import handleTwitchUser from "../utils/handleTwitchUser";
 const router = Router();
 
 router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
