@@ -17,6 +17,8 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../utils/generateTokens";
+import handelYoutubeUser from "../utils/handleYoutubeUser";
+import { User } from "@prisma/client";
 
 const router = Router();
 
@@ -46,49 +48,31 @@ router.get(
         userDataResponse,
         channelData
       );
+      const scope = userData.login;
 
-      let user, newUser, newAccessToken, newRefreshToken, userWithUpdatedRole;
+      const { newAccessToken, user } = await handelYoutubeUser(
+        userData,
+        youtubeAuth,
+        scope
+      );
 
-      user = await getUserByYoutubeId(userData.youtubeId);
+      const newRefreshToken = user?.refreshToken;
 
-      if (!user) {
-        userData.refreshToken = generateRefreshToken();
-        newUser = await createUser(userData, undefined, youtubeAuth);
-        if (newUser === null) {
-          throw new Error("Failed to create user");
-        }
-      } else {
-        if (userData.login === user.login) {
-          newAccessToken = generateAccessToken(user.id, user.login);
-        } else {
-          userWithUpdatedRole = await updateUser(user.id, {
-            login: userData.login,
-          });
-
-          newAccessToken = generateAccessToken(user.id, userData.login);
-        }
-      }
-
-      if (newUser) {
-        newAccessToken = generateAccessToken(newUser.id, newUser.login);
-        newRefreshToken = newUser.refreshToken;
-
-        res.cookie("refresh_token", newRefreshToken, {
-          httpOnly: true,
-          secure: true,
-          sameSite: "strict",
-          maxAge: 2592000000,
-        });
-      }
+      res.cookie("refresh_token", newRefreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 2592000000,
+      });
 
       res.status(200).json({
         access_token: `Bearer ${newAccessToken}`,
-        username: newUser?.displayName,
-        userId: newUser?.id,
-        profileImage: newUser?.profileImageUrl,
-        youtubeId: newUser?.youtubeId,
-        role: newUser?.login,
-        followers: newUser?.followers,
+        username: user?.displayName,
+        userId: user?.id,
+        profileImage: user?.profileImageUrl,
+        youtubeId: user?.youtubeId,
+        role: user?.login,
+        followers: user?.followers,
       });
     } catch (error) {
       next(error);
