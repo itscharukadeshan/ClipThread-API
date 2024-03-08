@@ -101,6 +101,11 @@ model DefaultBadWord {
   words Json @unique
 }
 
+model RevokedTokens {
+  id String @unique
+  expired Boolean @default(false)
+}
+
 enum UserRole {
   user
   moderator
