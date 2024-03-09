@@ -132,6 +132,9 @@ export async function revokeCurrentToken(
   refreshToken: string
 ): Promise<RevokedTokens | null> {
   try {
+    if (refreshToken.length === 0) {
+      return null;
+    }
     const token = await prisma.revokedTokens.create({
       data: { id: refreshToken, expired: false },
     });
