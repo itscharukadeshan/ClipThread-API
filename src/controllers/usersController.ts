@@ -1,4 +1,4 @@
-import { User, PrismaClient } from "@prisma/client";
+import { User, PrismaClient, RevokedTokens } from "@prisma/client";
 import {
   UserWithoutId,
   TwitchAuthWithoutId,
@@ -123,6 +123,20 @@ export async function getUserByYoutubeId(youtubeId: string | null) {
     });
 
     return foundUser;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function revokeCurrentToken(
+  refreshToken: string
+): Promise<RevokedTokens | null> {
+  try {
+    const token = await prisma.revokedTokens.create({
+      data: { id: refreshToken, expired: false },
+    });
+
+    return token;
   } catch (error) {
     return null;
   }
