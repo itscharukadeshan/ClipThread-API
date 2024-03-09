@@ -5,7 +5,8 @@ import {
   ACCESS_TOKEN_SECRET,
   REFRESH_TOKEN_SECRET,
 } from "../config/config";
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
+import moment from "moment";
 
 export function generateAccessToken(userId: string, role: UserRole) {
   return jwt.sign({ userId: userId, role: role }, ACCESS_TOKEN_SECRET, {
@@ -14,8 +15,15 @@ export function generateAccessToken(userId: string, role: UserRole) {
 }
 
 export function generateRefreshToken() {
-  const refreshToken = jwt.sign({}, REFRESH_TOKEN_SECRET, {
-    expiresIn: REFRESH_TOKEN_EXPIRATION,
-  });
+  const issuedAt = moment().unix();
+  const expirationTime = moment().add(30, "days").unix();
+
+  const refreshToken = jwt.sign(
+    { iat: issuedAt, exp: expirationTime },
+    REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: REFRESH_TOKEN_EXPIRATION,
+    }
+  );
   return refreshToken;
 }
