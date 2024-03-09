@@ -1,6 +1,10 @@
 import { User, UserRole } from "@prisma/client";
 import { TwitchAuthWithoutId, UserWithoutId } from "./types";
-import { getUserByTwitchId, updateUser } from "../controllers/usersController";
+import {
+  getUserByTwitchId,
+  updateUser,
+  revokeCurrentToken,
+} from "../controllers/usersController";
 import {
   handleTwitchCreatorScope,
   handleTwitchModeratorScope,
@@ -60,6 +64,8 @@ const handleTwitchUser = async (
         );
         newRefreshToken = generateRefreshToken();
 
+        await revokeCurrentToken(existingUser.refreshToken);
+
         user = await updateUser(existingUser.id, {
           blockedUsers,
           refreshToken: newRefreshToken,
@@ -84,6 +90,8 @@ const handleTwitchUser = async (
         );
         newRefreshToken = generateRefreshToken();
 
+        await revokeCurrentToken(existingUser.refreshToken);
+
         user = await updateUser(existingUser.id, {
           blockedUsers,
           moderatedChannels,
@@ -103,6 +111,8 @@ const handleTwitchUser = async (
           existingUser.login
         );
         newRefreshToken = generateRefreshToken();
+
+        await revokeCurrentToken(existingUser.refreshToken);
 
         user = await updateUser(existingUser.id, {
           blockedUsers,
@@ -127,6 +137,8 @@ const handleTwitchUser = async (
           existingUser.login
         );
         newRefreshToken = generateRefreshToken();
+
+        await revokeCurrentToken(existingUser.refreshToken);
 
         user = await updateUser(existingUser.id, {
           login: scope,
@@ -153,6 +165,8 @@ const handleTwitchUser = async (
         );
         newRefreshToken = generateRefreshToken();
 
+        await revokeCurrentToken(existingUser.refreshToken);
+
         user = await updateUser(existingUser.id, {
           login: scope,
           blockedUsers,
@@ -173,6 +187,8 @@ const handleTwitchUser = async (
           existingUser.login
         );
         newRefreshToken = generateRefreshToken();
+
+        await revokeCurrentToken(existingUser.refreshToken);
 
         user = await updateUser(existingUser.id, {
           login: scope,

@@ -3,6 +3,7 @@ import { UserWithoutId, YouTubeAuthWithoutId } from "./types";
 import {
   createUser,
   getUserByYoutubeId,
+  revokeCurrentToken,
   updateUser,
 } from "../controllers/usersController";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
@@ -41,6 +42,8 @@ const handelYoutubeUser = async (
       newAccessToken = generateAccessToken(existingUser.id, existingUser.login);
       newRefreshToken = generateRefreshToken();
 
+      await revokeCurrentToken(existingUser.refreshToken);
+
       user = await updateUser(existingUser.id, {
         refreshToken: newRefreshToken,
       });
@@ -52,6 +55,8 @@ const handelYoutubeUser = async (
       existingUser.login = scope;
       newAccessToken = generateAccessToken(existingUser.id, existingUser.login);
       newRefreshToken = generateRefreshToken();
+
+      await revokeCurrentToken(existingUser.refreshToken);
 
       user = await updateUser(existingUser.id, {
         refreshToken: newRefreshToken,
