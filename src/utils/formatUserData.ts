@@ -8,6 +8,7 @@ import {
 } from "./types";
 
 import { getScopeType } from "./checkScope";
+import moment from "moment";
 
 export function formatUserDataFromTwitch(
   userAuthData: any,
@@ -56,7 +57,7 @@ export function formatUserDataFromTwitch(
     offlineImageUrl: offline_image_url,
     viewCount: view_count,
     createdAt: created_at,
-    updatedAt: created_at,
+    updatedAt: moment().toDate(),
     followers: followers || 0,
     email: encryptedEmail,
     youtubeId: null,
@@ -105,8 +106,8 @@ export function formatUserDataFromYouTube(
     profileImageUrl: profileImageUrl,
     offlineImageUrl: profileImageUrl,
     viewCount: 0,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: publishedAt,
+    updatedAt: moment().toDate(),
     followers: 0,
     email: encryptedEmail,
     youtubeId: id,

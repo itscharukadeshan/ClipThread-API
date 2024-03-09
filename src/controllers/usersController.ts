@@ -5,6 +5,7 @@ import {
   YoutubeAuthWithoutId,
   UserWithAuth,
 } from "./types";
+import moment from "moment";
 
 const prisma = new PrismaClient();
 export async function createUser(
@@ -58,9 +59,14 @@ export async function updateUser(
   userData: Partial<User>
 ): Promise<User | null> {
   try {
+    const updatedUserData = {
+      ...userData,
+      updatedAt: moment().toDate(),
+    };
+
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: userData,
+      data: updatedUserData,
     });
     return updatedUser;
   } catch (error) {
