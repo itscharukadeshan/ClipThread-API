@@ -16,6 +16,8 @@ import errorHandler from "./middlewares/errorHandler";
 import requestLogger from "./middlewares/requestLogger";
 import cookieParser from "cookie-parser";
 
+import expiredTokenCleanup from "../cron/expiredTokenCleanup";
+
 const app: express.Application = express();
 
 app.use(
@@ -38,6 +40,8 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/twitch", twitchRoutes);
 app.use("/youtube", youtubeRoutes);
 app.use("/auth", authRoutes);
+
+expiredTokenCleanup();
 
 app.listen(API_PORT, () => {
   console.log(`${chalk.bgBlue.bold(" App is successfully deployed ! ")}`);
