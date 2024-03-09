@@ -1,4 +1,8 @@
-import { createUser, updateUser } from "../controllers/usersController";
+import {
+  createUser,
+  updateUser,
+  getRevokedTokens,
+} from "../controllers/usersController";
 import {
   getBlockedUsers,
   getModeratedChannels,
@@ -108,4 +112,18 @@ export function verifyRefreshToken(refreshToken: string, secretKey: string) {
   } catch (err) {
     return false;
   }
+}
+
+export async function checkRefTokenValidity(
+  refreshToken: string
+): Promise<boolean> {
+  const revokedTokens = await getRevokedTokens();
+
+  for (const revokedToken of revokedTokens) {
+    if (revokedToken.id === refreshToken) {
+      return false;
+    }
+  }
+
+  return true;
 }

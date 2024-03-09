@@ -144,3 +144,17 @@ export async function revokeCurrentToken(
     return null;
   }
 }
+
+export async function getRevokedTokens(): Promise<Partial<RevokedTokens>[]> {
+  try {
+    const revokedTokens = await prisma.revokedTokens.findMany({
+      where: { expired: false },
+      select: {
+        id: true,
+      },
+    });
+    return revokedTokens;
+  } catch (error) {
+    throw new Error(`Internal server Error : ${error}`);
+  }
+}

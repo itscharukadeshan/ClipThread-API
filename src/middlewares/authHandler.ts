@@ -3,7 +3,7 @@ import { ACCESS_TOKEN_SECRET } from "../config/config";
 import { getUserById } from "../controllers/usersController";
 import { User } from "@prisma/client";
 import { TokenPayload } from "./types";
-import { verifyToken } from "../utils/authUtils";
+import { checkRefTokenValidity, verifyToken } from "../utils/authUtils";
 
 async function authHandler(req: Request, res: Response, next: NextFunction) {
   try {
@@ -15,6 +15,11 @@ async function authHandler(req: Request, res: Response, next: NextFunction) {
 
     const token: string = authHeader.split(" ")[1];
 
+    const isTokenValid = await checkRefTokenValidity(token);
+
+    if (!isTokenValid) {
+      return res.status(403).json({ message: "Revoked access token" });
+    }
     const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
     const { userId, role } = decodedToken as TokenPayload;
 
