@@ -16,10 +16,19 @@ import { UserRole } from "@prisma/client";
 import errorHandler from "./middlewares/errorHandler";
 import requestLogger from "./middlewares/requestLogger";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
 
 import expiredTokenCleanup from "../cron/expiredTokenCleanup";
 
 const app: express.Application = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // API_RATE_LIMIT_WINDOW
+  max: 100, // API_MAX_REQUEST_LIMIT
+  message: "Too many requests from this IP, please try again later.",
+});
+
+app.use(limiter);
 
 app.use(
   cors({
