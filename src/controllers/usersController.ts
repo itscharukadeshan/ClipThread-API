@@ -84,6 +84,29 @@ export async function getUserById(userId: string) {
   }
 }
 
+export async function getPublicUserDataById(userId: string) {
+  try {
+    const foundUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        displayName: true,
+        collections: true,
+        description: true,
+        profileImageUrl: true,
+        updatedAt: true,
+        login: true,
+        followers: true,
+        viewCount: true,
+      },
+    });
+
+    return foundUser;
+  } catch (error) {
+    return null;
+  }
+}
+
 export async function getUserByRefreshToken(refreshToken: string) {
   try {
     const foundUser = await prisma.user.findUnique({
