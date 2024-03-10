@@ -31,8 +31,6 @@ async function authHandler(req: Request, res: Response, next: NextFunction) {
       return res.status(403).json({ message: "Invalid user" });
     }
 
-    console.log({ userId, role });
-
     next();
   } catch (error: any) {
     if (error.message === "Token has expired") {
