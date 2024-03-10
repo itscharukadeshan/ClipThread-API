@@ -3,11 +3,13 @@ import { verifyRefreshToken } from "../utils/authUtils";
 import { REFRESH_TOKEN_SECRET } from "../config/config";
 import { getUserByRefreshToken } from "../controllers/usersController";
 import { generateAccessToken } from "../utils/generateTokens";
+import revokedTokenHandler from "../middlewares/revokedTokenHandler";
 
 const router = Router();
 
 router.get(
   "/access-token",
+  revokedTokenHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken: string = req.cookies.refresh_token;
 
