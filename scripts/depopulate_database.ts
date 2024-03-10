@@ -8,6 +8,7 @@ const depopulateDatabase = async () => {
   await prisma.youTubeAuth.deleteMany({});
   await prisma.thread.deleteMany({});
   await prisma.user.deleteMany({});
+  await prisma.revokedTokens.deleteMany({});
   console.log(chalk.green(`Depopulated database`));
 };
 
