@@ -31,8 +31,8 @@ model User {
   blacklist         String[]     @default([])
   refreshToken      String       @unique
   collections       Thread?
-  twitchAuth        TwitchAuth?
-  youtubeAuth       YouTubeAuth?
+  twitchAuth        TwitchAuth?  
+  youtubeAuth       YouTubeAuth? 
 }
 
 model TwitchAuth {
@@ -40,7 +40,7 @@ model TwitchAuth {
   accessToken  String
   refreshToken String
   expiryTime   DateTime
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade) 
 }
 
 model YouTubeAuth {
@@ -48,7 +48,7 @@ model YouTubeAuth {
   accessToken  String
   refreshToken String
   expiryTime   DateTime
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id] , onDelete: Cascade)
 }
 
 model Thread {
@@ -60,7 +60,7 @@ model Thread {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   authorId      String?      @unique
-  author        User?        @relation(fields: [authorId], references: [id])
+  author        User?        @relation(fields: [authorId], references: [id] , onDelete: Cascade)
   threadClips   ThreadClip[]
 }
 
