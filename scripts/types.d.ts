@@ -1,8 +1,18 @@
-import { User, TwitchAuth, YouTubeAuth } from "@prisma/client";
+import {
+  User,
+  TwitchAuth,
+  YouTubeAuth,
+  Thread,
+  ThreadClip,
+  Clip,
+} from "@prisma/client";
 
 export type UserWithoutId = Omit<User, "id">;
 export type TwitchAuthWithoutId = Omit<TwitchAuth, "userId">;
 export type YoutubeAuthWithoutId = Omit<YouTubeAuth, "userId">;
+export type ThreadWithoutId = Omit<Thread, "id">;
+export type ThreadClipWithoutId = Omit<ThreadClip, "id">;
+export type ClipWithoutId = Omit<Clip, "id">;
 
 export type UserWithAuth = User & {
   twitchAuth: TwitchAuth | undefined;
