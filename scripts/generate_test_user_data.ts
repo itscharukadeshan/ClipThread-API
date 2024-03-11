@@ -112,6 +112,9 @@ const generateFakeData = async (count: number) => {
 
       let authData: AuthData;
 
+      const twitchId = faker.string.numeric(9);
+      const youtubeId = faker.string.numeric(9);
+
       if (faker.datatype.boolean()) {
         authData = {
           twitchAuthData: {
@@ -121,9 +124,7 @@ const generateFakeData = async (count: number) => {
           },
           youtubeAuthData: undefined,
         };
-        userData.twitchId = faker.number
-          .int({ min: 1000, max: 10000 })
-          .toString();
+        userData.twitchId = twitchId;
         userData.youtubeId = null;
       } else {
         authData = {
@@ -134,9 +135,7 @@ const generateFakeData = async (count: number) => {
             expiryTime: faker.date.future(),
           },
         };
-        userData.youtubeId = faker.number
-          .int({ min: 1000, max: 10000 })
-          .toString();
+        userData.youtubeId = youtubeId;
         userData.twitchId = null;
       }
 
