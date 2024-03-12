@@ -1,16 +1,38 @@
 import { faker } from "@faker-js/faker";
-import { PrismaClient, Thread } from "@prisma/client";
-import { ThreadWithoutId, ClipWithoutId, ThreadClipWithoutId } from "./types";
+import { PrismaClient, Thread, Clip } from "@prisma/client";
+import chalk from "chalk";
+
+import { ClipWithoutId, ThreadWithoutId, ThreadClipWithoutId } from "./types";
 
 const prisma = new PrismaClient();
 
-const generateThreadsData = async (user) => {
-  const threadsCount = Math.floor(Math.random() * 4) + 5; // Generate random number of threads between 5 to 8
-  const threads = [];
+createThreads();
+
+async function createThreads() {
+  try {
+    const users = await prisma.user.findMany({ select: { id: true } });
+
+    for (const user of users) {
+      const threads = await generateThreadsData(user.id);
+      await generateClipsAndLinkThreads(threads);
+    }
+
+    console.log(chalk.green.bold(`Thread example data added`));
+  } catch (error) {
+    console.error(`Something went wrong: ${error}`);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function generateThreadsData(userId: string): Promise<Thread[]> {
+  const threadsCount = Math.floor(Math.random() * 4) + 5;
+  const threads: Thread[] = [];
 
   for (let i = 0; i < threadsCount; i++) {
     const thread: ThreadWithoutId = {
-      authorId: user.id,
+      authorId: userId,
       createdAt: faker.date.recent(),
       description: faker.lorem.paragraph(),
       published: faker.datatype.boolean(),
@@ -19,63 +41,41 @@ const generateThreadsData = async (user) => {
       updatedAt: faker.date.recent(),
     };
 
-    const threadWithId: Thread = await prisma.thread.create({
-      data: thread,
-    });
-
-    // Push each created thread into the threads array
-    threads.push(threadWithId);
-
-    const clipsCount = Math.floor(Math.random() * 4) + 5;
-
-    for (let j = 0; j < clipsCount; j++) {
-      const clip: ClipWithoutId = {
-        broadcasterId: user.id,
-        broadcasterName: user.displayName,
-        clipId: faker.string.numeric(9),
-        creatorId: faker.string.numeric(9),
-        creatorName: faker.person.fullName(),
-        description: faker.lorem.paragraph(),
-        embedUrl: faker.internet.url(),
-        gameId: faker.string.numeric(4),
-        tagId: faker.string.numeric(4),
-        thumbUrl: faker.internet.url(),
-        url: faker.internet.url(),
-        viewCount: faker.datatype.number({ min: 10, max: 100 }),
-      };
-
-      const clipWithId = await prisma.clip.create({
-        data: clip,
-      });
-
-      const threadClip: ThreadClipWithoutId = {
-        clipId: clipWithId.id,
-        threadId: threadWithId.id,
-      };
-
-      await prisma.threadClip.create({
-        data: threadClip,
-      });
+    try {
+      const newThread = await prisma.thread.create({ data: thread });
+      threads.push(newThread);
+    } catch (error) {
+      throw new Error(`Thread creation failed: ${error}`);
     }
   }
 
-  // Return the array of created threads
   return threads;
-};
+}
 
-const main = async () => {
-  const users = await prisma.user.findMany({
-    select: { id: true, displayName: true },
-  });
+async function generateClipsAndLinkThreads(threads: Thread[]) {
+  for (const thread of threads) {
+    const clip: ClipWithoutId = {
+      broadcasterId: faker.string.numeric(9),
+      broadcasterName: faker.person.fullName(),
+      clipId: faker.string.numeric(5),
+      creatorId: thread.authorId,
+      creatorName: faker.person.fullName(),
+      description: faker.lorem.paragraph(),
+      embedUrl: faker.internet.url(),
+      gameId: faker.string.numeric(4),
+      tagId: faker.string.numeric(5),
+      thumbUrl: faker.internet.url(),
+      url: faker.internet.url(),
+      viewCount: faker.number.int({ max: 10000 }),
+    };
 
-  for (const user of users) {
-    await generateThreadsData(user);
+    const newClip: Clip = await prisma.clip.create({ data: clip });
+
+    const threadClip: ThreadClipWithoutId = {
+      clipId: newClip.id,
+      threadId: thread.id,
+    };
+
+    await prisma.threadClip.create({ data: threadClip });
   }
-
-  await prisma.$disconnect();
-};
-
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+}
