@@ -59,7 +59,7 @@ model Thread {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   authorId      String       
-  threadClips   ThreadClip[]
+  clips         Clip[]
 }
 
 model Clip {
@@ -77,16 +77,9 @@ model Clip {
   url             String
   tagId           String?
   tags            Tag?         @relation(fields: [tagId], references: [id])
-  threadClips     ThreadClip[]
+  thread          Thread[]
 }
 
-model ThreadClip {
-  id       String @id @default(cuid())
-  threadId String
-  clipId   String
-  clip     Clip   @relation(fields: [clipId], references: [id])
-  thread   Thread @relation(fields: [threadId], references: [id])
-}
 
 model Tag {
   id      String  @id @default(cuid())
