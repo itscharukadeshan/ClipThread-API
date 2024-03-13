@@ -9,6 +9,7 @@ const depopulateDatabase = async () => {
   await prisma.thread.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.revokedTokens.deleteMany({});
+  await prisma.clip.deleteMany({});
   console.log(chalk.green(`Depopulated database`));
 };
 
