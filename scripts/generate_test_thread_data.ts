@@ -32,6 +32,7 @@ async function generateThreadsData(userId: string): Promise<Thread[]> {
   const broadcasters: BroadcasterIds = await prisma.broadcasters.findMany({
     select: { id: true },
   });
+  const broadcastersLength = broadcasters.length - 1 || 100;
 
   for (let i = 0; i < threadsCount; i++) {
     const thread: ThreadWithoutId = {
@@ -50,11 +51,31 @@ async function generateThreadsData(userId: string): Promise<Thread[]> {
           ...thread,
           broadcasters: {
             connect: [
-              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
-              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
-              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
-              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
-              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
+              {
+                id: broadcasters[
+                  faker.number.int({ min: 1, max: broadcastersLength })
+                ].id,
+              },
+              {
+                id: broadcasters[
+                  faker.number.int({ min: 1, max: broadcastersLength })
+                ].id,
+              },
+              {
+                id: broadcasters[
+                  faker.number.int({ min: 1, max: broadcastersLength })
+                ].id,
+              },
+              {
+                id: broadcasters[
+                  faker.number.int({ min: 1, max: broadcastersLength })
+                ].id,
+              },
+              {
+                id: broadcasters[
+                  faker.number.int({ min: 1, max: broadcastersLength })
+                ].id,
+              },
             ],
           },
         },
