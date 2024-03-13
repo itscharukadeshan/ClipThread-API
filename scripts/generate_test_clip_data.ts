@@ -38,10 +38,11 @@ async function generateClipsData(threadId: string): Promise<void> {
       description: faker.lorem.paragraph(),
       embedUrl: faker.internet.url(),
       gameId: faker.string.numeric(3),
-      tagId: faker.string.numeric(5),
+      tagId: null,
       thumbUrl: faker.internet.url(),
       url: faker.internet.url(),
       viewCount: faker.number.int({ max: 10000 }),
+      threadId: threadId,
     };
 
     try {
