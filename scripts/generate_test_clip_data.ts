@@ -42,7 +42,7 @@ async function generateClipsData(threadId: string): Promise<void> {
       thumbUrl: faker.internet.url(),
       url: faker.internet.url(),
       viewCount: faker.number.int({ max: 10000 }),
-      threadId: threadId,
+      order: i + 1,
     };
 
     try {
