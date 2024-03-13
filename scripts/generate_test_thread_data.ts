@@ -14,7 +14,6 @@ async function createThreads() {
 
     for (const user of users) {
       const threads = await generateThreadsData(user.id);
-      await generateClipsAndLinkThreads(threads);
     }
 
     console.log(chalk.green.bold(`Thread example data added`));
@@ -50,32 +49,4 @@ async function generateThreadsData(userId: string): Promise<Thread[]> {
   }
 
   return threads;
-}
-
-async function generateClipsAndLinkThreads(threads: Thread[]) {
-  for (const thread of threads) {
-    const clip: ClipWithoutId = {
-      broadcasterId: faker.string.numeric(9),
-      broadcasterName: faker.person.fullName(),
-      clipId: faker.string.numeric(5),
-      creatorId: thread.authorId,
-      creatorName: faker.person.fullName(),
-      description: faker.lorem.paragraph(),
-      embedUrl: faker.internet.url(),
-      gameId: faker.string.numeric(4),
-      tagId: faker.string.numeric(5),
-      thumbUrl: faker.internet.url(),
-      url: faker.internet.url(),
-      viewCount: faker.number.int({ max: 10000 }),
-    };
-
-    const newClip: Clip = await prisma.clip.create({ data: clip });
-
-    const threadClip: ThreadClipWithoutId = {
-      clipId: newClip.id,
-      threadId: thread.id,
-    };
-
-    await prisma.threadClip.create({ data: threadClip });
-  }
 }
