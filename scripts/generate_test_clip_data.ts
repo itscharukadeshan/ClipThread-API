@@ -9,9 +9,9 @@ const prisma = new PrismaClient();
 createClips();
 
 async function createClips() {
-  console.log(`${chalk.green("This takes while")}`);
+  console.log(`${chalk.green("This takes while[1-4 minutes]")}`);
   console.log(
-    `${chalk.green("you can start build now. some clips are already in the database")}`
+    `${chalk.green("you can start building now. some clips are already in the database")}`
   );
 
   try {
