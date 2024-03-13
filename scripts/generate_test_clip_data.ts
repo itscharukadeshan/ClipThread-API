@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { PrismaClient, Clip } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import chalk from "chalk";
 
 import { ClipWithoutId } from "./types";
@@ -46,7 +46,14 @@ async function generateClipsData(threadId: string): Promise<void> {
     };
 
     try {
-      await prisma.clip.create({ data: clip });
+      await prisma.clip.create({
+        data: {
+          ...clip,
+          thread: {
+            connect: [{ id: threadId }],
+          },
+        },
+      });
     } catch (error) {
       throw new Error(`Clip creation failed: ${error}`);
     }
