@@ -14,12 +14,12 @@ router.get(
     try {
       userData = await getPublicUserDataById(userId);
       if (userData === null) {
-        res.status(400).json({ message: `User not found` });
+        return res.status(400).json({ message: `User not found` });
       }
 
-      res.status(200).json({ userData });
+      return res.status(200).json({ userData });
     } catch (error) {
-      res.status(400).json({ message: `Something went wrong !` });
+      return res.status(400).json({ message: `Something went wrong !` });
     }
   }
 );
