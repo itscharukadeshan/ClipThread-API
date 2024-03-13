@@ -30,6 +30,7 @@
     "prisma:pull": "npx prisma db pull",
     "prisma:push": "npx prisma db push",
     "prisma:studio": "npx prisma studio",
+    "database:generate-all-data": "npm run database:generate-users && npm run database:generate-threads && npm run database:generate-clips",
     "database:generate-users": "ts-node ./scripts/generate_test_user_data.ts",
     "database:generate-threads": "ts-node ./scripts/generate_test_thread_data.ts",
     "database:generate-clips": "ts-node ./scripts/generate_test_clip_data.ts",
