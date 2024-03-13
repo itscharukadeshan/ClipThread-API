@@ -31,7 +31,7 @@
     "prisma:push": "npx prisma db push",
     "prisma:studio": "npx prisma studio",
     "database:generate-users": "ts-node ./scripts/generate_test_user_data.ts",
-    "database:generate-threads": "ts-node ./scripts/generate_test_threads_data.ts",
+    "database:generate-threads": "ts-node ./scripts/generate_test_thread_data.ts",
     "database:depopulate": "ts-node ./scripts/depopulate_database.ts",
     "docker:compose": "docker-compose -f docker-compose.yml up",
     "lint": "eslint . --ext .ts",
