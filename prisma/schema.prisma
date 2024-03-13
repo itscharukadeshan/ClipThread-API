@@ -51,19 +51,20 @@ model YouTubeAuth {
 }
 
 model Thread {
-  id            String       @id @default(cuid())
+  id            String   @id @default(cuid())
   title         String
   description   String?
-  published     Boolean      @default(false)
-  publishedTime DateTime     @default(now())
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  authorId      String       
-  clips         Clip[]
+  published     Boolean  @default(false)
+  publishedTime DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  authorId      String
+  clips         Clip[]   @relation("ClipToThread")
 }
 
 model Clip {
-  id              String       @id @default(cuid())
+  id              String   @id @default(cuid())
+  order           Int      @default(1)
   clipId          String
   creatorName     String
   creatorId       String
@@ -75,18 +76,16 @@ model Clip {
   embedUrl        String
   description     String?
   url             String
-  tagId           String?      @unique @default("")
-  threadId        String       
-  tags            Tag?         @relation(fields: [tagId], references: [id])
-  thread          Thread[]
+  tagId           String?  @unique @default("")
+  tags            Tag?     @relation(fields: [tagId], references: [id])
+  thread          Thread[] @relation("ClipToThread")
 }
-
 
 model Tag {
   id      String  @id @default(cuid())
   name    String
   topicId String?
-  clips   Clip[]
+  clips   Clip?
 }
 
 model DefaultBadWord {
