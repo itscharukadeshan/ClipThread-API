@@ -8,6 +8,7 @@ import twitchRoutes from "./routes/twitch.routes";
 import youtubeRoutes from "./routes/youtube.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
+import threadRoutes from "./routes/thread.routes";
 import { API_PORT, FRONT_END_URL } from "./config/config";
 import authHandler from "./middlewares/authHandler";
 import roleHandler from "./middlewares/roleHandler";
@@ -50,7 +51,8 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/twitch", twitchRoutes);
 app.use("/youtube", youtubeRoutes);
 app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
+app.use("/user", userRoutes);
+app.use("/thread", threadRoutes);
 
 expiredTokenCleanup();
 
