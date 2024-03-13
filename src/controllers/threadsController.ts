@@ -21,6 +21,10 @@ export async function getPublicThreadDataById(threadId: string) {
       },
     });
 
+    if (!foundThread?.published) {
+      return null;
+    }
+
     return foundThread;
   } catch (error) {
     return null;
