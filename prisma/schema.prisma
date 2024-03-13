@@ -51,15 +51,16 @@ model YouTubeAuth {
 }
 
 model Thread {
-  id            String   @id @default(cuid())
+  id            String         @id @default(cuid())
   title         String
   description   String?
-  published     Boolean  @default(false)
-  publishedTime DateTime @default(now())
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  published     Boolean        @default(false)
+  publishedTime DateTime       @default(now())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   authorId      String
-  clips         Clip[]   @relation("ClipToThread")
+  broadcasters   Broadcasters[] @relation("BroadcastersToThread")
+  clips         Clip[]         @relation("ClipToThread")
 }
 
 model Clip {
@@ -90,6 +91,15 @@ model Tag {
 
 model DefaultBadWord {
   words Json @unique
+}
+
+model Broadcasters {
+  id         String   @id @default(cuid())
+  name       String
+  profileUrl String
+  platform   String
+  profilePic String
+  thread     Thread[] @relation("BroadcastersToThread")
 }
 
 model RevokedTokens {
