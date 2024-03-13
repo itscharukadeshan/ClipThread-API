@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
-import { PrismaClient, Thread, Clip } from "@prisma/client";
+import { PrismaClient, Thread } from "@prisma/client";
 import chalk from "chalk";
 
-import { ClipWithoutId, ThreadWithoutId } from "./types";
+import { BroadcasterIds, ThreadWithoutId } from "./types";
 
 const prisma = new PrismaClient();
 
@@ -29,6 +29,10 @@ async function generateThreadsData(userId: string): Promise<Thread[]> {
   const threadsCount = Math.floor(Math.random() * 4) + 5;
   const threads: Thread[] = [];
 
+  const broadcasters: BroadcasterIds = await prisma.broadcasters.findMany({
+    select: { id: true },
+  });
+
   for (let i = 0; i < threadsCount; i++) {
     const thread: ThreadWithoutId = {
       authorId: userId,
@@ -41,7 +45,20 @@ async function generateThreadsData(userId: string): Promise<Thread[]> {
     };
 
     try {
-      const newThread = await prisma.thread.create({ data: thread });
+      const newThread = await prisma.thread.create({
+        data: {
+          ...thread,
+          broadcasters: {
+            connect: [
+              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
+              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
+              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
+              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
+              { id: broadcasters[faker.number.int({ min: 1, max: 99 })].id },
+            ],
+          },
+        },
+      });
       threads.push(newThread);
     } catch (error) {
       throw new Error(`Thread creation failed: ${error}`);
