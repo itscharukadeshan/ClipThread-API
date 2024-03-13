@@ -75,7 +75,8 @@ model Clip {
   embedUrl        String
   description     String?
   url             String
-  tagId           String?
+  tagId           String?      @unique @default("")
+  threadId        String       
   tags            Tag?         @relation(fields: [tagId], references: [id])
   thread          Thread[]
 }
