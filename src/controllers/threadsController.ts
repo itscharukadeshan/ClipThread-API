@@ -1,5 +1,28 @@
-import { Router, Response, Request, NextFunction } from "express";
+import { User, PrismaClient } from "@prisma/client";
+import {} from "./types";
 
-const router = Router();
+const prisma = new PrismaClient();
 
-router.get("/feed", (req: Request, res: Response, next: NextFunction) => {});
+export async function getPublicThreadDataById(threadId: string) {
+  try {
+    const foundThread = await prisma.thread.findUnique({
+      where: { id: threadId },
+      select: {
+        authorId: true,
+        broadcasters: true,
+        clips: true,
+        createdAt: true,
+        id: true,
+        description: true,
+        published: true,
+        publishedTime: true,
+        title: true,
+        updatedAt: true,
+      },
+    });
+
+    return foundThread;
+  } catch (error) {
+    return null;
+  }
+}
