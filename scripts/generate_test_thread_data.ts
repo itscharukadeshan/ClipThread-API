@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { PrismaClient, Thread, Clip } from "@prisma/client";
 import chalk from "chalk";
 
-import { ClipWithoutId, ThreadWithoutId, ThreadClipWithoutId } from "./types";
+import { ClipWithoutId, ThreadWithoutId } from "./types";
 
 const prisma = new PrismaClient();
 
