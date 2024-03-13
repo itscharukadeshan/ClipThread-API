@@ -91,7 +91,6 @@ export async function getPublicUserDataById(userId: string) {
       select: {
         id: true,
         displayName: true,
-        collections: true,
         description: true,
         profileImageUrl: true,
         updatedAt: true,
