@@ -5,6 +5,7 @@ import chalk from "chalk";
 
 import {
   AuthData,
+  BroadcastersWithoutId,
   TwitchAuthWithoutId,
   UserWithoutId,
   YoutubeAuthWithoutId,
@@ -71,8 +72,24 @@ const generateFakeData = async (count: number) => {
     `${chalk.green("Its going to take few minutes to generate the Clips and threads")}`
   );
 
+  const platforms = ["twitch", "youtube"];
+
   await Promise.all(
     Array.from({ length: count }).map(async (_, i) => {
+      const platformIndex = Math.floor(Math.random() * platforms.length);
+      const selectedPlatform = platforms[platformIndex];
+
+      const broadcaster: BroadcastersWithoutId = {
+        platform: selectedPlatform,
+        name: faker.person.firstName(),
+        profilePic: faker.internet.url(),
+        profileUrl: faker.internet.url(),
+      };
+
+      const newBroadcaster = await prisma.broadcasters.create({
+        data: broadcaster,
+      });
+
       function generateRefreshToken() {
         const refreshToken = jwt.sign({ count: i }, REFRESH_TOKEN_SECRET, {
           expiresIn: REFRESH_TOKEN_EXPIRATION,
