@@ -67,9 +67,12 @@ function encryptData(data: string) {
 let testUser: User;
 
 const generateFakeData = async (count: number) => {
+  console.log(
+    `${chalk.green("Its going to take few minutes to generate the Clips and threads")}`
+  );
+
   await Promise.all(
     Array.from({ length: count }).map(async (_, i) => {
-      // generateRefreshToken Need count value.refreshToken is not going to be unique outside
       function generateRefreshToken() {
         const refreshToken = jwt.sign({ count: i }, REFRESH_TOKEN_SECRET, {
           expiresIn: REFRESH_TOKEN_EXPIRATION,
@@ -186,6 +189,7 @@ generateFakeData(count)
         `${testUser.displayName}'s refreshToken => ${chalk.green(`${refreshToken}`)} `
       )
     );
+    console.log(`${chalk.green("Here comes the long wait.....")}`);
   })
   .catch((error) => {
     console.error("Error generating fake users:", error);

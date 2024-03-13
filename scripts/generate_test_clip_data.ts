@@ -9,6 +9,11 @@ const prisma = new PrismaClient();
 createClips();
 
 async function createClips() {
+  console.log(`${chalk.green("This takes while")}`);
+  console.log(
+    `${chalk.green("you can start build now. some clips are already in the database")}`
+  );
+
   try {
     const threads = await prisma.thread.findMany({ select: { id: true } });
 
