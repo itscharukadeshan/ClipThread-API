@@ -14,7 +14,9 @@ router.get(
     try {
       thread = await getPublicThreadDataById(threadId);
       if (thread === null) {
-        return res.status(400).json({ message: `Thread not found` });
+        return res
+          .status(400)
+          .json({ message: `Thread not found or not published` });
       }
 
       return res.status(200).json({ thread });
