@@ -1,8 +1,24 @@
 import { Router, Response, Request, NextFunction } from "express";
-import { Thread } from "@prisma/client";
-import { getPublicThreadDataById } from "../controllers/threadsController";
+import { Prisma, Thread } from "@prisma/client";
+import {
+  getPublicThreadDataById,
+  getThreadStatus,
+} from "../controllers/threadsController";
 
 const router = Router();
+
+router.get(
+  "/status",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const status = await getThreadStatus();
+
+      return res.status(200).json({ status });
+    } catch (error) {
+      return res.status(400).json({ message: `Something went wrong !` });
+    }
+  }
+);
 
 router.get(
   "/:threadId",

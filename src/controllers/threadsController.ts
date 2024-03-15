@@ -30,3 +30,22 @@ export async function getPublicThreadDataById(threadId: string) {
     return null;
   }
 }
+
+export async function getThreadStatus() {
+  try {
+    const published: number | undefined = await prisma.thread.count({
+      where: { published: true },
+    });
+    const unPublished: number | undefined = await prisma.thread.count({
+      where: { published: false },
+    });
+
+    if (!published && !unPublished) {
+      throw new Error("No threads found");
+    }
+
+    return { published, unPublished };
+  } catch (error) {
+    return null;
+  }
+}
