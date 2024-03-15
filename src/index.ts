@@ -48,6 +48,12 @@ app.get("/", (req: Request, res: Response) => {
   res.send(`Welcome to clip thread api`);
 });
 
+app.all("*", (req: Request, res: Response) => {
+  res.status(404).json({
+    error: `Invalid request method or wrong endpoint: [${req.method}] | [${req.originalUrl}]`,
+  });
+});
+
 app.use("/twitch", twitchRoutes);
 app.use("/youtube", youtubeRoutes);
 app.use("/auth", authRoutes);
