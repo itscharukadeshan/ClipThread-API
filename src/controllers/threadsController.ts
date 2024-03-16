@@ -1,7 +1,9 @@
 import { User, PrismaClient } from "@prisma/client";
 import {} from "./types";
+import moment from "moment";
 
 const prisma = new PrismaClient();
+const now = moment();
 
 export async function getPublicThreadDataById(threadId: string) {
   try {
@@ -45,6 +47,26 @@ export async function getThreadStatus() {
     }
 
     return { published, unPublished };
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function createNewThread(userId: string, title: string) {
+  try {
+    const newThread = await prisma.thread.create({
+      data: {
+        authorId: userId,
+        title: title,
+        updatedAt: now.format("YYYY-MM-DD HH:mm:ss"),
+      },
+    });
+
+    if (!newThread) {
+      throw new Error(`Something went wrong`);
+    }
+
+    return newThread;
   } catch (error) {
     return null;
   }
