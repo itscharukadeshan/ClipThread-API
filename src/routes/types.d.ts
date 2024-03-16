@@ -9,3 +9,8 @@ export interface AuthUrlOptions {
   redirectUri: string;
   responseType: string;
 }
+
+export interface TokenPayload {
+  userId: string;
+  role: string;
+}
