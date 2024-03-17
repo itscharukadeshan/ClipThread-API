@@ -52,7 +52,7 @@ router.post(
   authHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     const authHeader: string | undefined = req.headers.authorization;
-    const title = req.params.title;
+    const title = req.body.title;
 
     if (!authHeader) {
       return res.status(401).json({ message: "Missing access Token" });
