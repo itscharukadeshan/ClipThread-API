@@ -3,7 +3,6 @@ import {} from "./types";
 import moment from "moment";
 
 const prisma = new PrismaClient();
-const now = moment();
 
 export async function getPublicThreadDataById(threadId: string) {
   try {
@@ -58,7 +57,7 @@ export async function createNewThread(userId: string, title: string) {
       data: {
         authorId: userId,
         title: title,
-        updatedAt: now.format("YYYY-MM-DD HH:mm:ss"),
+        updatedAt: moment().toISOString(),
       },
     });
 
