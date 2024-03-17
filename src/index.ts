@@ -20,6 +20,7 @@ import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 
 import expiredTokenCleanup from "../cron/expiredTokenCleanup";
+import bodyParser from "body-parser";
 
 const app: express.Application = express();
 
@@ -40,6 +41,7 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.use(requestLogger);
 app.use(errorHandler);
