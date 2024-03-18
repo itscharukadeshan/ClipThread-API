@@ -1,5 +1,5 @@
 import { Router, Response, Request, NextFunction } from "express";
-import { Thread } from "@prisma/client";
+import { Thread, UserRole } from "@prisma/client";
 import {
   getPublicThreadDataById,
   getThreadStatus,
@@ -8,7 +8,8 @@ import {
 import authHandler from "../middlewares/authHandler";
 import { verifyToken } from "../utils/authUtils";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
-import { TokenPayload } from "./types";
+import { TokenPayload, Broadcaster } from "./types";
+import { getUserById } from "../controllers/usersController";
 
 const router = Router();
 
@@ -81,13 +82,71 @@ router.post(
 );
 
 router.put(
-  "/update",
+  "update/:threadId",
   authHandler,
-  (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+    const authHeader: string | undefined = req.headers.authorization;
+    const threadId = req.params.threadId;
+
+    if (!authHeader) {
+      return res.status(401).json({ message: "Missing access Token" });
+    } else if (!threadId) {
+      return res.status(401).json({ message: "Missing thread id" });
+    }
+
+    const token: string = authHeader.split(" ")[1];
+
+    const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
+    const { userId, role } = decodedToken as TokenPayload;
+
+    const thread = await getPublicThreadDataById(threadId);
+
+    let hasPermission: Boolean;
+
+    if (!thread) {
+      return res.status(401).json({ message: "Thread is not found" });
+    } else if (thread.authorId !== userId) {
+      hasPermission = false;
+    } else if (role === UserRole.creator) {
+      let broadcasters = thread.broadcasters;
+
+      const user = await getUserById(userId);
+
+      if (!user) {
+        return res.status(401).json({ message: "Something went wrong" });
+      } else if (user.twitchId) {
+        hasPermission = broadcasters.some(
+          (broadcaster) => broadcaster.id === user.twitchId
+        );
+      } else if (user.youtubeId) {
+        hasPermission = broadcasters.some(
+          (broadcaster) => broadcaster.id === user.youtubeId
+        );
+      }
+    } else if (role === UserRole.moderator) {
+      const user = await getUserById(userId);
+
+      if (!user) {
+        return res.status(401).json({ message: "Something went wrong" });
+      } else if (user.moderatedChannels) {
+        const moderatedChannels: Broadcaster[] = user.moderatedChannels;
+
+        if (user.twitchId) {
+          hasPermission = moderatedChannels.some(
+            (broadcaster) => broadcaster.broadcaster_id === user.twitchId
+          );
+        } else if (user.youtubeId) {
+          hasPermission = moderatedChannels.some(
+            (broadcaster) => broadcaster.broadcaster_id === user.youtubeId
+          );
+        }
+      }
+    }
+  }
 );
 
 router.delete(
-  "/:threadId",
+  "delete/:threadId",
   authHandler,
   (req: Request, res: Response, next: NextFunction) => {}
 );

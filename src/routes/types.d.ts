@@ -14,3 +14,9 @@ export interface TokenPayload {
   userId: string;
   role: string;
 }
+
+export interface Broadcaster {
+  broadcaster_id: string;
+  broadcaster_login: string;
+  broadcaster_name: string;
+}
