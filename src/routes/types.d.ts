@@ -15,7 +15,7 @@ export interface TokenPayload {
   role: string;
 }
 
-export interface Broadcaster {
+export interface ModeratedChannel {
   broadcaster_id: string;
   broadcaster_login: string;
   broadcaster_name: string;
