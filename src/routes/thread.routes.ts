@@ -8,8 +8,12 @@ import {
 import authHandler from "../middlewares/authHandler";
 import { verifyToken } from "../utils/authUtils";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
-import { TokenPayload, Broadcaster } from "./types";
+import { TokenPayload, ModeratedChannel } from "./types";
 import { getUserById } from "../controllers/usersController";
+import {
+  creatorPermission,
+  moderatorPermission,
+} from "../services/thread.services";
 
 const router = Router();
 
@@ -101,7 +105,7 @@ router.put(
 
     const thread = await getPublicThreadDataById(threadId);
 
-    let hasPermission: Boolean;
+    let hasPermission: Boolean = false;
 
     if (!thread) {
       return res.status(401).json({ message: "Thread is not found" });
@@ -109,38 +113,26 @@ router.put(
       hasPermission = false;
     } else if (role === UserRole.creator) {
       let broadcasters = thread.broadcasters;
-
       const user = await getUserById(userId);
 
       if (!user) {
-        return res.status(401).json({ message: "Something went wrong" });
-      } else if (user.twitchId) {
-        hasPermission = broadcasters.some(
-          (broadcaster) => broadcaster.id === user.twitchId
-        );
-      } else if (user.youtubeId) {
-        hasPermission = broadcasters.some(
-          (broadcaster) => broadcaster.id === user.youtubeId
-        );
+        return res.status(401).json({ message: "user not found" });
       }
+      hasPermission = creatorPermission(broadcasters, user);
     } else if (role === UserRole.moderator) {
       const user = await getUserById(userId);
+      let broadcasters = thread.broadcasters;
 
       if (!user) {
         return res.status(401).json({ message: "Something went wrong" });
-      } else if (user.moderatedChannels) {
-        const moderatedChannels: Broadcaster[] = user.moderatedChannels;
-
-        if (user.twitchId) {
-          hasPermission = moderatedChannels.some(
-            (broadcaster) => broadcaster.broadcaster_id === user.twitchId
-          );
-        } else if (user.youtubeId) {
-          hasPermission = moderatedChannels.some(
-            (broadcaster) => broadcaster.broadcaster_id === user.youtubeId
-          );
-        }
       }
+
+      hasPermission = moderatorPermission(broadcasters, user);
+    }
+
+    if (!hasPermission) {
+      return res.status(401).json({ message: "Permission denied" });
+    } else {
     }
   }
 );
