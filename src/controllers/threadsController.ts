@@ -1,4 +1,4 @@
-import { User, PrismaClient } from "@prisma/client";
+import { User, PrismaClient, Thread, Broadcasters, Clip } from "@prisma/client";
 import {} from "./types";
 import moment from "moment";
 
@@ -66,6 +66,49 @@ export async function createNewThread(userId: string, title: string) {
     }
 
     return newThread;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function updateThread(
+  threadId: string,
+  threadData: Thread,
+  broadcasters: Broadcasters[],
+  clips: Clip[]
+) {
+  try {
+    const updatedThread = await prisma.thread.update({
+      where: { id: threadId },
+      data: { ...threadData },
+    });
+
+    const broadcasterUpdates = broadcasters.map(async (broadcaster) => {
+      await prisma.broadcasters.upsert({
+        where: { id: broadcaster.id },
+        update: { ...broadcaster },
+        create: { ...broadcaster },
+      });
+    });
+
+    await Promise.all(broadcasterUpdates);
+
+    const clipUpdates = clips.map(async (clip) => {
+      if (clip.id) {
+        await prisma.clip.update({
+          where: { id: clip.id },
+          data: { ...clip },
+        });
+      } else {
+        await prisma.clip.create({
+          data: { ...clip },
+        });
+      }
+    });
+
+    await Promise.all(clipUpdates);
+
+    return updatedThread;
   } catch (error) {
     return null;
   }
