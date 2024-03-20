@@ -4,11 +4,12 @@ import {
   getPublicThreadDataById,
   getThreadStatus,
   createNewThread,
+  updateThread,
 } from "../controllers/threadsController";
 import authHandler from "../middlewares/authHandler";
 import { verifyToken } from "../utils/authUtils";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
-import { TokenPayload, ModeratedChannel } from "./types";
+import { TokenPayload } from "./types";
 import { getUserById } from "../controllers/usersController";
 import {
   creatorPermission,
@@ -91,6 +92,7 @@ router.put(
   async (req: Request, res: Response, next: NextFunction) => {
     const authHeader: string | undefined = req.headers.authorization;
     const threadId = req.params.threadId;
+    const threadData: Thread = req.body;
 
     if (!authHeader) {
       return res.status(401).json({ message: "Missing access Token" });
@@ -133,6 +135,18 @@ router.put(
     if (!hasPermission) {
       return res.status(401).json({ message: "Permission denied" });
     } else {
+      try {
+        const updatedThread = await updateThread(
+          threadId,
+          threadData,
+          thread.broadcasters,
+          thread.clips
+        );
+
+        return updateThread;
+      } catch (error) {
+        return res.status(401).json({ message: "Something went wrong" });
+      }
     }
   }
 );
