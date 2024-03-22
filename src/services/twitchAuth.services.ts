@@ -174,3 +174,26 @@ export const getBlockedTerms = async (
 
   return allBlockedTerms;
 };
+
+export const getTwitchAccessTokenByRef = async (refreshToken: string) => {
+  if (refreshToken === "") {
+    return null;
+  }
+
+  const response: AxiosResponse = await axios.post(
+    TOKEN_URL,
+    {
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+    },
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+
+  return response.data;
+};
