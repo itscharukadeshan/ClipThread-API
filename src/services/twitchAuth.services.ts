@@ -175,9 +175,8 @@ export const getBlockedTerms = async (
   return allBlockedTerms;
 };
 
-export const getTwitchAccessTokenByRef = async (refreshToken: string) => {
+export const getTwitchAccessTokenByRefToken = async (refreshToken: string) => {
   if (refreshToken === "") {
-    return null;
   }
 
   const response: AxiosResponse = await axios.post(
