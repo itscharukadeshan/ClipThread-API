@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import {
   YOUTUBE_CLIENT_ID,
   YOUTUBE_CLIENT_SECRET,
@@ -61,6 +61,23 @@ export const getChannelData = async (accessToken: string) => {
     return response.data;
   } catch (error) {
     console.error("Error fetching channel data:", error);
-    throw new Error("Failed to fetch channel data");
+  }
+};
+
+export const getYoutubeAccessTokenByRefToken = async (refreshToken: string) => {
+  if (refreshToken === "") {
+    return null;
+  }
+
+  try {
+    const response = await axios.post(TOKEN_URL, {
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      refresh_token: refreshToken,
+      grant_type: "refresh_token",
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching channel data:", error);
   }
 };
