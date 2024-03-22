@@ -4,8 +4,12 @@ import { verifyToken } from "../utils/authUtils";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
 import { TokenPayload } from "./types";
 import { getTwitchAccessTokenById } from "../controllers/clipsControllers";
-import { getTwitchClipInfo } from "../services/clip.services";
+import {
+  getTwitchClipInfo,
+  getYoutubeClipInfo,
+} from "../services/clip.services";
 import { checkUrlOrigin } from "../utils/checkUrlOrigin";
+import { TwitchAuth } from "@prisma/client";
 
 const router = Router();
 router.get(
@@ -33,24 +37,24 @@ router.get(
       const { userId } = decodedToken as TokenPayload;
 
       if (userId) {
-        const twitchAccessToken: string | null =
-          await getTwitchAccessTokenById(userId);
-        if (!twitchAccessToken) {
-          return res.status(400).json({ message: `Something went wrong !` });
-        } else {
-          if (platform === "Twitch") {
-            const clipInfo = await getTwitchClipInfo(
-              videoId,
-              twitchAccessToken
-            );
-            if (!clipInfo) {
-              return res
-                .status(400)
-                .json({ message: `Something went wrong !` });
-            }
-          } else if (platform === "YouTube") {
-            return res.status(200).json({ TODO: `` });
+        if (platform === "Twitch") {
+          const twitchAccessToken: string | null =
+            await getTwitchAccessTokenById(userId);
+          if (!twitchAccessToken) {
+            return res.status(400).json({ message: `Something went wrong !` });
           }
+
+          const clipInfo = await getTwitchClipInfo(videoId, twitchAccessToken);
+          if (!clipInfo) {
+            return res.status(400).json({ message: `Something went wrong !` });
+          }
+        } else if (platform === "Youtube") {
+          const clipInfo = await getYoutubeClipInfo(videoId);
+          if (!clipInfo) {
+            return res.status(400).json({ message: `Something went wrong !` });
+          }
+        } else {
+          return res.status(400).json({ message: `Something went wrong !` });
         }
       }
     } catch (error) {
