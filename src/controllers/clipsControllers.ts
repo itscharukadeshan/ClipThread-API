@@ -1,7 +1,8 @@
-import { PrismaClient, TwitchAuth } from "@prisma/client";
+import { PrismaClient, TwitchAuth, YouTubeAuth } from "@prisma/client";
 import moment from "moment";
-import { getTwitchAccessTokenByRef } from "../services/twitchAuth.services";
+import { getTwitchAccessTokenByRefToken } from "../services/twitchAuth.services";
 import { RefreshTokenResponse } from "./types";
+import { getYoutubeAccessTokenByRefToken } from "../services/youtubeAuth.services";
 
 const prisma = new PrismaClient();
 
@@ -20,7 +21,7 @@ export async function getTwitchAccessTokenById(userId: string) {
   const refreshToken = twitchAuth?.refreshToken as string;
 
   const refreshTokenResponse: RefreshTokenResponse =
-    await getTwitchAccessTokenByRef(refreshToken);
+    await getTwitchAccessTokenByRefToken(refreshToken);
 
   if (!refreshTokenResponse) {
     return null;
@@ -40,4 +41,41 @@ export async function getTwitchAccessTokenById(userId: string) {
   }
 
   return updatedTwitchAuth.accessToken;
+}
+
+export async function getYoutubeAccessTokenById(userId: string) {
+  const youTubeAuth: YouTubeAuth | null = await prisma.youTubeAuth.findUnique({
+    where: { userId: userId },
+  });
+  const expiryTime = youTubeAuth?.expiryTime;
+  const isExpired: boolean = moment(expiryTime).isBefore(moment());
+
+  if (isExpired) {
+    if (!youTubeAuth?.refreshToken) {
+      return null;
+    }
+  }
+  const refreshToken = youTubeAuth?.refreshToken as string;
+
+  const refreshTokenResponse: RefreshTokenResponse =
+    await getYoutubeAccessTokenByRefToken(refreshToken);
+
+  if (!refreshTokenResponse) {
+    return null;
+  }
+
+  const updatedYoutubeAuth = await prisma.youTubeAuth.update({
+    where: { userId },
+    data: {
+      accessToken: refreshTokenResponse.access_token,
+      refreshToken: refreshTokenResponse.refresh_token,
+      expiryTime: moment().add(3.5, "hours").toString(),
+    },
+  });
+
+  if (!updatedYoutubeAuth) {
+    return null;
+  }
+
+  return updatedYoutubeAuth.accessToken;
 }
