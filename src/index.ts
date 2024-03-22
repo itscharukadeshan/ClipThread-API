@@ -9,6 +9,7 @@ import youtubeRoutes from "./routes/youtube.routes";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import threadRoutes from "./routes/thread.routes";
+import clipRoutes from "./routes/clip.routes";
 import { API_PORT, FRONT_END_URL } from "./config/config";
 import authHandler from "./middlewares/authHandler";
 import roleHandler from "./middlewares/roleHandler";
@@ -55,6 +56,7 @@ app.use("/youtube", youtubeRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/thread", threadRoutes);
+app.use("/clip", clipRoutes);
 
 expiredTokenCleanup();
 
