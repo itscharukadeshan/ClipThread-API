@@ -3,6 +3,7 @@ import moment from "moment";
 import { getTwitchAccessTokenByRefToken } from "../services/twitchAuth.services";
 import { RefreshTokenResponse } from "./types";
 import { getYoutubeAccessTokenByRefToken } from "../services/youtubeAuth.services";
+import { decryptData } from "../utils/encryptDecryptUtils";
 
 const prisma = new PrismaClient();
 
@@ -18,7 +19,7 @@ export async function getTwitchAccessTokenById(userId: string) {
       return null;
     }
   }
-  const refreshToken = twitchAuth?.refreshToken as string;
+  const refreshToken = decryptData(twitchAuth?.refreshToken as string);
 
   const refreshTokenResponse: RefreshTokenResponse =
     await getTwitchAccessTokenByRefToken(refreshToken);
@@ -55,9 +56,9 @@ export async function getYoutubeAccessTokenById(userId: string) {
       return null;
     }
   }
-  const refreshToken = youTubeAuth?.refreshToken as string;
+  const refreshToken = decryptData(youTubeAuth?.refreshToken as string);
 
-  const refreshTokenResponse: RefreshTokenResponse =
+  const refreshTokenResponse =
     await getYoutubeAccessTokenByRefToken(refreshToken);
 
   if (!refreshTokenResponse) {
