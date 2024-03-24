@@ -4,7 +4,7 @@ import {
   TwitchAuthWithoutId,
   YoutubeAuthWithoutId,
   UserWithAuth,
-} from "./types";
+} from "./interface/types";
 import moment from "moment";
 
 const prisma = new PrismaClient();

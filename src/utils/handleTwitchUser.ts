@@ -1,5 +1,5 @@
 import { User, UserRole } from "@prisma/client";
-import { TwitchAuthWithoutId, UserWithoutId } from "./types";
+import { TwitchAuthWithoutId, UserWithoutId } from "./interface/types/types";
 import {
   getUserByTwitchId,
   updateUser,

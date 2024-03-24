@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { ModeratedChannel, broadcaster } from "./types";
+import { ModeratedChannel, broadcaster } from "./interface/types";
 
 export const creatorPermission = (
   broadcasters: broadcaster[],

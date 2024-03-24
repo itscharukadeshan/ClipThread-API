@@ -1,7 +1,7 @@
 import { UserRole } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
-import { TokenPayload } from "./types";
+import { TokenPayload } from "./interface/types";
 import { verifyToken } from "../utils/authUtils";
 
 const roleHandler = (permission?: UserRole, secondPermission?: UserRole) => {

@@ -5,7 +5,7 @@ import {
   TwitchAuthWithoutId,
   YouTubeAuthWithoutId,
   UserWithoutId,
-} from "./types";
+} from "./interface/types/types";
 
 import { getScopeType } from "./checkScope";
 import moment from "moment";

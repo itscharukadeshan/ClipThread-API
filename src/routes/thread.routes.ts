@@ -9,7 +9,7 @@ import {
 import authHandler from "../middlewares/authHandler";
 import { verifyToken } from "../utils/authUtils";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
-import { TokenPayload } from "./types";
+import { TokenPayload } from "./interface";
 import { getUserById } from "../controllers/usersController";
 import {
   creatorPermission,

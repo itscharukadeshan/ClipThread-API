@@ -9,7 +9,7 @@ import {
 } from "../services/twitchAuth.services";
 import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
-import { TwitchAuthWithoutId, UserWithoutId } from "./types";
+import { TwitchAuthWithoutId, UserWithoutId } from "./interface/types/types";
 
 export const handleTwitchUserScope = async (
   userData: UserWithoutId,

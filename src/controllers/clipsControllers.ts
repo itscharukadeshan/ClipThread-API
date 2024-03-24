@@ -1,7 +1,7 @@
 import { PrismaClient, TwitchAuth, YouTubeAuth } from "@prisma/client";
 import moment from "moment";
 import { getTwitchAccessTokenByRefToken } from "../services/twitchAuth.services";
-import { RefreshTokenResponse } from "./types";
+import { RefreshTokenResponse } from "./interface/types";
 import { getYoutubeAccessTokenByRefToken } from "../services/youtubeAuth.services";
 import { decryptData } from "../utils/encryptDecryptUtils";
 

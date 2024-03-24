@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
 import { getUserById } from "../controllers/usersController";
 import { User } from "@prisma/client";
-import { TokenPayload } from "./types";
+import { TokenPayload } from "./interface/types";
 import { verifyToken } from "../utils/authUtils";
 
 async function authHandler(req: Request, res: Response, next: NextFunction) {

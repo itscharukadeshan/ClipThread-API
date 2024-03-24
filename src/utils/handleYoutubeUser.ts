@@ -1,5 +1,5 @@
 import { User, UserRole } from "@prisma/client";
-import { UserWithoutId, YouTubeAuthWithoutId } from "./types";
+import { UserWithoutId, YouTubeAuthWithoutId } from "./interface/types/types";
 import {
   createUser,
   getUserByYoutubeId,

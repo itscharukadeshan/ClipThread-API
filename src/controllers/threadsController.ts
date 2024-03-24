@@ -1,5 +1,5 @@
 import { User, PrismaClient, Thread, Broadcasters, Clip } from "@prisma/client";
-import {} from "./types";
+import {} from "./interface/types";
 import moment from "moment";
 
 const prisma = new PrismaClient();

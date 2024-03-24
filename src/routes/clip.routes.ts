@@ -2,7 +2,7 @@ import { Router, Response, Request, NextFunction } from "express";
 import authHandler from "../middlewares/authHandler";
 import { verifyToken } from "../utils/authUtils";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
-import { TokenPayload } from "./types";
+import { TokenPayload } from "./interface";
 import { getTwitchAccessTokenById } from "../controllers/clipsControllers";
 import {
   getTwitchClipInfo,
