@@ -22,6 +22,7 @@ import rateLimit from "express-rate-limit";
 
 import expiredTokenCleanup from "../cron/expiredTokenCleanup";
 import bodyParser from "body-parser";
+import helmet from "helmet";
 
 const app: express.Application = express();
 
@@ -32,6 +33,7 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+app.use(helmet());
 
 app.use(
   cors({
@@ -45,7 +47,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use(requestLogger);
-app.use(errorHandler);
 
 app.get("/", (req: Request, res: Response) => {
   res.send(`Welcome to clip thread api`);
@@ -59,6 +60,8 @@ app.use("/thread", threadRoutes);
 app.use("/clip", clipRoutes);
 
 expiredTokenCleanup();
+
+app.use(errorHandler);
 
 app.all("*", (req: Request, res: Response) => {
   res.status(404).json({
