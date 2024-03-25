@@ -4,7 +4,7 @@ import { REFRESH_TOKEN_SECRET } from "../config/config";
 import { getUserByRefreshToken } from "../controllers/usersController";
 import { generateAccessToken } from "../utils/generateTokens";
 import revokedTokenHandler from "../middlewares/revokedTokenHandler";
-import { refreshTokenSchema } from "../schemas/authSchemas";
+import { refreshTokenSchema } from "../joi_schemas/authSchemas";
 
 const router = Router();
 
