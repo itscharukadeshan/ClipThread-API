@@ -15,6 +15,8 @@ import {
   creatorPermission,
   moderatorPermission,
 } from "../services/thread.services";
+import { accessTokenSchema } from "../joi_schemas/authSchemas";
+import { threadIdSchema } from "../joi_schemas/threadSchemas";
 
 const router = Router();
 
@@ -34,7 +36,17 @@ router.get(
 router.get(
   "/:threadId",
   async (req: Request, res: Response, next: NextFunction) => {
-    const threadId = req.params.threadId;
+    const params = req.params;
+
+    if (params) {
+      const { error } = threadIdSchema.validate(params);
+
+      if (error) {
+        return res.status(401).json({ message: error.message });
+      }
+    }
+
+    const threadId: string = req.params.threadId;
 
     let thread: Partial<Thread> | null;
 
@@ -57,16 +69,21 @@ router.post(
   "/create",
   authHandler,
   async (req: Request, res: Response, next: NextFunction) => {
-    const authHeader: string | undefined = req.headers.authorization;
+    const access_token: string | undefined = req.headers.authorization;
     const title = req.body.title;
 
-    if (!authHeader) {
+    if (!access_token) {
       return res.status(401).json({ message: "Missing access Token" });
     } else if (!title) {
       return res.status(401).json({ message: "Missing thread tittle" });
+    } else {
+      const { error } = accessTokenSchema.validate(access_token);
+      if (error) {
+        return res.status(401).json({ message: error.message });
+      }
     }
 
-    const token: string = authHeader.split(" ")[1];
+    const token: string = access_token.split(" ")[1];
 
     const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
     const { userId, role } = decodedToken as TokenPayload;
