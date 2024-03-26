@@ -1,15 +1,22 @@
 import { Router, Response, Request, NextFunction } from "express";
+
 import authHandler from "../middlewares/authHandler";
+
 import { verifyToken } from "../utils/authUtils";
+import { checkUrlOrigin } from "../utils/checkUrlOrigin";
+
 import { ACCESS_TOKEN_SECRET } from "../config/config";
+
 import { TokenPayload } from "./interface";
+
 import { getTwitchAccessTokenById } from "../controllers/clipsControllers";
+
 import {
   getTwitchClipInfo,
   getYoutubeClipInfo,
 } from "../services/clip.services";
-import { checkUrlOrigin } from "../utils/checkUrlOrigin";
-import { TwitchAuth } from "@prisma/client";
+
+import { validateHeaders } from "../joi_schemas/clipSchemas";
 
 const router = Router();
 router.get(
@@ -23,6 +30,11 @@ router.get(
       return res.status(401).json({ message: "Missing access Token" });
     } else if (!url) {
       return res.status(401).json({ message: "Missing clip url" });
+    } else {
+      const { error } = validateHeaders(authHeader);
+      if (error) {
+        return res.status(401).json({ message: error.message });
+      }
     }
 
     const [platform, videoId] = await checkUrlOrigin(url);
