@@ -16,7 +16,10 @@ import {
   moderatorPermission,
 } from "../services/thread.services";
 import { accessTokenSchema } from "../joi_schemas/authSchemas";
-import { threadIdSchema } from "../joi_schemas/threadSchemas";
+import {
+  threadIdSchema,
+  threadTitleSchema,
+} from "../joi_schemas/threadSchemas";
 
 const router = Router();
 
@@ -70,12 +73,20 @@ router.post(
   authHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     const access_token: string | undefined = req.headers.authorization;
+    const body = req.body;
+
+    if (body) {
+      const { error } = threadTitleSchema.validate(body);
+
+      if (error) {
+        return res.status(401).json({ message: error.message });
+      }
+    }
+
     const title = req.body.title;
 
     if (!access_token) {
       return res.status(401).json({ message: "Missing access Token" });
-    } else if (!title) {
-      return res.status(401).json({ message: "Missing thread tittle" });
     } else {
       const { error } = accessTokenSchema.validate(access_token);
       if (error) {
