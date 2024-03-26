@@ -16,22 +16,28 @@ import {
   getYoutubeClipInfo,
 } from "../services/clip.services";
 
-import { validateHeaders } from "../joi_schemas/clipSchemas";
+import { accessTokenSchema } from "../joi_schemas/authSchemas";
+import { urlSchema } from "../joi_schemas/clipSchemas";
 
 const router = Router();
 router.get(
   "/info",
   authHandler,
   async (req: Request, res: Response, next: NextFunction) => {
-    const authHeader: string | undefined = req.headers.authorization;
+    const access_token: string | undefined = req.headers.authorization;
     const url = req.body.url;
 
-    if (!authHeader) {
+    if (!access_token) {
       return res.status(401).json({ message: "Missing access Token" });
     } else if (!url) {
       return res.status(401).json({ message: "Missing clip url" });
-    } else {
-      const { error } = validateHeaders(authHeader);
+    } else if (access_token) {
+      const { error } = accessTokenSchema.validate(access_token);
+      if (error) {
+        return res.status(401).json({ message: error.message });
+      }
+    } else if (url) {
+      const { error } = urlSchema.validate(access_token);
       if (error) {
         return res.status(401).json({ message: error.message });
       }
@@ -43,7 +49,7 @@ router.get(
       return res.status(401).json({ message: "Missing or invalid clip url" });
     }
     try {
-      const token: string = authHeader.split(" ")[1];
+      const token: string = access_token.split(" ")[1];
 
       const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
       const { userId } = decodedToken as TokenPayload;
