@@ -1,10 +1,5 @@
 import Joi from "joi";
 
-const authHeaderSchema = Joi.string()
-  .trim()
-  .pattern(/^Bearer [a-zA-Z0-9\\-_]+$/)
-  .error(new Error("Invalid authorization header"));
-
-export const validateHeaders = (authHeader: string) => {
-  return authHeaderSchema.validate(authHeader);
-};
+export const urlSchema = Joi.object({
+  url: Joi.string().uri().required().error(new Error("Invalid or missing url")),
+});
