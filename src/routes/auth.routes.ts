@@ -16,14 +16,12 @@ router.get(
       const { error } = refreshTokenSchema.validate(req.cookies);
 
       if (error) {
-        return res.status(400).json({ message: error.message });
+        return res
+          .status(401)
+          .json({ message: "Missing or invalid refresh token" });
       }
 
       const refreshToken: string = req.cookies.refresh_token;
-
-      if (!refreshToken) {
-        return res.status(401).json({ message: "Missing refresh token" });
-      }
 
       if (!verifyRefreshToken(refreshToken, REFRESH_TOKEN_SECRET)) {
         return res.status(401).json({ message: "Invalid refresh token" });
