@@ -7,5 +7,5 @@
     "esModuleInterop": true,
     "types": ["@prisma/client", "jest", "node"]
   },
-  "include": ["src/**/**/*.ts", "interface/types/index.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }
