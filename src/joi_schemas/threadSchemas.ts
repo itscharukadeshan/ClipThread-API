@@ -41,3 +41,5 @@ export const threadSchema = Joi.object({
 export const threadIdSchema = Joi.object({
   threadId: Joi.string().required(),
 });
+
+export const threadTitleSchema = Joi.object({ title: Joi.string().required() });
