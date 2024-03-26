@@ -37,3 +37,7 @@ export const threadSchema = Joi.object({
   ),
   clips: Joi.array().items(clipSchema),
 });
+
+export const threadIdSchema = Joi.object({
+  threadId: Joi.string().required(),
+});
