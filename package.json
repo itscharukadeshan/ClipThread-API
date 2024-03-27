@@ -27,7 +27,7 @@
     "winston": "^3.13.0"
   },
   "scripts": {
-    "dev": "nodemon --config nodemon.json ./src/index.ts",
+    "dev": "NODE_ENV=development nodemon --config nodemon.json ./src/index.ts",
     "test": "jest --watch",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
