@@ -7,7 +7,7 @@ import {
   getUserData,
 } from "../services/twitchAuth.services";
 import handleTwitchUser from "../utils/handleTwitchUser";
-import { roleSchema } from "../joi_schemas/authSchemas";
+import { querySchema } from "../joi_schemas/authSchemas";
 
 const router = Router();
 
@@ -24,7 +24,9 @@ router.get(
   "/callback",
   async (req: Request, res: Response, next: NextFunction) => {
     const query = req.query;
-    const { error } = roleSchema.validate(query);
+    const { error } = querySchema.validate(query);
+
+    console.log(query);
 
     if (error) {
       return res.status(400).json({ message: error.message });

@@ -9,7 +9,7 @@ import {
 
 import { formatUserDataFromYouTube } from "../utils/formatUserData";
 
-import { roleSchema } from "../joi_schemas/authSchemas";
+import { querySchema } from "../joi_schemas/authSchemas";
 
 import handelYoutubeUser from "../utils/handleYoutubeUser";
 
@@ -28,7 +28,7 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const query = req.query;
-      const { error } = roleSchema.validate(query);
+      const { error } = querySchema.validate(query);
 
       if (error) {
         return res.status(400).json({ message: error.message });
