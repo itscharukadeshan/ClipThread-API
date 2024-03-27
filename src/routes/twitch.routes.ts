@@ -7,6 +7,7 @@ import {
   getUserData,
 } from "../services/twitchAuth.services";
 import handleTwitchUser from "../utils/handleTwitchUser";
+import { roleSchema } from "../joi_schemas/twitchSchemas";
 const router = Router();
 
 router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
@@ -21,16 +22,21 @@ router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
 router.get(
   "/callback",
   async (req: Request, res: Response, next: NextFunction) => {
-    const code = req.query.code;
+    const query = req.query;
+    const { error } = roleSchema.validate(query);
 
-    if (!code || typeof code !== "string") {
-      return res
-        .status(400)
-        .json({ error: "Authorization code is missing or invalid" });
+    if (error) {
+      return res.status(400).json({ message: error.message });
     }
 
     try {
-      const userAuthData = await getUserAuth(code);
+      let userAuthData;
+
+      if (query.code) {
+        const code = query.code as string;
+        userAuthData = await getUserAuth(code);
+      }
+
       const accessToken = userAuthData.access_token;
 
       const userDataResponse = await getUserData(accessToken);
