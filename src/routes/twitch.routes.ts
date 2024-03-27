@@ -26,8 +26,6 @@ router.get(
     const query = req.query;
     const { error } = querySchema.validate(query);
 
-    console.log(query);
-
     if (error) {
       return res.status(400).json({ message: error.message });
     }
