@@ -1,6 +1,6 @@
 /** @format */
 
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import chalk from "chalk";
 import cors from "cors";
 
@@ -61,6 +61,8 @@ app.use("/clip", clipRoutes);
 
 expiredTokenCleanup();
 
+app.use(errorHandler);
+
 app.all("*", (req: Request, res: Response) => {
   try {
     throw new ApplicationError(
@@ -71,8 +73,6 @@ app.all("*", (req: Request, res: Response) => {
     throw error;
   }
 });
-
-app.use(errorHandler);
 
 app.listen(API_PORT, () => {
   console.log(`${chalk.bgBlue.bold(" App is successfully deployed ! ")}`);
