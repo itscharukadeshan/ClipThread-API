@@ -11,9 +11,6 @@ import userRoutes from "./routes/user.routes";
 import threadRoutes from "./routes/thread.routes";
 import clipRoutes from "./routes/clip.routes";
 import { API_PORT, FRONT_END_URL } from "./config/config";
-import authHandler from "./middlewares/authHandler";
-import roleHandler from "./middlewares/roleHandler";
-import { UserRole } from "@prisma/client";
 
 import errorHandler from "./middlewares/errorHandler";
 import requestLogger from "./middlewares/requestLogger";
