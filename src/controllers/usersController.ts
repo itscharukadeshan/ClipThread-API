@@ -6,6 +6,7 @@ import {
   UserWithAuth,
 } from "./interface/types";
 import moment from "moment";
+import ApplicationError from "../errors/applicationError";
 
 const prisma = new PrismaClient();
 export async function createUser(
@@ -14,7 +15,7 @@ export async function createUser(
   youtubeAuth?: YoutubeAuthWithoutId | undefined
 ): Promise<UserWithAuth | null> {
   if (!twitchAuth && !youtubeAuth) {
-    throw new Error(`Missing auth data`);
+    throw new ApplicationError("Missing auth data", 400);
   }
 
   try {
@@ -22,22 +23,33 @@ export async function createUser(
       data: userData,
     });
 
+    if (!user) {
+      throw new ApplicationError("Unable to create user", 400);
+    }
+
     if (twitchAuth && userData.twitchId) {
-      await prisma.twitchAuth.create({
+      const auth = await prisma.twitchAuth.create({
         data: {
           user: { connect: { id: user.id } },
           ...twitchAuth,
         },
       });
+      if (!auth) {
+        throw new ApplicationError("Unable to create user", 400);
+      }
     } else if (youtubeAuth && userData.youtubeId) {
-      await prisma.youTubeAuth.create({
+      const auth = await prisma.youTubeAuth.create({
         data: {
           user: { connect: { id: user.id } },
           ...youtubeAuth,
         },
       });
+
+      if (!auth) {
+        throw new ApplicationError("Unable to create user", 400);
+      }
     } else {
-      throw new Error(`User auth data not found`);
+      throw new ApplicationError("Missing auth data", 400);
     }
 
     const userWithAuthData = await prisma.user.findUnique({

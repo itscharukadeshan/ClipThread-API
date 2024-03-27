@@ -1,6 +1,7 @@
-import { User, PrismaClient, Thread, Broadcasters, Clip } from "@prisma/client";
-import {} from "./interface/types";
+import { PrismaClient, Thread, Broadcasters, Clip } from "@prisma/client";
+
 import moment from "moment";
+import ApplicationError from "../errors/applicationError";
 
 const prisma = new PrismaClient();
 
@@ -23,12 +24,12 @@ export async function getPublicThreadDataById(threadId: string) {
     });
 
     if (!foundThread?.published) {
-      return null;
+      throw new ApplicationError("Thread data not found / not published", 404);
     }
 
     return foundThread;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -42,12 +43,12 @@ export async function getThreadStatus() {
     });
 
     if (!published && !unPublished) {
-      throw new Error("No threads found");
+      throw new ApplicationError("No threads found", 404);
     }
 
     return { published, unPublished };
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -62,12 +63,12 @@ export async function createNewThread(userId: string, title: string) {
     });
 
     if (!newThread) {
-      throw new Error(`Something went wrong`);
+      throw new ApplicationError("Failed to create new thread", 500);
     }
 
     return newThread;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -83,6 +84,10 @@ export async function updateThread(
       data: { ...threadData },
     });
 
+    if (!updatedThread) {
+      throw new ApplicationError("Failed to update thread", 500);
+    }
+
     const broadcasterUpdates = broadcasters.map(async (broadcaster) => {
       await prisma.broadcasters.upsert({
         where: { id: broadcaster.id },
@@ -92,6 +97,10 @@ export async function updateThread(
     });
 
     await Promise.all(broadcasterUpdates);
+
+    if (!broadcasterUpdates) {
+      throw new ApplicationError("Failed to update broadcasters", 500);
+    }
 
     const clipUpdates = clips.map(async (clip) => {
       if (clip.id) {
@@ -108,8 +117,12 @@ export async function updateThread(
 
     await Promise.all(clipUpdates);
 
+    if (!clipUpdates) {
+      throw new ApplicationError("Failed to update clips", 500);
+    }
+
     return updatedThread;
   } catch (error) {
-    return null;
+    throw error;
   }
 }

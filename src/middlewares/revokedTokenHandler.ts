@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { checkRefTokenValidity } from "../utils/authUtils";
+import ApplicationError from "../errors/applicationError";
 async function revokedTokenHandler(
   err: Error,
   req: Request,
@@ -10,7 +11,7 @@ async function revokedTokenHandler(
   const isTokenValid = await checkRefTokenValidity(refreshToken);
 
   if (!isTokenValid) {
-    return res.status(403).json({ message: "Revoked refresh token token" });
+    throw new ApplicationError("Revoked refresh token token", 403);
   }
 
   next();
