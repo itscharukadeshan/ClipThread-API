@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response } from "express";
+import ApplicationError from "../errors/applicationError";
 function errorHandler(
   err: Error,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  console.error(err);
-  res.status(500);
-  if (!res.headersSent) {
-    res.json({ message: err.message });
+  if (err instanceof ApplicationError) {
+    res.status(err.statusCode).json({ error: err.message });
   } else {
-    next(err);
+    console.error("Unhandled error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }
 
