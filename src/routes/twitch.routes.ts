@@ -7,7 +7,8 @@ import {
   getUserData,
 } from "../services/twitchAuth.services";
 import handleTwitchUser from "../utils/handleTwitchUser";
-import { roleSchema } from "../joi_schemas/twitchSchemas";
+import { roleSchema } from "../joi_schemas/authSchemas";
+
 const router = Router();
 
 router.get("/auth", (req: Request, res: Response, next: NextFunction) => {

@@ -8,17 +8,10 @@ import {
 } from "../services/youtubeAuth.services";
 
 import { formatUserDataFromYouTube } from "../utils/formatUserData";
-import {
-  createUser,
-  getUserByYoutubeId,
-  updateUser,
-} from "../controllers/usersController";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-} from "../utils/generateTokens";
+
+import { roleSchema } from "../joi_schemas/authSchemas";
+
 import handelYoutubeUser from "../utils/handleYoutubeUser";
-import { User } from "@prisma/client";
 
 const router = Router();
 
@@ -34,13 +27,20 @@ router.get(
   "/callback",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const code = req.query.code;
+      const query = req.query;
+      const { error } = roleSchema.validate(query);
 
-      if (!code) {
-        throw new Error("No code in request");
+      if (error) {
+        return res.status(400).json({ message: error.message });
       }
 
-      const authData = await getAccessToken(code);
+      let authData;
+
+      if (query.code) {
+        const code = query.code as string;
+        authData = await getAccessToken(code);
+      }
+
       const userDataResponse = await getUser(authData.access_token);
       const channelData = await getChannelData(authData.access_token);
       const { userData, youtubeAuth } = formatUserDataFromYouTube(
