@@ -20,6 +20,7 @@ import rateLimit from "express-rate-limit";
 import expiredTokenCleanup from "../cron/expiredTokenCleanup";
 import bodyParser from "body-parser";
 import helmet from "helmet";
+
 import ApplicationError from "./errors/applicationError";
 
 const app: express.Application = express();
@@ -28,6 +29,7 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // API_RATE_LIMIT_WINDOW
   max: 100, // API_MAX_REQUEST_LIMIT
   message: "Too many requests from this IP, please try again later.",
+  statusCode: 429,
 });
 
 app.use(limiter);
@@ -59,24 +61,18 @@ app.use("/clip", clipRoutes);
 
 expiredTokenCleanup();
 
-app.use(errorHandler);
-
 app.all("*", (req: Request, res: Response) => {
-  res.status(404).json({
-    error: `Invalid method / wrong endpoint: [${req.method}] | [${req.url}]`,
-  });
-});
-
-// Centralized error handler
-
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  if (error instanceof ApplicationError) {
-    res.status(error.statusCode).json({ error: error.message });
-  } else {
-    console.error("Unhandled error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+  try {
+    throw new ApplicationError(
+      `Invalid method / wrong endpoint: [${req.method}] | [${req.url}]`,
+      404
+    );
+  } catch (error) {
+    throw error;
   }
 });
+
+app.use(errorHandler);
 
 app.listen(API_PORT, () => {
   console.log(`${chalk.bgBlue.bold(" App is successfully deployed ! ")}`);
