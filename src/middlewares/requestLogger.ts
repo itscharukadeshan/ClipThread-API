@@ -1,10 +1,37 @@
 import { NextFunction, Request, Response } from "express";
 import chalk from "chalk";
 
+import fs from "fs";
+
+import winston from "winston";
+
+const logDirectory = "logs";
+const logFilePath = `${logDirectory}/request.log`;
+
+if (!fs.existsSync(logDirectory)) {
+  fs.mkdirSync(logDirectory);
+}
+
+const logger = winston.createLogger({
+  level: "request-info",
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({
+      filename: logFilePath,
+      maxsize: 1024 * 1024 * 1024,
+      maxFiles: 1,
+    }),
+  ],
+});
+
 const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   const { method, url } = req;
-  const endpoint: string = chalk.gray(url);
+  const endpoint: string = url;
 
   let coloredMethod: string;
   switch (method) {
@@ -28,6 +55,15 @@ const requestLogger = (req: Request, res: Response, next: NextFunction) => {
 
   res.on("finish", () => {
     const statusCode = res.statusCode;
+    const time = Date.now() - start;
+
+    logger.info({
+      method,
+      url,
+      statusCode,
+      responseTime: time,
+    });
+
     const coloredStatus: string =
       statusCode >= 500
         ? chalk.red.bold(statusCode)
@@ -37,9 +73,7 @@ const requestLogger = (req: Request, res: Response, next: NextFunction) => {
             ? chalk.cyan(statusCode)
             : chalk.gray(statusCode);
 
-    const time = Date.now() - start;
     let coloredTime: string;
-
     if (time < 200) {
       coloredTime = chalk.gray(`(${time} ms)`);
     } else if (time < 300) {
