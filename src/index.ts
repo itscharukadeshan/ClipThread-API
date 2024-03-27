@@ -1,6 +1,6 @@
 /** @format */
 
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import chalk from "chalk";
 import cors from "cors";
 
@@ -20,6 +20,7 @@ import rateLimit from "express-rate-limit";
 import expiredTokenCleanup from "../cron/expiredTokenCleanup";
 import bodyParser from "body-parser";
 import helmet from "helmet";
+import ApplicationError from "./errors/applicationError";
 
 const app: express.Application = express();
 
@@ -62,8 +63,19 @@ app.use(errorHandler);
 
 app.all("*", (req: Request, res: Response) => {
   res.status(404).json({
-    error: `Invalid request method or wrong endpoint: [${req.method}] | [${req.originalUrl}]`,
+    error: `Invalid method / wrong endpoint: [${req.method}] | [${req.url}]`,
   });
+});
+
+// Centralized error handler
+
+app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
+  if (error instanceof ApplicationError) {
+    res.status(error.statusCode).json({ error: error.message });
+  } else {
+    console.error("Unhandled error:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.listen(API_PORT, () => {
