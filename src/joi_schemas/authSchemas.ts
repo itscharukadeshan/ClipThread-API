@@ -12,4 +12,6 @@ export const accessTokenSchema = Joi.string()
   .required()
   .error(new Error("Invalid or missing access token"));
 
-export const authSchemas = Joi.object({});
+export const roleSchema = Joi.object({
+  code: Joi.string().valid("user", "moderator", "creator").required(),
+});
