@@ -1,3 +1,22 @@
+import fs from "fs";
+import winston from "winston";
+
+const logDirectory = "logs";
+const logFilePath = `${logDirectory}/error.log`;
+
+if (!fs.existsSync(logDirectory)) {
+  fs.mkdirSync(logDirectory);
+}
+
+const logger = winston.createLogger({
+  level: "error",
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: logFilePath }),
+  ],
+});
+
 export default class ApplicationError extends Error {
   public statusCode: number;
 
@@ -6,5 +25,6 @@ export default class ApplicationError extends Error {
     this.name = this.constructor.name;
     this.statusCode = statusCode;
     Error.captureStackTrace(this, this.constructor);
+    logger.error(`${this.name}: ${message}`, { statusCode: this.statusCode });
   }
 }
