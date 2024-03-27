@@ -19,6 +19,7 @@ import { accessTokenSchema } from "../joi_schemas/authSchemas";
 import {
   threadIdSchema,
   threadTitleSchema,
+  threadSchema,
 } from "../joi_schemas/threadSchemas";
 
 const router = Router();
@@ -118,17 +119,28 @@ router.put(
   "update/:threadId",
   authHandler,
   async (req: Request, res: Response, next: NextFunction) => {
-    const authHeader: string | undefined = req.headers.authorization;
+    const access_token: string | undefined = req.headers.authorization;
     const threadId = req.params.threadId;
     const threadData: Thread = req.body;
 
-    if (!authHeader) {
-      return res.status(401).json({ message: "Missing access Token" });
-    } else if (!threadId) {
-      return res.status(401).json({ message: "Missing thread id" });
+    if (threadData) {
+      const { error } = threadSchema.validate(threadData);
+
+      if (error) {
+        return res.status(401).json({ message: error.message });
+      }
     }
 
-    const token: string = authHeader.split(" ")[1];
+    if (!access_token) {
+      return res.status(401).json({ message: "Missing access Token" });
+    } else {
+      const { error } = accessTokenSchema.validate(access_token);
+      if (error) {
+        return res.status(401).json({ message: error.message });
+      }
+    }
+
+    const token: string = access_token.split(" ")[1];
 
     const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
     const { userId, role } = decodedToken as TokenPayload;
