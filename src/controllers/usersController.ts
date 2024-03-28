@@ -15,7 +15,7 @@ export async function createUser(
   youtubeAuth?: YoutubeAuthWithoutId | undefined
 ): Promise<UserWithAuth | null> {
   if (!twitchAuth && !youtubeAuth) {
-    throw new ApplicationError("Missing auth data", 400);
+    throw new ApplicationError("Missing auth data", 401);
   }
 
   try {
@@ -49,7 +49,7 @@ export async function createUser(
         throw new ApplicationError("Unable to create user", 400);
       }
     } else {
-      throw new ApplicationError("Missing auth data", 400);
+      throw new ApplicationError("Missing auth data", 401);
     }
 
     const userWithAuthData = await prisma.user.findUnique({
@@ -60,9 +60,13 @@ export async function createUser(
       },
     });
 
+    if (!userWithAuthData) {
+      throw new ApplicationError("Missing auth data", 401);
+    }
+
     return userWithAuthData;
   } catch (error) {
-    throw new Error(`Failed to create user: ${error}`);
+    throw error;
   }
 }
 
@@ -80,19 +84,24 @@ export async function updateUser(
       where: { id: userId },
       data: updatedUserData,
     });
+    if (!updatedUser) {
+      throw new ApplicationError("Unable to update user data", 400);
+    }
     return updatedUser;
   } catch (error) {
-    console.error("Error updating user:", error);
-    return null;
+    throw error;
   }
 }
 export async function getUserById(userId: string) {
   try {
     const foundUser = await prisma.user.findUnique({ where: { id: userId } });
+    if (!foundUser) {
+      throw new ApplicationError("User not found", 401);
+    }
 
     return foundUser;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -112,9 +121,13 @@ export async function getPublicUserDataById(userId: string) {
       },
     });
 
+    if (!foundUser) {
+      throw new ApplicationError("User is not found", 400);
+    }
+
     return foundUser;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -123,10 +136,12 @@ export async function getUserByRefreshToken(refreshToken: string) {
     const foundUser = await prisma.user.findUnique({
       where: { refreshToken: refreshToken },
     });
-
+    if (!foundUser) {
+      throw new ApplicationError("User is not found", 400);
+    }
     return foundUser;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -140,9 +155,13 @@ export async function getUserByTwitchId(twitchId: string | null) {
       where: { twitchId: twitchId },
     });
 
+    if (!foundUser) {
+      throw new ApplicationError("User is not found", 400);
+    }
+
     return foundUser;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -156,9 +175,13 @@ export async function getUserByYoutubeId(youtubeId: string | null) {
       where: { youtubeId: youtubeId },
     });
 
+    if (!foundUser) {
+      throw new ApplicationError("User is not found", 400);
+    }
+
     return foundUser;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -173,9 +196,13 @@ export async function revokeCurrentToken(
       data: { id: refreshToken, expired: false },
     });
 
+    if (!token) {
+      throw new ApplicationError("Internal Server Error", 500);
+    }
+
     return token;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
@@ -187,8 +214,12 @@ export async function getRevokedTokens(): Promise<Partial<RevokedTokens>[]> {
         id: true,
       },
     });
+
+    if (!revokedTokens) {
+      throw new ApplicationError("No revoked token found", 400);
+    }
     return revokedTokens;
   } catch (error) {
-    throw new Error(`Internal server Error : ${error}`);
+    throw error;
   }
 }
