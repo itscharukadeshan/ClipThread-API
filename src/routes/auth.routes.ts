@@ -5,6 +5,7 @@ import { getUserByRefreshToken } from "../controllers/usersController";
 import { generateAccessToken } from "../utils/generateTokens";
 import revokedTokenHandler from "../middlewares/revokedTokenHandler";
 import { refreshTokenSchema } from "../joi_schemas/authSchemas";
+import ApplicationError from "../errors/applicationError";
 
 const router = Router();
 
@@ -16,23 +17,19 @@ router.get(
       const { error } = refreshTokenSchema.validate(req.cookies);
 
       if (error) {
-        return res
-          .status(401)
-          .json({ message: "Missing or invalid refresh token" });
+        throw new ApplicationError(error.message, 401);
       }
 
       const refreshToken: string = req.cookies.refresh_token;
 
       if (!verifyRefreshToken(refreshToken, REFRESH_TOKEN_SECRET)) {
-        return res.status(401).json({ message: "Invalid refresh token" });
+        throw new ApplicationError("Invalid refresh token", 401);
       }
 
       const user = await getUserByRefreshToken(refreshToken);
 
       if (!user) {
-        return res
-          .status(401)
-          .json({ message: "Invalid refresh token : Unable to find user" });
+        throw new ApplicationError("Invalid refresh token", 401);
       }
 
       const accessToken = generateAccessToken(user.id, user.login);

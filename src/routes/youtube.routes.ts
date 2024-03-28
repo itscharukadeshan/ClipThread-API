@@ -12,6 +12,7 @@ import { formatUserDataFromYouTube } from "../utils/formatUserData";
 import { querySchema } from "../joi_schemas/authSchemas";
 
 import handelYoutubeUser from "../utils/handleYoutubeUser";
+import ApplicationError from "../errors/applicationError";
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.get(
       const { error } = querySchema.validate(query);
 
       if (error) {
-        return res.status(400).json({ message: error.message });
+        throw new ApplicationError(error.message, 400);
       }
 
       let authData;

@@ -8,29 +8,34 @@ import {
 } from "../services/twitchAuth.services";
 import handleTwitchUser from "../utils/handleTwitchUser";
 import { querySchema } from "../joi_schemas/authSchemas";
+import ApplicationError from "../errors/applicationError";
 
 const router = Router();
 
 router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
-  const scopeParam = req.query.scope as UserRole;
+  try {
+    const scopeParam = req.query.scope as UserRole;
 
-  let scope: UserRole = scopeParam;
+    let scope: UserRole = scopeParam;
 
-  const url = getAuthUrl(scope);
-  res.redirect(url);
+    const url = getAuthUrl(scope);
+    res.redirect(url);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get(
   "/callback",
   async (req: Request, res: Response, next: NextFunction) => {
-    const query = req.query;
-    const { error } = querySchema.validate(query);
-
-    if (error) {
-      return res.status(400).json({ message: error.message });
-    }
-
     try {
+      const query = req.query;
+      const { error } = querySchema.validate(query);
+
+      if (error) {
+        throw new ApplicationError(error.message, 400);
+      }
+
       let userAuthData;
 
       if (query.code) {

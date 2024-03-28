@@ -18,6 +18,7 @@ import {
 
 import { accessTokenSchema } from "../joi_schemas/authSchemas";
 import { urlSchema } from "../joi_schemas/clipSchemas";
+import ApplicationError from "../errors/applicationError";
 
 const router = Router();
 router.get(
@@ -28,25 +29,25 @@ router.get(
     const url = req.body.url;
 
     if (!access_token) {
-      return res.status(401).json({ message: "Missing access Token" });
+      throw new ApplicationError("Missing access Token", 401);
     } else if (!url) {
-      return res.status(401).json({ message: "Missing clip url" });
+      throw new ApplicationError("Missing clip url", 401);
     } else if (access_token) {
       const { error } = accessTokenSchema.validate(access_token);
       if (error) {
-        return res.status(401).json({ message: error.message });
+        throw new ApplicationError(error.message, 401);
       }
     } else if (url) {
       const { error } = urlSchema.validate(access_token);
       if (error) {
-        return res.status(401).json({ message: error.message });
+        throw new ApplicationError(error.message, 401);
       }
     }
 
     const [platform, videoId] = await checkUrlOrigin(url);
 
     if (platform === "Invalid" || videoId === "") {
-      return res.status(401).json({ message: "Missing or invalid clip url" });
+      throw new ApplicationError("Missing or invalid clip url", 401);
     }
     try {
       const token: string = access_token.split(" ")[1];
@@ -59,24 +60,24 @@ router.get(
           const twitchAccessToken: string | null =
             await getTwitchAccessTokenById(userId);
           if (!twitchAccessToken) {
-            return res.status(400).json({ message: `Something went wrong !` });
+            throw new ApplicationError("Something went wrong !", 400);
           }
 
           const clipInfo = await getTwitchClipInfo(videoId, twitchAccessToken);
           if (!clipInfo) {
-            return res.status(400).json({ message: `Something went wrong !` });
+            throw new ApplicationError("Something went wrong !", 400);
           }
         } else if (platform === "Youtube") {
           const clipInfo = await getYoutubeClipInfo(videoId);
           if (!clipInfo) {
-            return res.status(400).json({ message: `Something went wrong !` });
+            throw new ApplicationError("Something went wrong !", 400);
           }
         } else {
-          return res.status(400).json({ message: `Something went wrong !` });
+          throw new ApplicationError("Something went wrong !", 400);
         }
       }
     } catch (error) {
-      return res.status(400).json({ message: `Something went wrong !` });
+      next(error);
     }
   }
 );

@@ -21,6 +21,7 @@ import {
   threadTitleSchema,
   threadSchema,
 } from "../joi_schemas/threadSchemas";
+import ApplicationError from "../errors/applicationError";
 
 const router = Router();
 
@@ -30,9 +31,13 @@ router.get(
     try {
       const status = await getThreadStatus();
 
+      if (!status) {
+        throw new ApplicationError("Unable to ger status", 400);
+      }
+
       return res.status(200).json({ status });
     } catch (error) {
-      return res.status(400).json({ message: `Something went wrong !` });
+      next(error);
     }
   }
 );
@@ -40,31 +45,28 @@ router.get(
 router.get(
   "/:threadId",
   async (req: Request, res: Response, next: NextFunction) => {
-    const params = req.params;
-
-    if (params) {
-      const { error } = threadIdSchema.validate(params);
-
-      if (error) {
-        return res.status(401).json({ message: error.message });
-      }
-    }
-
-    const threadId: string = req.params.threadId;
-
-    let thread: Partial<Thread> | null;
-
     try {
+      const params = req.params;
+
+      if (params) {
+        const { error } = threadIdSchema.validate(params);
+
+        if (error) {
+          throw new ApplicationError(error.message, 401);
+        }
+      }
+
+      const threadId: string = req.params.threadId;
+
+      let thread: Partial<Thread> | null;
       thread = await getPublicThreadDataById(threadId);
       if (thread === null) {
-        return res
-          .status(400)
-          .json({ message: `Thread not found or not published` });
+        throw new ApplicationError("Thread not found or not published", 401);
       }
 
       return res.status(200).json({ thread });
     } catch (error) {
-      return res.status(400).json({ message: `Something went wrong !` });
+      next(error);
     }
   }
 );
@@ -73,44 +75,44 @@ router.post(
   "/create",
   authHandler,
   async (req: Request, res: Response, next: NextFunction) => {
-    const access_token: string | undefined = req.headers.authorization;
-    const body = req.body;
-
-    if (body) {
-      const { error } = threadTitleSchema.validate(body);
-
-      if (error) {
-        return res.status(401).json({ message: error.message });
-      }
-    }
-
-    const title = req.body.title;
-
-    if (!access_token) {
-      return res.status(401).json({ message: "Missing access Token" });
-    } else {
-      const { error } = accessTokenSchema.validate(access_token);
-      if (error) {
-        return res.status(401).json({ message: error.message });
-      }
-    }
-
-    const token: string = access_token.split(" ")[1];
-
-    const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
-    const { userId, role } = decodedToken as TokenPayload;
-
-    let thread: Partial<Thread> | null;
-
     try {
+      const access_token: string | undefined = req.headers.authorization;
+      const body = req.body;
+
+      if (body) {
+        const { error } = threadTitleSchema.validate(body);
+
+        if (error) {
+          throw new ApplicationError(error.message, 401);
+        }
+      }
+
+      const title = req.body.title;
+
+      if (!access_token) {
+        throw new ApplicationError("Missing access Token", 401);
+      } else {
+        const { error } = accessTokenSchema.validate(access_token);
+        if (error) {
+          throw new ApplicationError(error.message, 401);
+        }
+      }
+
+      const token: string = access_token.split(" ")[1];
+
+      const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
+      const { userId, role } = decodedToken as TokenPayload;
+
+      let thread: Partial<Thread> | null;
+
       thread = await createNewThread(userId, title);
       if (thread === null) {
-        return res.status(400).json({ message: `Something went wrong` });
+        throw new ApplicationError("Something went wrong", 401);
       }
 
       return res.status(200).json({ thread });
     } catch (error) {
-      return res.status(400).json({ message: `Something went wrong !` });
+      next(error);
     }
   }
 );
@@ -119,63 +121,63 @@ router.put(
   "update/:threadId",
   authHandler,
   async (req: Request, res: Response, next: NextFunction) => {
-    const access_token: string | undefined = req.headers.authorization;
-    const threadId = req.params.threadId;
-    const threadData: Thread = req.body;
+    try {
+      const access_token: string | undefined = req.headers.authorization;
+      const threadId = req.params.threadId;
+      const threadData: Thread = req.body;
 
-    if (threadData) {
-      const { error } = threadSchema.validate(threadData);
+      if (threadData) {
+        const { error } = threadSchema.validate(threadData);
 
-      if (error) {
-        return res.status(401).json({ message: error.message });
-      }
-    }
-
-    if (!access_token) {
-      return res.status(401).json({ message: "Missing access Token" });
-    } else {
-      const { error } = accessTokenSchema.validate(access_token);
-      if (error) {
-        return res.status(401).json({ message: error.message });
-      }
-    }
-
-    const token: string = access_token.split(" ")[1];
-
-    const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
-    const { userId, role } = decodedToken as TokenPayload;
-
-    const thread = await getPublicThreadDataById(threadId);
-
-    let hasPermission: Boolean = false;
-
-    if (!thread) {
-      return res.status(401).json({ message: "Thread is not found" });
-    } else if (thread.authorId !== userId) {
-      hasPermission = false;
-    } else if (role === UserRole.creator) {
-      let broadcasters = thread.broadcasters;
-      const user = await getUserById(userId);
-
-      if (!user) {
-        return res.status(401).json({ message: "user not found" });
-      }
-      hasPermission = creatorPermission(broadcasters, user);
-    } else if (role === UserRole.moderator) {
-      const user = await getUserById(userId);
-      let broadcasters = thread.broadcasters;
-
-      if (!user) {
-        return res.status(401).json({ message: "Something went wrong" });
+        if (error) {
+          throw new ApplicationError(error.message, 401);
+        }
       }
 
-      hasPermission = moderatorPermission(broadcasters, user);
-    }
+      if (!access_token) {
+        throw new ApplicationError("Missing access Token", 401);
+      } else {
+        const { error } = accessTokenSchema.validate(access_token);
+        if (error) {
+          throw new ApplicationError(error.message, 401);
+        }
+      }
 
-    if (!hasPermission) {
-      return res.status(401).json({ message: "Permission denied" });
-    } else {
-      try {
+      const token: string = access_token.split(" ")[1];
+
+      const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
+      const { userId, role } = decodedToken as TokenPayload;
+
+      const thread = await getPublicThreadDataById(threadId);
+
+      let hasPermission: Boolean = false;
+
+      if (!thread) {
+        throw new ApplicationError("Thread is not found", 401);
+      } else if (thread.authorId !== userId) {
+        hasPermission = false;
+      } else if (role === UserRole.creator) {
+        let broadcasters = thread.broadcasters;
+        const user = await getUserById(userId);
+
+        if (!user) {
+          throw new ApplicationError("user not found", 401);
+        }
+        hasPermission = creatorPermission(broadcasters, user);
+      } else if (role === UserRole.moderator) {
+        const user = await getUserById(userId);
+        let broadcasters = thread.broadcasters;
+
+        if (!user) {
+          throw new ApplicationError("user not found", 401);
+        }
+
+        hasPermission = moderatorPermission(broadcasters, user);
+      }
+
+      if (!hasPermission) {
+        throw new ApplicationError("Permission denied", 401);
+      } else {
         const updatedThread = await updateThread(
           threadId,
           threadData,
@@ -184,9 +186,9 @@ router.put(
         );
 
         return updateThread;
-      } catch (error) {
-        return res.status(401).json({ message: "Something went wrong" });
       }
+    } catch (error) {
+      next(error);
     }
   }
 );
