@@ -16,7 +16,7 @@ export function getScopeType(scope: string[]): UserRole {
     joinedScope.includes("user:read:email")
   ) {
     return UserRole.user;
-  } else {
-    return UserRole.user;
   }
+
+  return UserRole.user;
 }
