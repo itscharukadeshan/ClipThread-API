@@ -1,8 +1,14 @@
 /** @format */
 
 import express, { Request, Response } from "express";
+
 import chalk from "chalk";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
+import bodyParser from "body-parser";
+import helmet from "helmet";
+import { doubleCsrf } from "csrf-csrf";
 
 import twitchRoutes from "./routes/twitch.routes";
 import youtubeRoutes from "./routes/youtube.routes";
@@ -10,16 +16,13 @@ import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
 import threadRoutes from "./routes/thread.routes";
 import clipRoutes from "./routes/clip.routes";
-import { API_PORT, FRONT_END_URL } from "./config/config";
+
+import { API_PORT, FRONT_END_URL, CSRF_KEY } from "./config/config";
 
 import errorHandler from "./middlewares/errorHandler";
 import requestLogger from "./middlewares/requestLogger";
-import cookieParser from "cookie-parser";
-import rateLimit from "express-rate-limit";
 
 import expiredTokenCleanup from "../cron/expiredTokenCleanup";
-import bodyParser from "body-parser";
-import helmet from "helmet";
 
 import ApplicationError from "./errors/applicationError";
 
@@ -39,14 +42,27 @@ app.use(
   cors({
     origin: FRONT_END_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
     credentials: true,
   })
 );
 app.use(cookieParser());
 app.use(bodyParser.json());
 
+const { generateToken, doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => CSRF_KEY,
+  size: 32,
+});
+
+app.use(doubleCsrfProtection);
 app.use(requestLogger);
+
+app.get("/csrf-token", (req, res) => {
+  const csrfToken = generateToken(req, res);
+  res.json({ csrfToken });
+});
+
+app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 app.get("/", (req: Request, res: Response) => {
   res.send(`Welcome to clip thread api`);
