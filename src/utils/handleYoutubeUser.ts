@@ -24,11 +24,14 @@ const handelYoutubeUser = async (
       if (user === null) {
         throw new Error("Failed to create user");
       }
+      // deepcode ignore DuplicateIfBody: <For future impletion>
     } else if (scope === UserRole.moderator) {
       user = await createUser(userData, undefined, youtubeAuth);
       if (user === null) {
         throw new Error("Failed to create user");
       }
+
+      // deepcode ignore DuplicateIfBody: <For future impletion>
     } else if (scope === UserRole.creator) {
       user = await createUser(userData, undefined, youtubeAuth);
       if (user === null) {

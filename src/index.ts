@@ -26,6 +26,7 @@ import expiredTokenCleanup from "../cron/expiredTokenCleanup";
 
 import ApplicationError from "./errors/applicationError";
 
+// deepcode ignore UseCsurfForExpress: <Basic CSRF Protection enabled>
 const app: express.Application = express();
 
 const limiter = rateLimit({
