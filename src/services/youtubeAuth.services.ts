@@ -1,9 +1,10 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import {
   YOUTUBE_CLIENT_ID,
   YOUTUBE_CLIENT_SECRET,
   YOUTUBE_REDIRECT_URI,
 } from "../config/config";
+import ApplicationError from "../errors/applicationError";
 
 const CLIENT_ID = YOUTUBE_CLIENT_ID;
 const CLIENT_SECRET = YOUTUBE_CLIENT_SECRET;
@@ -28,31 +29,39 @@ export const getAuthUrl = (scopes: string[]) => {
 };
 
 export const getAccessToken = async (code: any) => {
-  const response = await axios.post(TOKEN_URL, {
-    client_id: CLIENT_ID,
-    client_secret: CLIENT_SECRET,
-    code,
-    grant_type: "authorization_code",
-    redirect_uri: REDIRECT_URI,
-    access_type: "offline",
-  });
+  try {
+    const response: AxiosResponse = await axios.post(TOKEN_URL, {
+      client_id: CLIENT_ID,
+      client_secret: CLIENT_SECRET,
+      code,
+      grant_type: "authorization_code",
+      redirect_uri: REDIRECT_URI,
+      access_type: "offline",
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response) {
+        const status = axiosError.response.status;
+        const message = axiosError.message || "Unknown error";
+        throw new ApplicationError(message, status);
+      } else if (axiosError.request) {
+        throw new ApplicationError("No response received from server", 500);
+      } else {
+        throw new ApplicationError(axiosError.message, 500);
+      }
+    } else {
+      throw error;
+    }
+  }
 };
 
 export const getUser = async (accessToken: string) => {
-  const response = await axios.get(USER_URL, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  return response.data;
-};
-
-export const getChannelData = async (accessToken: string) => {
   try {
-    const response = await axios.get(`${CHANNELS_URL}?part=snippet&mine=true`, {
+    const response: AxiosResponse = await axios.get(USER_URL, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -60,7 +69,52 @@ export const getChannelData = async (accessToken: string) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error fetching channel data:", error);
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response) {
+        const status = axiosError.response.status;
+        const message = axiosError.message || "Unknown error";
+        throw new ApplicationError(message, status);
+      } else if (axiosError.request) {
+        throw new ApplicationError("No response received from server", 500);
+      } else {
+        throw new ApplicationError(axiosError.message, 500);
+      }
+    } else {
+      throw error;
+    }
+  }
+};
+
+export const getChannelData = async (accessToken: string) => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${CHANNELS_URL}?part=snippet&mine=true`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response) {
+        const status = axiosError.response.status;
+        const message = axiosError.message || "Unknown error";
+        throw new ApplicationError(message, status);
+      } else if (axiosError.request) {
+        throw new ApplicationError("No response received from server", 500);
+      } else {
+        throw new ApplicationError(axiosError.message, 500);
+      }
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -70,7 +124,7 @@ export const getYoutubeAccessTokenByRefToken = async (refreshToken: string) => {
   }
 
   try {
-    const response = await axios.post(TOKEN_URL, {
+    const response: AxiosResponse = await axios.post(TOKEN_URL, {
       client_id: CLIENT_ID,
       client_secret: CLIENT_SECRET,
       refresh_token: refreshToken,
@@ -78,6 +132,20 @@ export const getYoutubeAccessTokenByRefToken = async (refreshToken: string) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error fetching channel data:", error);
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+
+      if (axiosError.response) {
+        const status = axiosError.response.status;
+        const message = axiosError.message || "Unknown error";
+        throw new ApplicationError(message, status);
+      } else if (axiosError.request) {
+        throw new ApplicationError("No response received from server", 500);
+      } else {
+        throw new ApplicationError(axiosError.message, 500);
+      }
+    } else {
+      throw error;
+    }
   }
 };

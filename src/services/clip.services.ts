@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from "../config/config";
 import ApplicationError from "../errors/applicationError";
 
@@ -20,7 +20,20 @@ export const getTwitchClipInfo = async (
 
     return response.data;
   } catch (error) {
-    throw error;
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        const status = axiosError.response.status;
+        const message = axiosError.message || "Unknown error";
+        throw new ApplicationError(message, status);
+      } else if (axiosError.request) {
+        throw new ApplicationError("No response received from server", 500);
+      } else {
+        throw new ApplicationError(axiosError.message, 500);
+      }
+    } else {
+      throw error;
+    }
   }
 };
 export const getYoutubeClipInfo = async (clipId: string) => {
@@ -31,6 +44,19 @@ export const getYoutubeClipInfo = async (clipId: string) => {
 
     return response.data;
   } catch (error) {
-    throw error;
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        const status = axiosError.response.status;
+        const message = axiosError.message || "Unknown error";
+        throw new ApplicationError(message, status);
+      } else if (axiosError.request) {
+        throw new ApplicationError("No response received from server", 500);
+      } else {
+        throw new ApplicationError(axiosError.message, 500);
+      }
+    } else {
+      throw error;
+    }
   }
 };
