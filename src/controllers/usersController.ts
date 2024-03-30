@@ -61,7 +61,7 @@ export async function createUser(
     });
 
     if (!userWithAuthData) {
-      throw new ApplicationError("Missing auth data", 401);
+      return null;
     }
 
     return userWithAuthData;
@@ -96,7 +96,7 @@ export async function getUserById(userId: string) {
   try {
     const foundUser = await prisma.user.findUnique({ where: { id: userId } });
     if (!foundUser) {
-      throw new ApplicationError("User not found", 401);
+      return null;
     }
 
     return foundUser;
@@ -122,7 +122,7 @@ export async function getPublicUserDataById(userId: string) {
     });
 
     if (!foundUser) {
-      throw new ApplicationError("User is not found", 400);
+      return null;
     }
 
     return foundUser;
@@ -137,7 +137,7 @@ export async function getUserByRefreshToken(refreshToken: string) {
       where: { refreshToken: refreshToken },
     });
     if (!foundUser) {
-      throw new ApplicationError("User is not found", 400);
+      return null;
     }
     return foundUser;
   } catch (error) {
@@ -156,7 +156,7 @@ export async function getUserByTwitchId(twitchId: string | null) {
     });
 
     if (!foundUser) {
-      throw new ApplicationError("User is not found", 400);
+      return null;
     }
 
     return foundUser;
@@ -176,7 +176,7 @@ export async function getUserByYoutubeId(youtubeId: string | null) {
     });
 
     if (!foundUser) {
-      throw new ApplicationError("User is not found", 400);
+      return null;
     }
 
     return foundUser;

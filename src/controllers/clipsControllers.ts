@@ -15,7 +15,7 @@ export async function getTwitchAccessTokenById(userId: string) {
     });
 
     if (!twitchAuth) {
-      throw new ApplicationError("Twitch authentication data not found", 404);
+      return null;
     }
 
     const expiryTime = twitchAuth?.expiryTime;
@@ -45,10 +45,7 @@ export async function getTwitchAccessTokenById(userId: string) {
     });
 
     if (!updatedTwitchAuth) {
-      throw new ApplicationError(
-        "Failed to update twitch authentication data",
-        500
-      );
+      return null;
     }
 
     return updatedTwitchAuth.accessToken;
@@ -66,7 +63,7 @@ export async function getYoutubeAccessTokenById(userId: string) {
     );
 
     if (!youTubeAuth) {
-      throw new ApplicationError("YouTube authentication data not found", 404);
+      return null;
     }
 
     const expiryTime = youTubeAuth?.expiryTime;
@@ -96,10 +93,7 @@ export async function getYoutubeAccessTokenById(userId: string) {
     });
 
     if (!updatedYoutubeAuth) {
-      throw new ApplicationError(
-        "Failed to update youtube authentication data",
-        500
-      );
+      return null;
     }
 
     return updatedYoutubeAuth.accessToken;
