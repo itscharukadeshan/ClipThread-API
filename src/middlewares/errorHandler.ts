@@ -14,24 +14,30 @@ function errorHandler(
   res: Response,
   next: NextFunction
 ) {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  if (!isProduction) {
+    console.error(`${chalk.red(err.message)} => ${chalk.yellow(err.stack)}`);
+  } else {
+    console.error(chalk.red(err.message));
+  }
+
+  let statusCode = 500;
+  let errorMessage = "Internal Server Error";
+
   if (err instanceof ApplicationError) {
-    res.status(err.statusCode).json({ error: err.message });
+    statusCode = err.statusCode;
+    errorMessage = err.message;
   } else if (
     err instanceof PrismaClientInitializationError ||
     err instanceof PrismaClientKnownRequestError ||
     err instanceof PrismaClientUnknownRequestError ||
     err instanceof PrismaClientValidationError
   ) {
-    if (process.env.NODE_ENV === "development") {
-      console.error(`${chalk.red(err.message)} => ${chalk.yellow(err.stack)}`);
-    }
-    res.status(500).json({ error: "Internal Server Error" });
-  } else {
-    if (process.env.NODE_ENV === "development") {
-      console.error(`${chalk.red(err.message)} => ${chalk.yellow(err.stack)}`);
-    }
-    res.status(500).json({ error: "Internal Server Error : Undefined" });
+    errorMessage = isProduction ? "Internal Server Error" : err.message;
   }
+
+  res.status(statusCode).json({ error: errorMessage });
 }
 
 export default errorHandler;
