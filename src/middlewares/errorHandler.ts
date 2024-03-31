@@ -6,6 +6,7 @@ import {
   PrismaClientUnknownRequestError,
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
+
 import chalk from "chalk";
 
 function errorHandler(
@@ -35,8 +36,10 @@ function errorHandler(
     err instanceof PrismaClientValidationError
   ) {
     errorMessage = isProduction ? "Internal Server Error" : err.message;
+  } else if (err.message === "invalid csrf token") {
+    errorMessage = isProduction ? "Forbidden" : err.message;
+    statusCode = 403;
   }
-
   res.status(statusCode).json({ error: errorMessage });
 }
 
