@@ -10,31 +10,41 @@ import {
 import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
 import { TwitchAuthWithoutId, UserWithoutId } from "./interface/types/types";
+import ApplicationError from "../errors/applicationError";
+import chalk from "chalk";
+import { error } from "console";
 
 export const handleTwitchUserScope = async (
   userData: UserWithoutId,
   twitchAuth: TwitchAuthWithoutId,
   accessToken: string
 ) => {
-  let newUser, blockedUsers, user, newRefreshToken, newAccessToken;
+  try {
+    let newUser, blockedUsers, user, newRefreshToken, newAccessToken;
 
-  newUser = await createUser(userData, twitchAuth);
+    newUser = await createUser(userData, twitchAuth);
 
-  if (!newUser) {
-    throw new Error("Failed to create user");
+    if (!newUser) {
+      throw new ApplicationError("Failed to create user", 400);
+    }
+
+    blockedUsers = await getBlockedUsers(
+      accessToken,
+      newUser.twitchId as string
+    );
+
+    newAccessToken = generateAccessToken(newUser.id, newUser.login);
+    newRefreshToken = generateRefreshToken();
+
+    user = await updateUser(newUser.id, {
+      blockedUsers,
+      refreshToken: newRefreshToken,
+    });
+
+    return { user, newAccessToken };
+  } catch (error) {
+    throw error;
   }
-
-  blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
-
-  newAccessToken = generateAccessToken(newUser.id, newUser.login);
-  newRefreshToken = generateRefreshToken();
-
-  user = await updateUser(newUser.id, {
-    blockedUsers,
-    refreshToken: newRefreshToken,
-  });
-
-  return { user, newAccessToken };
 };
 
 export const handleTwitchModeratorScope = async (
@@ -42,34 +52,41 @@ export const handleTwitchModeratorScope = async (
   twitchAuth: TwitchAuthWithoutId,
   accessToken: string
 ) => {
-  let newUser,
-    blockedUsers,
-    moderatedChannels,
-    user,
-    newRefreshToken,
-    newAccessToken;
+  try {
+    let newUser,
+      blockedUsers,
+      moderatedChannels,
+      user,
+      newRefreshToken,
+      newAccessToken;
 
-  newUser = await createUser(userData, twitchAuth);
-  if (!newUser) {
-    throw new Error("Failed to create user");
+    newUser = await createUser(userData, twitchAuth);
+    if (!newUser) {
+      throw new ApplicationError("Failed to create user", 400);
+    }
+
+    blockedUsers = await getBlockedUsers(
+      accessToken,
+      newUser.twitchId as string
+    );
+    moderatedChannels = await getModeratedChannels(
+      accessToken,
+      newUser.twitchId as string
+    );
+
+    newAccessToken = generateAccessToken(newUser.id, newUser.login);
+    newRefreshToken = generateRefreshToken();
+
+    user = await updateUser(newUser.id, {
+      blockedUsers,
+      moderatedChannels,
+      refreshToken: newRefreshToken,
+    });
+
+    return { user, newAccessToken };
+  } catch (error) {
+    throw error;
   }
-
-  blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
-  moderatedChannels = await getModeratedChannels(
-    accessToken,
-    newUser.twitchId as string
-  );
-
-  newAccessToken = generateAccessToken(newUser.id, newUser.login);
-  newRefreshToken = generateRefreshToken();
-
-  user = await updateUser(newUser.id, {
-    blockedUsers,
-    moderatedChannels,
-    refreshToken: newRefreshToken,
-  });
-
-  return { user, newAccessToken };
 };
 
 export const handleTwitchCreatorScope = async (
@@ -81,7 +98,7 @@ export const handleTwitchCreatorScope = async (
 
   newUser = await createUser(userData, twitchAuth);
   if (!newUser) {
-    throw new Error("Failed to create user");
+    throw new ApplicationError("Failed to create user", 400);
   }
 
   blockedUsers = await getBlockedUsers(accessToken, newUser.twitchId as string);
@@ -110,6 +127,9 @@ export function verifyRefreshToken(refreshToken: string, secretKey: string) {
     jwt.verify(refreshToken, secretKey);
     return true;
   } catch (err) {
+    if (process.env.NODE_ENV === "development" && err) {
+      console.error(`${chalk.red(err)}`);
+    }
     return false;
   }
 }

@@ -15,6 +15,8 @@ import {
   getModeratedChannels,
 } from "../services/twitchAuth.services";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
+import ApplicationError from "../errors/applicationError";
+import { error } from "console";
 
 const handleTwitchUser = async (
   userData: UserWithoutId,
@@ -48,7 +50,7 @@ const handleTwitchUser = async (
         accessToken
       ));
     } else {
-      throw new Error("Invalid user role");
+      throw new ApplicationError("Invalid user role", 401);
     }
   } else if (existingUser && scope === existingUser.login) {
     if (existingUser.login === UserRole.user) {
@@ -71,7 +73,7 @@ const handleTwitchUser = async (
           refreshToken: newRefreshToken,
         });
       } catch (error) {
-        throw new Error("User creating failed");
+        throw error;
       }
     } else if (existingUser.login === UserRole.moderator) {
       try {
@@ -98,7 +100,7 @@ const handleTwitchUser = async (
           refreshToken: newRefreshToken,
         });
       } catch (error) {
-        throw new Error("User creating failed");
+        throw error;
       }
     } else if (existingUser.login === UserRole.creator) {
       try {
@@ -119,10 +121,10 @@ const handleTwitchUser = async (
           refreshToken: newRefreshToken,
         });
       } catch (error) {
-        throw new Error("User creating failed");
+        throw error;
       }
     } else {
-      throw new Error("Invalid user role");
+      throw error;
     }
   } else if (existingUser && scope !== existingUser.login) {
     if (scope === UserRole.user) {
@@ -146,7 +148,7 @@ const handleTwitchUser = async (
           refreshToken: newRefreshToken,
         });
       } catch (error) {
-        throw new Error("User creating failed");
+        throw error;
       }
     } else if (scope === UserRole.moderator) {
       try {
@@ -174,7 +176,7 @@ const handleTwitchUser = async (
           refreshToken: newRefreshToken,
         });
       } catch (error) {
-        throw new Error("User creating failed");
+        throw error;
       }
     } else if (scope === UserRole.creator) {
       try {
@@ -196,13 +198,16 @@ const handleTwitchUser = async (
           refreshToken: newRefreshToken,
         });
       } catch (error) {
-        throw new Error("User creating failed");
+        throw error;
       }
     } else {
-      throw new Error("Invalid user role");
+      throw new ApplicationError("Invalid user role", 400);
     }
   } else {
-    throw new Error(`Something went wrong while trying to create user`);
+    throw new ApplicationError(
+      `Something went wrong while trying to create user`,
+      400
+    );
   }
 
   return { newAccessToken, user };

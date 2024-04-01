@@ -7,6 +7,7 @@ import {
   updateUser,
 } from "../controllers/usersController";
 import { generateAccessToken, generateRefreshToken } from "./generateTokens";
+import ApplicationError from "../errors/applicationError";
 
 const handelYoutubeUser = async (
   userData: UserWithoutId,
@@ -22,23 +23,23 @@ const handelYoutubeUser = async (
     if (scope === UserRole.user) {
       user = await createUser(userData, undefined, youtubeAuth);
       if (user === null) {
-        throw new Error("Failed to create user");
+        throw new ApplicationError("Failed to create user", 400);
       }
       // deepcode ignore DuplicateIfBody: <For future impletion>
     } else if (scope === UserRole.moderator) {
       user = await createUser(userData, undefined, youtubeAuth);
       if (user === null) {
-        throw new Error("Failed to create user");
+        throw new ApplicationError("Failed to create user", 400);
       }
 
       // deepcode ignore DuplicateIfBody: <For future impletion>
     } else if (scope === UserRole.creator) {
       user = await createUser(userData, undefined, youtubeAuth);
       if (user === null) {
-        throw new Error("Failed to create user");
+        throw new ApplicationError("Failed to create user", 400);
       }
     } else {
-      throw new Error(`Invalid user role`);
+      throw new ApplicationError(`Invalid user role`, 401);
     }
   } else if (existingUser && scope === existingUser.login) {
     try {
@@ -51,7 +52,7 @@ const handelYoutubeUser = async (
         refreshToken: newRefreshToken,
       });
     } catch (error) {
-      throw new Error("Failed to update user");
+      throw error;
     }
   } else if (existingUser && scope !== existingUser.login) {
     try {
@@ -65,10 +66,13 @@ const handelYoutubeUser = async (
         refreshToken: newRefreshToken,
       });
     } catch (error) {
-      throw new Error("Failed to update user");
+      throw new ApplicationError("Failed to update user", 400);
     }
   } else {
-    throw new Error(`Something went wrong while trying to create user`);
+    throw new ApplicationError(
+      `Something went wrong while trying to create user`,
+      400
+    );
   }
 
   return { newAccessToken, user };
