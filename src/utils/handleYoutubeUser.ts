@@ -22,9 +22,18 @@ const handelYoutubeUser = async (
   if (!existingUser) {
     if (scope === UserRole.user) {
       user = await createUser(userData, undefined, youtubeAuth);
+
       if (user === null) {
         throw new ApplicationError("Failed to create user", 400);
       }
+
+      newAccessToken = generateAccessToken(user.id, user.login);
+      newRefreshToken = generateRefreshToken();
+
+      user = await updateUser(user.id, {
+        refreshToken: newRefreshToken,
+      });
+
       // deepcode ignore DuplicateIfBody: <For future impletion>
     } else if (scope === UserRole.moderator) {
       user = await createUser(userData, undefined, youtubeAuth);
@@ -32,12 +41,27 @@ const handelYoutubeUser = async (
         throw new ApplicationError("Failed to create user", 400);
       }
 
+      newAccessToken = generateAccessToken(user.id, user.login);
+      newRefreshToken = generateRefreshToken();
+
+      user = await updateUser(user.id, {
+        refreshToken: newRefreshToken,
+      });
+
       // deepcode ignore DuplicateIfBody: <For future impletion>
     } else if (scope === UserRole.creator) {
       user = await createUser(userData, undefined, youtubeAuth);
+
       if (user === null) {
         throw new ApplicationError("Failed to create user", 400);
       }
+
+      newAccessToken = generateAccessToken(user.id, user.login);
+      newRefreshToken = generateRefreshToken();
+
+      user = await updateUser(user.id, {
+        refreshToken: newRefreshToken,
+      });
     } else {
       throw new ApplicationError(`Invalid user role`, 401);
     }
