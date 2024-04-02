@@ -28,7 +28,7 @@
   },
   "scripts": {
     "dev": "NODE_ENV=development nodemon --config nodemon.json ./src/index.ts",
-    "test": "jest --watch",
+    "test": "jest",
     "prisma:generate": "npx prisma generate",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:pull": "npx prisma db pull",
@@ -62,6 +62,7 @@
     "jest": "^29.7.0",
     "nodemon": "^3.0.3",
     "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
