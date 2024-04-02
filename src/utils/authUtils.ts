@@ -12,7 +12,6 @@ import { generateAccessToken, generateRefreshToken } from "./generateTokens";
 import { TwitchAuthWithoutId, UserWithoutId } from "./interface/types/types";
 import ApplicationError from "../errors/applicationError";
 import chalk from "chalk";
-import { error } from "console";
 
 export const handleTwitchUserScope = async (
   userData: UserWithoutId,
@@ -118,7 +117,7 @@ export function verifyToken(token: string, secretKey: string) {
     const decoded = jwt.verify(token, secretKey);
     return decoded;
   } catch (error) {
-    return null;
+    throw error;
   }
 }
 
