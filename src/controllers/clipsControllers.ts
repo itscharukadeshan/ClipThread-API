@@ -3,7 +3,7 @@ import moment from "moment";
 import { getTwitchAccessTokenByRefToken } from "../services/twitchAuth.services";
 import { RefreshTokenResponse } from "./interface/types";
 import { getYoutubeAccessTokenByRefToken } from "../services/youtubeAuth.services";
-import { decryptData } from "../utils/encryptDecryptUtils";
+import { decryptData, encryptData } from "../utils/encryptDecryptUtils";
 import ApplicationError from "../errors/applicationError";
 
 const prisma = new PrismaClient();
@@ -36,8 +36,8 @@ export async function getTwitchAccessTokenById(userId: string) {
       const updatedTwitchAuth = await prisma.twitchAuth.update({
         where: { userId },
         data: {
-          accessToken: refreshTokenResponse.access_token,
-          refreshToken: refreshTokenResponse.refresh_token,
+          accessToken: encryptData(refreshTokenResponse.access_token),
+          refreshToken: encryptData(refreshTokenResponse.refresh_token),
           expiryTime: moment().add(3.5, "hours").toDate(),
         },
       });
@@ -46,9 +46,9 @@ export async function getTwitchAccessTokenById(userId: string) {
         return null;
       }
 
-      return updatedTwitchAuth.accessToken;
+      return decryptData(updatedTwitchAuth.accessToken);
     } else {
-      return twitchAuth.accessToken;
+      return decryptData(twitchAuth.accessToken);
     }
   } catch (error) {
     throw error;
