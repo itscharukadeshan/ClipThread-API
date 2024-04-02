@@ -38,7 +38,7 @@ export async function getTwitchAccessTokenById(userId: string) {
         data: {
           accessToken: refreshTokenResponse.access_token,
           refreshToken: refreshTokenResponse.refresh_token,
-          expiryTime: moment().add(3.5, "hours").toString(),
+          expiryTime: moment().add(3.5, "hours").toDate(),
         },
       });
 
@@ -48,7 +48,7 @@ export async function getTwitchAccessTokenById(userId: string) {
 
       return updatedTwitchAuth.accessToken;
     } else {
-      return refreshToken;
+      return twitchAuth.accessToken;
     }
   } catch (error) {
     throw error;
