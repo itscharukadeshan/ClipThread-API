@@ -38,7 +38,7 @@ router.get(
         throw new ApplicationError(error.message, 401);
       }
     } else if (url) {
-      const { error } = urlSchema.validate(access_token);
+      const { error } = urlSchema.validate(url);
       if (error) {
         throw new ApplicationError(error.message, 401);
       }
