@@ -114,10 +114,16 @@ export const handleTwitchCreatorScope = async (
 
 export function verifyToken(token: string, secretKey: string) {
   try {
-    const decoded = jwt.verify(token, secretKey);
+    const decoded: any = jwt.verify(token, secretKey);
+    const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+
+    if (decoded.exp && decoded.exp < currentTimeInSeconds) {
+      return null;
+    }
+
     return decoded;
   } catch (error) {
-    throw error;
+    return null;
   }
 }
 
