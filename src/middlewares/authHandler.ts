@@ -4,32 +4,36 @@ import { getUserById } from "../controllers/usersController";
 import { User } from "@prisma/client";
 import { TokenPayload } from "./interface/types";
 import { verifyToken } from "../utils/authUtils";
-import ApplicationError from "../errors/applicationError";
 
 async function authHandler(req: Request, res: Response, next: NextFunction) {
   try {
     const authHeader: string | undefined = req.headers.authorization;
 
     if (!authHeader) {
-      throw new ApplicationError("Missing access Token", 401);
+      return res.json({ error: "Missing access Token" }).status(401);
     }
 
     const token: string = authHeader.split(" ")[1];
 
     const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
+
+    if (!decodedToken) {
+      return res.json({ error: "expired access token" }).status(401);
+    }
+
     const { userId, role } = decodedToken as TokenPayload;
 
     if (!userId || !role) {
-      throw new ApplicationError("Invalid access token", 403);
+      return res.json({ error: "Invalid access token" }).status(403);
     }
 
     const user: User | null = await getUserById(userId);
 
     if (!user) {
-      throw new ApplicationError("Failed to find user", 403);
+      return res.json({ error: "Failed to find user" }).status(403);
     }
     if (user.id !== userId) {
-      throw new ApplicationError("FaInvalid user", 403);
+      return res.json({ error: "Invalid user" }).status(403);
     }
 
     next();
