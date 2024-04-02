@@ -55,6 +55,8 @@ router.get(
       const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
       const { userId } = decodedToken as TokenPayload;
 
+      let clipInfo;
+
       if (userId) {
         if (platform === "Twitch") {
           const twitchAccessToken: string | null =
@@ -63,12 +65,12 @@ router.get(
             throw new ApplicationError("Something went wrong !", 400);
           }
 
-          const clipInfo = await getTwitchClipInfo(videoId, twitchAccessToken);
+          clipInfo = await getTwitchClipInfo(videoId, twitchAccessToken);
           if (!clipInfo) {
             throw new ApplicationError("Something went wrong !", 400);
           }
         } else if (platform === "Youtube") {
-          const clipInfo = await getYoutubeClipInfo(videoId);
+          clipInfo = await getYoutubeClipInfo(videoId);
           if (!clipInfo) {
             throw new ApplicationError("Something went wrong !", 400);
           }
@@ -76,6 +78,8 @@ router.get(
           throw new ApplicationError("Something went wrong !", 400);
         }
       }
+
+      return clipInfo;
     } catch (error) {
       next(error);
     }
