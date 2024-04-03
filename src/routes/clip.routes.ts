@@ -41,7 +41,17 @@ router.get(
         throw new ApplicationError(urlError.message, 400);
       }
 
-      const [platform, videoId] = await checkUrlOrigin(url);
+      const urlsData = await checkUrlOrigin(url);
+
+      let platform, videoId, startTime: string | undefined;
+
+      if (!urlsData) {
+        throw new ApplicationError("Fail to get clip data", 400);
+      } else {
+        platform = urlsData[0];
+        videoId = urlsData[1];
+        startTime = urlsData[2];
+      }
 
       if (platform === "Invalid" || videoId === "") {
         throw new ApplicationError("Invalid clip url", 400);
@@ -54,14 +64,14 @@ router.get(
       let clipInfo;
 
       if (userId) {
-        if (platform === "Twitch") {
+        if (platform === "Twitch" && videoId) {
           const twitchAccessToken: string | null =
             await getTwitchAccessTokenById(userId);
           if (!twitchAccessToken) {
             throw new ApplicationError("Something went wrong !", 500);
           }
           clipInfo = await getTwitchClipInfo(videoId, twitchAccessToken);
-        } else if (platform === "Youtube") {
+        } else if (platform === "Youtube" && videoId) {
           clipInfo = await getYoutubeClipInfo(videoId);
         } else {
           throw new ApplicationError("Invalid platform", 400);
