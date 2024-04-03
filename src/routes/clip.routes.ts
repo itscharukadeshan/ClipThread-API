@@ -71,7 +71,7 @@ router.get(
             throw new ApplicationError("Something went wrong !", 500);
           }
           clipInfo = await getTwitchClipInfo(videoId, twitchAccessToken);
-        } else if (platform === "Youtube" && videoId) {
+        } else if (platform === "YouTube" && videoId) {
           clipInfo = await getYoutubeClipInfo(videoId);
         } else {
           throw new ApplicationError("Invalid platform", 400);
