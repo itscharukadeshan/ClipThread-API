@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { TWITCH_CLIENT_ID, YOUTUBE_CLIENT_ID } from "../config/config";
+import { TWITCH_CLIENT_ID, YOUTUBE_API_KRY } from "../config/config";
 import ApplicationError from "../errors/applicationError";
 
 const TWITCH_CLIP_INFO_URL = "https://api.twitch.tv/helix/clips";
@@ -39,7 +39,7 @@ export const getTwitchClipInfo = async (
 export const getYoutubeClipInfo = async (clipId: string) => {
   try {
     const response: AxiosResponse = await axios.get(YOUTUBE_CLIP_INFO_URL, {
-      params: { id: clipId, key: YOUTUBE_CLIENT_ID },
+      params: { id: clipId, key: YOUTUBE_API_KRY },
     });
 
     return response.data;
