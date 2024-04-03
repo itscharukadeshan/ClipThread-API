@@ -20,6 +20,7 @@ const REFRESH_TOKEN_EXPIRATION = process.env.REFRESH_TOKEN_EXPIRATION as string;
 const API_PORT = process.env.API_PORT as string;
 const FRONT_END_URL = process.env.FRONT_END_URL as string;
 const CSRF_KEY = process.env.CSRF_KEY as string;
+const YOUTUBE_API_KRY = process.env.YOUTUBE_API_KRY as string;
 /*
 console.log(`SECRET_IV length = ${SECRET_IV.length} || Should be 16 `);
 console.log(
@@ -53,4 +54,5 @@ export {
   API_PORT,
   FRONT_END_URL,
   CSRF_KEY,
+  YOUTUBE_API_KRY,
 };
