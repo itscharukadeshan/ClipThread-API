@@ -3,22 +3,21 @@ export const checkUrlOrigin = async (url: string) => {
   try {
     uri = new URL(url);
   } catch {
-    return undefined;
+    return ["Invalid", undefined, undefined];
   }
 
-  const twitchPattern = /^(clips\.twitch\.tv|.*twitch\.tv\/clip\/)/;
-  const youtubePattern = /^(youtu\.be|.*youtube\.com\/shorts|.*youtube\.com$)/;
+  const hostname = uri.hostname;
 
-  const isTwitchUrl: RegExpMatchArray | null = url.match(twitchPattern);
-
-  if (isTwitchUrl) {
+  if (hostname === "clips.twitch.tv" || hostname.endsWith(".twitch.tv")) {
     const urlData = getTwitchClipIdFromUrl(url);
     return urlData;
   }
 
-  const isYoutubeUrl: RegExpMatchArray | null = url.match(youtubePattern);
-
-  if (isYoutubeUrl) {
+  if (
+    hostname === "youtu.be" ||
+    hostname === "www.youtube.com" ||
+    hostname.endsWith(".youtube.com")
+  ) {
     const urlData = getYoutubeIdFromUrl(url);
     return urlData;
   }
