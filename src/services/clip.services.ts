@@ -39,7 +39,11 @@ export const getTwitchClipInfo = async (
 export const getYoutubeClipInfo = async (clipId: string) => {
   try {
     const response: AxiosResponse = await axios.get(YOUTUBE_CLIP_INFO_URL, {
-      params: { id: clipId, key: YOUTUBE_API_KRY },
+      params: {
+        id: clipId,
+        key: YOUTUBE_API_KRY,
+        part: "snippet , statistics,contentDetails",
+      },
     });
 
     return response.data;
