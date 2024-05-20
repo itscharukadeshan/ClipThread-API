@@ -148,4 +148,4 @@ prisma/migrations/migration_lock.toml
 
 TODO.md
 
-compose.yaml
+docker-compose.yaml
