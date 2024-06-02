@@ -6,7 +6,8 @@
   "author": "charuka deshan",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^20.12.10",
+
+    "@types/node": "^20.12.11",
     "@types/node-cron": "^3.0.11",
     "axios": "^1.6.8",
     "bad-words": "^3.0.4",
