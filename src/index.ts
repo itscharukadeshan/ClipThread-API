@@ -28,7 +28,7 @@ import ApplicationError from "./errors/applicationError";
 
 import swaggerDocs from "./utils/swagger";
 
-// decode ignore UseCsurfForExpress: <Basic CSRF Protection enabled>
+// deepcode ignore UseCsurfForExpress: <csrf is enable line 37>
 const app: express.Express = express();
 
 const limiter = rateLimit({
