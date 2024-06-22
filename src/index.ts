@@ -45,7 +45,12 @@ app.use(
   cors({
     origin: FRONT_END_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "x-csrf-token",
+      "application/json; charset=utf-8",
+    ],
     credentials: true,
   })
 );
@@ -62,10 +67,10 @@ app.use(requestLogger);
 
 /**
  * @openapi
- * /:
+ * "/":
  *   get:
  *     tags:
- *       - Status
+ *       - status
  *     description: Respond with the welcome message
  *     responses:
  *       200:
