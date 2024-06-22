@@ -26,8 +26,10 @@ import expiredTokenCleanup from "../cron/expiredTokenCleanup";
 
 import ApplicationError from "./errors/applicationError";
 
+import swaggerDocs from "./utils/swagger";
+
 // deepcode ignore UseCsurfForExpress: <Basic CSRF Protection enabled>
-const app: express.Application = express();
+const app: express.Express = express();
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // API_RATE_LIMIT_WINDOW
@@ -76,6 +78,8 @@ app.use("/user", userRoutes);
 app.use("/thread", threadRoutes);
 app.use("/clip", clipRoutes);
 
+swaggerDocs(app);
+
 expiredTokenCleanup();
 
 app.use(errorHandler);
@@ -92,5 +96,7 @@ app.all("*", (req: Request, res: Response) => {
 });
 
 app.listen(API_PORT, () => {
-  console.log(`${chalk.bgBlue.bold(" App is successfully deployed ! ")}`);
+  console.log(
+    `${chalk.bgBlue.bold(` App is successfully deployed at http://localhost:${API_PORT}`)}`
+  );
 });
