@@ -25,7 +25,7 @@ const options: swaggerJSDoc.Options = {
     },
     security: [{ bearerAuth: [] }],
   },
-  apis: ["../routes/*.ts"],
+  apis: ["../routes/*.ts ", "../index.ts"],
 };
 
 const swaggerSpecs = swaggerJSDoc(options);
@@ -33,7 +33,7 @@ function swaggerDocs(app: Express) {
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
   app.get("docs.js", (req: Request, res: Response) => {
-    res.setHeader("Content-Type", "application / json");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.send(swaggerSpecs);
   });
 
