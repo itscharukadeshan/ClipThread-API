@@ -26,8 +26,10 @@ import expiredTokenCleanup from "../cron/expiredTokenCleanup";
 
 import ApplicationError from "./errors/applicationError";
 
+import swaggerDocs from "./utils/swagger";
+
 // deepcode ignore UseCsurfForExpress: <Basic CSRF Protection enabled>
-const app: express.Application = express();
+const app: express.Express = express();
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // API_RATE_LIMIT_WINDOW
@@ -58,6 +60,18 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
 app.use(doubleCsrfProtection);
 app.use(requestLogger);
 
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     tags:
+ *       - Status
+ *     description: Respond with the welcome message
+ *     responses:
+ *       200:
+ *         description: Send "Welcome to clip thread api" with status of 200
+ */
+
 app.get("/csrf-token", (req, res) => {
   const csrfToken = generateToken(req, res);
   res.json({ csrfToken });
@@ -66,7 +80,7 @@ app.get("/csrf-token", (req, res) => {
 app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 app.get("/", (req: Request, res: Response) => {
-  res.send(`Welcome to clip thread api`);
+  res.status(200).send("Welcome to clip thread api");
 });
 
 app.use("/twitch", twitchRoutes);
@@ -75,6 +89,8 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/thread", threadRoutes);
 app.use("/clip", clipRoutes);
+
+swaggerDocs(app);
 
 expiredTokenCleanup();
 
@@ -92,5 +108,7 @@ app.all("*", (req: Request, res: Response) => {
 });
 
 app.listen(API_PORT, () => {
-  console.log(`${chalk.bgBlue.bold(" App is successfully deployed ! ")}`);
+  console.log(
+    `${chalk.bgBlue.bold(` App is successfully deployed at http://localhost:${API_PORT}`)}`
+  );
 });
