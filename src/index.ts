@@ -60,6 +60,18 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
 app.use(doubleCsrfProtection);
 app.use(requestLogger);
 
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     tags:
+ *       - Status
+ *     description: Respond with the welcome message
+ *     responses:
+ *       200:
+ *         description: Send "Welcome to clip thread api" with status of 200
+ */
+
 app.get("/csrf-token", (req, res) => {
   const csrfToken = generateToken(req, res);
   res.json({ csrfToken });
@@ -68,7 +80,7 @@ app.get("/csrf-token", (req, res) => {
 app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 app.get("/", (req: Request, res: Response) => {
-  res.send(`Welcome to clip thread api`);
+  res.status(200).send("Welcome to clip thread api");
 });
 
 app.use("/twitch", twitchRoutes);
