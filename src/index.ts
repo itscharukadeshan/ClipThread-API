@@ -38,6 +38,8 @@ const limiter = rateLimit({
   statusCode: 429,
 });
 
+swaggerDocs(app);
+
 app.use(limiter);
 app.use(helmet());
 
@@ -94,8 +96,6 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/thread", threadRoutes);
 app.use("/clip", clipRoutes);
-
-swaggerDocs(app);
 
 expiredTokenCleanup();
 
