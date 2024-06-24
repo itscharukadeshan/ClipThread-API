@@ -7,25 +7,19 @@ import { version } from "../../package.json";
 import chalk from "chalk";
 import { API_PORT } from "../config/config";
 
-const options: swaggerJSDoc.Options = {
+const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Clipthread api",
+      title: "ClipThread Api",
       version,
+      description:
+        "ClipThread allows to create,manage and explore collections of clips from Twitch and YouTube videos. ",
     },
-    components: {
-      securitySchemas: {
-        bearerAuth: {
-          type: "http",
-          schema: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
-    },
-    security: [{ bearerAuth: [] }],
+    servers: [{ url: "http://localhost:3000" }],
   },
-  apis: ["../routes/*.ts ", "../index.ts"],
+
+  apis: ["../routes/*.ts", "../index.ts"],
 };
 
 const swaggerSpecs = swaggerJSDoc(options);
