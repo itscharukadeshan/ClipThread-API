@@ -7,6 +7,13 @@ import { version } from "../../package.json";
 import chalk from "chalk";
 import { API_PORT } from "../config/config";
 import path from "path";
+import fs from "fs";
+
+const schemaPath = path.join(
+  __dirname,
+  "../../prisma/jsonSchema/json-schema.json"
+);
+const schemaJson = JSON.parse(fs.readFileSync(schemaPath, "utf-8"));
 
 const options = {
   definition: {
@@ -19,6 +26,7 @@ const options = {
     },
     servers: [{ url: "http://localhost:3000" }],
     components: {
+      schemas: schemaJson.definitions,
       securitySchemes: {
         bearerAuth: {
           type: "http",
