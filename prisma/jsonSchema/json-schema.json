@@ -1,0 +1,453 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "twitchId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "youtubeId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "login": {
+          "type": "string",
+          "enum": [
+            "user",
+            "moderator",
+            "creator"
+          ]
+        },
+        "type": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "broadcasterType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profileImageUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "offlineImageUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "viewCount": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "followers": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "moderatedChannels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blockedUsers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blockedTerms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "whitelist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blacklist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "twitchAuth": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/TwitchAuth"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "youtubeAuth": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/YouTubeAuth"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "displayName",
+        "login",
+        "updatedAt",
+        "refreshToken"
+      ]
+    },
+    "TwitchAuth": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "expiryTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      },
+      "required": [
+        "userId",
+        "accessToken",
+        "refreshToken",
+        "expiryTime"
+      ]
+    },
+    "YouTubeAuth": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "expiryTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      },
+      "required": [
+        "userId",
+        "accessToken",
+        "refreshToken",
+        "expiryTime"
+      ]
+    },
+    "Thread": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "published": {
+          "type": "boolean",
+          "default": false
+        },
+        "publishedTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorId": {
+          "type": "string"
+        },
+        "broadcasters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Broadcasters"
+          }
+        },
+        "clips": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Clip"
+          }
+        }
+      },
+      "required": [
+        "title",
+        "updatedAt",
+        "authorId"
+      ]
+    },
+    "Clip": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer",
+          "default": 1
+        },
+        "clipId": {
+          "type": "string"
+        },
+        "creatorName": {
+          "type": "string"
+        },
+        "creatorId": {
+          "type": "string"
+        },
+        "broadcasterId": {
+          "type": "string"
+        },
+        "broadcasterName": {
+          "type": "string"
+        },
+        "gameId": {
+          "type": "string"
+        },
+        "viewCount": {
+          "type": "integer"
+        },
+        "thumbUrl": {
+          "type": "string"
+        },
+        "embedUrl": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "type": "string"
+        },
+        "tags": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Tag"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "thread": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Thread"
+          }
+        }
+      },
+      "required": [
+        "clipId",
+        "creatorName",
+        "creatorId",
+        "broadcasterId",
+        "broadcasterName",
+        "gameId",
+        "viewCount",
+        "thumbUrl",
+        "embedUrl",
+        "url"
+      ]
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "topicId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clips": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Clip"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "DefaultBadWord": {
+      "type": "object",
+      "properties": {
+        "words": {
+          "type": [
+            "number",
+            "string",
+            "boolean",
+            "object",
+            "array",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "words"
+      ]
+    },
+    "Broadcasters": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "profileUrl": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "profilePic": {
+          "type": "string"
+        },
+        "thread": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Thread"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "profileUrl",
+        "platform",
+        "profilePic"
+      ]
+    },
+    "RevokedTokens": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "expired": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "id"
+      ]
+    }
+  },
+  "type": "object",
+  "properties": {
+    "user": {
+      "$ref": "#/definitions/User"
+    },
+    "twitchAuth": {
+      "$ref": "#/definitions/TwitchAuth"
+    },
+    "youTubeAuth": {
+      "$ref": "#/definitions/YouTubeAuth"
+    },
+    "thread": {
+      "$ref": "#/definitions/Thread"
+    },
+    "clip": {
+      "$ref": "#/definitions/Clip"
+    },
+    "tag": {
+      "$ref": "#/definitions/Tag"
+    },
+    "defaultBadWord": {
+      "$ref": "#/definitions/DefaultBadWord"
+    },
+    "broadcasters": {
+      "$ref": "#/definitions/Broadcasters"
+    },
+    "revokedTokens": {
+      "$ref": "#/definitions/RevokedTokens"
+    }
+  }
+}
