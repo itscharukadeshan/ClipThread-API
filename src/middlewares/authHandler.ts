@@ -1,3 +1,5 @@
+/** @format */
+
 import { NextFunction, Request, Response } from "express";
 import { ACCESS_TOKEN_SECRET } from "../config/config";
 import { getUserById } from "../controllers/usersController";
@@ -10,7 +12,7 @@ async function authHandler(req: Request, res: Response, next: NextFunction) {
     const authHeader: string | undefined = req.headers.authorization;
 
     if (!authHeader) {
-      return res.json({ error: "Missing access Token" }).status(401);
+      return res.status(401).json({ error: "Missing access Token" });
     }
 
     const token: string = authHeader.split(" ")[1];
@@ -18,22 +20,22 @@ async function authHandler(req: Request, res: Response, next: NextFunction) {
     const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
 
     if (!decodedToken) {
-      return res.json({ error: "expired access token" }).status(401);
+      return res.status(401).json({ error: "expired access token" });
     }
 
     const { userId, role } = decodedToken as TokenPayload;
 
     if (!userId || !role) {
-      return res.json({ error: "Invalid access token" }).status(403);
+      return res.status(403).json({ error: "Invalid access token" });
     }
 
     const user: User | null = await getUserById(userId);
 
     if (!user) {
-      return res.json({ error: "Failed to find user" }).status(403);
+      return res.status(403).json({ error: "Failed to find user" });
     }
     if (user.id !== userId) {
-      return res.json({ error: "Invalid user" }).status(403);
+      return res.status(403).json({ error: "Invalid user" });
     }
 
     next();
