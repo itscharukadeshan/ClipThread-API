@@ -13,7 +13,7 @@ const router = Router();
 
 /**
  * @openapi
- * /access-token:
+ * /auth/access-token:
  *   get:
  *     summary: Get access token
  *     tags:
@@ -21,7 +21,7 @@ const router = Router();
  *     description: Check for revoked,expired or invalid token if all checks pass send a new access_token with 200 response
  *     responses:
  *       200:
- *         description: Send new access token returned as json object
+ *         description: Response with new access_token
  *         content:
  *           application/json:
  *             schema:
@@ -30,6 +30,19 @@ const router = Router();
  *                 access_token:
  *                   type: string
  *                   description: Format "Bearer ${accessToken}"
+ *       401:
+ *         description: Invalid, Expired or Revoked token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
  *
  */
 
