@@ -44,22 +44,14 @@ export default class ApplicationError extends Error {
  *     ApplicationError:
  *       type: object
  *       properties:
- *         name:
+ *         error:
  *           type: string
  *           description:
- *         message:
- *           type: string
- *           description:
- *         statusCode:
- *           type: integer
- *           
-
+ *
  *       required:
- *         - name
- *         - message
- *         - statusCode
+ *         - error
  *       description:
- * 
+ *
  *         Logging details:
  *         - Logs are stored in the 'logs/error.log' file
  *         - Maximum log file size: 1GB
