@@ -1,3 +1,5 @@
+/** @format */
+
 import { Router, Response, Request, NextFunction } from "express";
 import authHandler from "../middlewares/authHandler";
 import { verifyToken } from "../utils/authUtils";
@@ -14,6 +16,50 @@ import { urlSchema } from "../joi_schemas/clipSchemas";
 import ApplicationError from "../errors/applicationError";
 
 const router = Router();
+
+/**
+ * @openapi
+ * /clip/info:
+ *   get:
+ *     summary: Get clip info from youtube/twitch using video url
+ *     tags:
+ *       - Info
+ *     description: Identify video url origin (twitch / youtube) and get necessary data using users twitch or youtube access_token.
+ *     responses:
+ *       200:
+ *         description: |
+ *             Identify video URL origin (Twitch / YouTube) and get necessary data using user's Twitch or YouTube access_token.
+ *             - [YouTube API docs](https://developers.google.com/youtube/v3/docs/videos)
+ *             - [Twitch API docs](https://dev.twitch.tv/docs/api/reference#get-clips)
+ *         content:
+ *           application/json:
+ *              schema:
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/Twitch_clip_info'
+ *                 - $ref: '#/components/schemas/YouTube_clip_info'
+ *
+ *       400:
+ *         description: Missing, Invalid or not found clip information trow this error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ *       401:
+ *         description: Invalid, Expired or Revoked access token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ */
 
 router.get(
   "/info",
