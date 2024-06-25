@@ -25,6 +25,20 @@ const router = Router();
  *     tags:
  *       - Info
  *     description: Identify video url origin (twitch / youtube) and get necessary data using users twitch or youtube access_token.
+ *     parameters:
+ *       - in: query
+ *         name: url
+ *         description: |
+ *             Valid youtube video or twitch clip url.
+ *
+ *             - [https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+ *             - [https://youtu.be/dQw4w9WgXcQ](https://youtu.be/dQw4w9WgXcQ)
+ *             - [https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120](https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120)
+ *             - [https://www.twitch.tv/crystalst/clip/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl](https://www.twitch.tv/crystalst/clip/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl)
+ *             - [https://clips.twitch.tv/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl](https://clips.twitch.tv/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl)
+ *         required: true
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: |
