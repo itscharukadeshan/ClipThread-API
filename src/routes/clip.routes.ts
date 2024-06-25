@@ -30,12 +30,11 @@ const router = Router();
  *         name: url
  *         description: |
  *             Valid youtube video or twitch clip url.
- *
- *             - [https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
- *             - [https://youtu.be/dQw4w9WgXcQ](https://youtu.be/dQw4w9WgXcQ)
- *             - [https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120](https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=120)
- *             - [https://www.twitch.tv/crystalst/clip/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl](https://www.twitch.tv/crystalst/clip/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl)
- *             - [https://clips.twitch.tv/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl](https://clips.twitch.tv/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl)
+ *             - Examples
+ *               - [Standard youtube url](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+ *               - [Shortened youtu.be embed url](https://youtu.be/dQw4w9WgXcQ)
+ *               - [Standard twitch clip urls](https://www.twitch.tv/crystalst/clip/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl)
+ *               - [Twitch clip url with channel name](https://clips.twitch.tv/HonorableCleanPidgeonPRChase-juOlyNN7VKJ-fSBl)
  *         required: true
  *         schema:
  *           type: string
