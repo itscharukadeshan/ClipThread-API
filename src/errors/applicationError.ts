@@ -52,8 +52,7 @@ export default class ApplicationError extends Error {
  *           description:
  *         statusCode:
  *           type: integer
- *           description:
- *           enum: [400, 401, 403, 404, 500]
+ *           
 
  *       required:
  *         - name
