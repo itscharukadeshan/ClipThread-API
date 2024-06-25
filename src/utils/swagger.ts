@@ -46,6 +46,7 @@ const options = {
   apis: [
     path.join(__dirname, "../routes/*.ts"),
     path.join(__dirname, "../index.ts"),
+    path.join(__dirname, "../errors/applicationError.ts"),
   ],
 };
 
