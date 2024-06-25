@@ -1,3 +1,5 @@
+/** @format */
+
 import chalk from "chalk";
 import fs from "fs";
 import winston from "winston";
@@ -20,7 +22,6 @@ const logger = winston.createLogger({
     }),
   ],
 });
-
 export default class ApplicationError extends Error {
   public statusCode: number;
 
@@ -35,3 +36,37 @@ export default class ApplicationError extends Error {
     }
   }
 }
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ApplicationError:
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: string
+ *           description:
+ *         message:
+ *           type: string
+ *           description:
+ *         statusCode:
+ *           type: integer
+ *           description:
+ *           enum: [400, 401, 403, 404, 500]
+
+ *       required:
+ *         - name
+ *         - message
+ *         - statusCode
+ *       description:
+ * 
+ *         Logging details:
+ *         - Logs are stored in the 'logs/error.log' file
+ *         - Maximum log file size: 1GB
+ *         - Maximum number of log files: 5
+ *
+ *         In development mode, errors are also printed to the console with color coding:
+ *         - Error name in red
+ *         - Error message in yellow
+ */
