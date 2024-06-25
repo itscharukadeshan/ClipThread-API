@@ -86,7 +86,6 @@ app.use(requestLogger);
  *               properties:
  *                 csrfToken:
  *                   type: string
- *                   description: The generated CSRF token
  *
  */
 
