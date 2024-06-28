@@ -33,8 +33,9 @@ const router = Router();
  *   get:
  *     summary: Get info about status of thread
  *     tags:
- *       - Info
+ *       - Status
  *     description: Get count of published and un published thread with the status of the database.
+ *     security: []
  *     responses:
  *       200:
  *         description: Response with published and unPublished thread count.
