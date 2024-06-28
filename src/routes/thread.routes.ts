@@ -1,3 +1,5 @@
+/** @format */
+
 import { Router, Response, Request, NextFunction } from "express";
 import { Thread, UserRole } from "@prisma/client";
 import {
@@ -24,6 +26,47 @@ import {
 import ApplicationError from "../errors/applicationError";
 
 const router = Router();
+
+/**
+ * @openapi
+ * /thread/status:
+ *   get:
+ *     summary: Get info about status of thread
+ *     tags:
+ *       - Info
+ *     description: Get count of published and un published thread with the status of the database.
+ *     responses:
+ *       200:
+ *         description: Response with published and unPublished thread count.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 published:
+ *                   type: integer
+ *                 unPublished:
+ *                   type: integer
+ *       400:
+ *         description: Unable to ger status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       404:
+ *         description: No threads found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ */
 
 router.get(
   "/status",
