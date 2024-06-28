@@ -23,7 +23,7 @@ const router = Router();
  *   get:
  *     summary: Get clip info from youtube/twitch using video url
  *     tags:
- *       - Info
+ *       - Clips
  *     description: Identify video url origin (twitch / youtube) and get necessary data using users twitch or youtube access_token.
  *     parameters:
  *       - in: query
