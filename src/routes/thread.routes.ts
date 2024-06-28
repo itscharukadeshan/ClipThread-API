@@ -33,7 +33,7 @@ const router = Router();
  *   get:
  *     summary: Get info about status of thread
  *     tags:
- *       - Status
+ *       - Threads
  *     description: Get count of published and un published thread with the status of the database.
  *     security: []
  *     responses:
@@ -85,6 +85,52 @@ router.get(
     }
   }
 );
+
+/**
+ * @openapi
+ * /thread/{threadId}:
+ *   get:
+ *     summary: Get public thread info by id
+ *     tags:
+ *       - Threads
+ *     description: Get public thread data using the threadId in the path.
+ *     security: []
+ *     parameters:
+ *       - in: path
+ *         name: threadId
+ *         description: Valid thread id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Send public thread data with status
+ *         content:
+ *           application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Thread'
+ *       401:
+ *         description: Missing, Invalid or not found threadId information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ *       404:
+ *         description: Thread data not found / not published
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ */
 
 router.get(
   "/:threadId",
