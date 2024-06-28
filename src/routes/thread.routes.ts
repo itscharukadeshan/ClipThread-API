@@ -79,7 +79,7 @@ router.get(
         throw new ApplicationError("Unable to ger status", 400);
       }
 
-      return res.status(200).json({ status });
+      return res.status(200).json(status);
     } catch (error) {
       next(error);
     }
