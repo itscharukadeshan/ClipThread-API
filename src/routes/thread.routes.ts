@@ -1,3 +1,5 @@
+/** @format */
+
 import { Router, Response, Request, NextFunction } from "express";
 import { Thread, UserRole } from "@prisma/client";
 import {
@@ -25,6 +27,48 @@ import ApplicationError from "../errors/applicationError";
 
 const router = Router();
 
+/**
+ * @openapi
+ * /thread/status:
+ *   get:
+ *     summary: Get info about status of thread
+ *     tags:
+ *       - Threads
+ *     description: Get count of published and un published thread with the status of the database.
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: Response with published and unPublished thread count.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 published:
+ *                   type: integer
+ *                 unPublished:
+ *                   type: integer
+ *       400:
+ *         description: Unable to ger status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       404:
+ *         description: No threads found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ */
+
 router.get(
   "/status",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -35,12 +79,58 @@ router.get(
         throw new ApplicationError("Unable to ger status", 400);
       }
 
-      return res.status(200).json({ status });
+      return res.status(200).json(status);
     } catch (error) {
       next(error);
     }
   }
 );
+
+/**
+ * @openapi
+ * /thread/{threadId}:
+ *   get:
+ *     summary: Get public thread info by id
+ *     tags:
+ *       - Threads
+ *     description: Get public thread data using the threadId in the path.
+ *     security: []
+ *     parameters:
+ *       - in: path
+ *         name: threadId
+ *         description: Valid thread id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Send public thread data with status
+ *         content:
+ *           application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Thread'
+ *       401:
+ *         description: Missing, Invalid or not found threadId information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ *       404:
+ *         description: Thread data not found / not published
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ */
 
 router.get(
   "/:threadId",
