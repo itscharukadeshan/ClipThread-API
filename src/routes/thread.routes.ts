@@ -108,7 +108,7 @@ router.get(
  *         content:
  *           application/json:
  *              schema:
- *                $ref: '#/components/schemas/Thread'
+ *                $ref: '#/components/schemas/Public_Thread'
  *       401:
  *         description: Missing, Invalid or not found threadId information.
  *         content:
