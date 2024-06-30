@@ -131,7 +131,69 @@ export async function createNewThread(userId: string, title: string) {
     throw error;
   }
 }
-
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Update_Thread_Req:
+ *       type: object
+ *       properties:
+ *         authorId:
+ *           type: string
+ *         description:
+ *           type: string
+ *         published:
+ *           type: boolean
+ *         title:
+ *           type: string
+ *         broadcasters:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               profileUrl:
+ *                 type: string
+ *               platform:
+ *                 type: string
+ *               profilePic:
+ *                 type: string
+ *         clips:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               order:
+ *                 type: integer
+ *               clipId:
+ *                 type: string
+ *               creatorName:
+ *                 type: string
+ *               creatorId:
+ *                 type: string
+ *               broadcasterId:
+ *                 type: string
+ *               broadcasterName:
+ *                 type: string
+ *               gameId:
+ *                 type: string
+ *               viewCount:
+ *                 type: integer
+ *               thumbUrl:
+ *                 type: string
+ *               embedUrl:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *               url:
+ *                 type: string
+ *               tags:
+ *                 type: string
+ */
 export async function updateThread(
   threadId: string,
   threadData: Thread,
