@@ -254,6 +254,61 @@ router.post(
   }
 );
 
+/**
+ * @openapi
+ * /thread/{threadId}:
+ *   put:
+ *     summary: Update thread data using thread id.
+ *     tags:
+ *       - Threads
+ *     description: Update thread data using thread id.Use to edit and update the thread content.
+ *     parameters:
+ *       - in: path
+ *         name: threadId
+ *         description: Valid thread id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Update_Thread_Req'
+ *     responses:
+ *       200:
+ *         description: Send updated thread data with status
+ *         content:
+ *           application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Public_Thread'
+ *       401:
+ *         description: Missing / Invalid threadId or user information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       402:
+ *         description: Permission denied
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       403:
+ *         description: Forbidden. ( Mismatch  or invalid csrf token )
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       500:
+ *         description:  Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ */
+
 router.put(
   "update/:threadId",
   authHandler,
@@ -313,7 +368,7 @@ router.put(
       }
 
       if (!hasPermission) {
-        throw new ApplicationError("Permission denied", 401);
+        throw new ApplicationError("Permission denied", 402);
       } else {
         const updatedThread = await updateThread(
           threadId,
