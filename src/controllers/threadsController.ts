@@ -94,6 +94,24 @@ export async function getThreadStatus() {
   }
 }
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     New_Thread:
+ *       type: object
+ *       properties:
+ *         authorId:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         id:
+ *           type: string
+ *         title:
+ *           type: string
+ */
+
 export async function createNewThread(userId: string, title: string) {
   try {
     const newThread = await prisma.thread.create({
