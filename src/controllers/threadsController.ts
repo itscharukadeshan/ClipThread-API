@@ -1,9 +1,51 @@
+/** @format */
+
 import { PrismaClient, Thread, Broadcasters, Clip } from "@prisma/client";
 
 import moment from "moment";
 import ApplicationError from "../errors/applicationError";
 
 const prisma = new PrismaClient();
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Public_Thread:
+ *       type: object
+ *       properties:
+ *         authorId:
+ *           type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         id:
+ *           type: string
+ *         description:
+ *           type: string
+ *         published:
+ *           type: boolean
+ *         publishedTime:
+ *           type: string
+ *           format: date-time
+ *         title:
+ *           type: string
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *
+ *         broadcasters:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Broadcasters'
+ *
+ *         clips:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Clip'
+ *
+ *
+ */
 
 export async function getPublicThreadDataById(threadId: string) {
   try {
