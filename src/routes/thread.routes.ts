@@ -277,7 +277,7 @@ router.post(
  *             $ref: '#/components/schemas/Update_Thread_Req'
  *     responses:
  *       200:
- *         description: Send updated thread data with status
+ *         description: Send updated thread data with status.
  *         content:
  *           application/json:
  *              schema:
@@ -310,7 +310,7 @@ router.post(
  */
 
 router.put(
-  "update/:threadId",
+  "/:threadId",
   authHandler,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
