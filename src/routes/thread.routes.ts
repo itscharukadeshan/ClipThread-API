@@ -124,7 +124,7 @@ router.get(
  *               $ref: '#/components/schemas/ApplicationError'
  *
  *       500:
- *         description: Internal Server Error
+ *         description:  Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -160,6 +160,53 @@ router.get(
     }
   }
 );
+
+/**
+ * @openapi
+ * /thread/create:
+ *   post:
+ *     summary: Create thread using thread title.
+ *     tags:
+ *       - Threads
+ *     description: Create thread using thread title. Use to initialize the thread with validation of user.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Valid title
+ *             required:
+ *               - title
+ *     responses:
+ *       200:
+ *         description: Send new thread with thread id and basic information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/New_Thread'
+ *       401:
+ *         description: Missing, Invalid or not found access Token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       403:
+ *         description: Forbidden. ( Mismatch  or invalid csrf token )
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       500:
+ *         description: Failed to create new thread / Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ */
 
 router.post(
   "/create",
