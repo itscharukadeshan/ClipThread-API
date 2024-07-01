@@ -381,6 +381,55 @@ router.put(
   }
 );
 
+/**
+ * @openapi
+ * /thread/{threadId}:
+ *   delete:
+ *     summary: Delete thread using thread id.
+ *     tags:
+ *       - Threads
+ *     description: Delete thread using thread id.Use to delete thread content.
+ *     parameters:
+ *       - in: path
+ *         name: threadId
+ *         description: Valid thread id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Send thread id as confirmation of delete.
+ *         content:
+ *           application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/Public_Thread'
+ *       401:
+ *         description: Missing / Invalid threadId or user information.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       402:
+ *         description: Permission denied
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       403:
+ *         description: Forbidden. ( Mismatch  or invalid csrf token )
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       500:
+ *         description:  Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
+ */
+
 router.delete(
   "/:threadId",
   authHandler,
