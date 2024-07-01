@@ -248,3 +248,15 @@ export async function updateThread(
     throw error;
   }
 }
+
+export async function deleteThread(ThreadId: string) {
+  try {
+    const deletedThread = await prisma.thread.delete({
+      where: { id: ThreadId },
+    });
+
+    return deletedThread;
+  } catch (error) {
+    throw error;
+  }
+}
