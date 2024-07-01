@@ -18,10 +18,22 @@ const router = Router();
  *     summary: Get access token
  *     tags:
  *       - Security
- *     description: Check for revoked,expired or invalid token if all checks pass send a new access_token with 200 response
+ *     description: Check for revoked or invalid refresh_token token. If all checks pass, send a new access_token with 200 response
+ *     parameters:
+ *       - in: cookie
+ *         name: refresh_token
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Refresh token stored in a cookie
  *     responses:
  *       200:
  *         description: Response with new access_token
+ *         headers:
+ *           Set-Cookie:
+ *             schema:
+ *               type: string
+ *               example: refresh_token=abc123; HttpOnly; Secure; SameSite=Strict
  *         content:
  *           application/json:
  *             schema:
@@ -36,14 +48,12 @@ const router = Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ApplicationError'
- *
  *       500:
  *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ApplicationError'
- *
  */
 
 router.get(
