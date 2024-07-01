@@ -7,6 +7,7 @@ import {
   getThreadStatus,
   createNewThread,
   updateThread,
+  deleteThread,
 } from "../controllers/threadsController";
 import authHandler from "../middlewares/authHandler";
 import { verifyToken } from "../utils/authUtils";
@@ -342,33 +343,29 @@ router.put(
 
       const thread = await getPublicThreadDataById(threadId);
 
-      let hasPermission: Boolean = false;
-
       if (!thread) {
         throw new ApplicationError("Thread is not found", 401);
-      } else if (thread.authorId !== userId) {
-        hasPermission = false;
-      } else if (role === UserRole.creator) {
+      }
+
+      const user = await getUserById(userId);
+      if (!user) {
+        throw new ApplicationError("User not found", 401);
+      }
+
+      let hasPermission = false;
+
+      if (thread.authorId === userId) {
+        hasPermission = true;
+      } else if (role === UserRole.creator || role === UserRole.moderator) {
         let broadcasters = thread.broadcasters;
-        const user = await getUserById(userId);
-
-        if (!user) {
-          throw new ApplicationError("user not found", 401);
-        }
-        hasPermission = creatorPermission(broadcasters, user);
-      } else if (role === UserRole.moderator) {
-        const user = await getUserById(userId);
-        let broadcasters = thread.broadcasters;
-
-        if (!user) {
-          throw new ApplicationError("user not found", 401);
-        }
-
-        hasPermission = moderatorPermission(broadcasters, user);
+        hasPermission =
+          role === UserRole.creator
+            ? creatorPermission(broadcasters, user)
+            : moderatorPermission(broadcasters, user);
       }
 
       if (!hasPermission) {
-        throw new ApplicationError("Permission denied", 402);
+        throw new ApplicationError("Permission denied", 403);
       } else {
         const updatedThread = await updateThread(
           threadId,
@@ -376,8 +373,7 @@ router.put(
           thread.broadcasters,
           thread.clips
         );
-
-        return updateThread;
+        return updatedThread;
       }
     } catch (error) {
       next(error);
@@ -386,9 +382,60 @@ router.put(
 );
 
 router.delete(
-  "delete/:threadId",
+  "/:threadId",
   authHandler,
-  (req: Request, res: Response, next: NextFunction) => {}
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const access_token: string | undefined = req.headers.authorization;
+      const threadId = req.params.threadId;
+
+      if (!access_token) {
+        throw new ApplicationError("Missing access Token", 401);
+      } else {
+        const { error } = accessTokenSchema.validate(access_token);
+        if (error) {
+          throw new ApplicationError(error.message, 401);
+        }
+      }
+
+      const token: string = access_token.split(" ")[1];
+
+      const decodedToken = verifyToken(token, ACCESS_TOKEN_SECRET);
+      const { userId, role } = decodedToken as TokenPayload;
+
+      const thread = await getPublicThreadDataById(threadId);
+
+      if (!thread) {
+        throw new ApplicationError("Thread is not found", 401);
+      }
+
+      const user = await getUserById(userId);
+      if (!user) {
+        throw new ApplicationError("User not found", 401);
+      }
+
+      let hasPermission = false;
+
+      if (thread.authorId === userId) {
+        hasPermission = true;
+      } else if (role === UserRole.creator || role === UserRole.moderator) {
+        let broadcasters = thread.broadcasters;
+        hasPermission =
+          role === UserRole.creator
+            ? creatorPermission(broadcasters, user)
+            : moderatorPermission(broadcasters, user);
+      }
+
+      if (!hasPermission) {
+        throw new ApplicationError("Permission denied", 403);
+      } else {
+        const thread = await deleteThread(threadId);
+        return thread;
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
 );
 
 export default router;
