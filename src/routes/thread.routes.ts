@@ -262,7 +262,7 @@ router.post(
  *     summary: Update thread data using thread id.
  *     tags:
  *       - Threads
- *     description: Update thread data using thread id.Use to edit and update the thread content.
+ *     description: Update thread data using thread id.Only users with original author, creator or moderator permission for given thread can perform this task.
  *     parameters:
  *       - in: path
  *         name: threadId
@@ -388,7 +388,7 @@ router.put(
  *     summary: Delete thread using thread id.
  *     tags:
  *       - Threads
- *     description: Delete thread using thread id.Use to delete thread content.
+ *     description: Delete thread using thread id. Only users with original author, creator or moderator permission for given thread can perform this task.
  *     parameters:
  *       - in: path
  *         name: threadId
