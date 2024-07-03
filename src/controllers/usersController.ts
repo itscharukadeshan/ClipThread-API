@@ -1,3 +1,5 @@
+/** @format */
+
 import { User, PrismaClient, RevokedTokens } from "@prisma/client";
 import {
   UserWithoutId,
@@ -104,6 +106,32 @@ export async function getUserById(userId: string) {
     throw error;
   }
 }
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     Public_User_Data:
+ *       type: object
+ *       properties:
+ *         userId:
+ *           type: string
+ *         displayName:
+ *           type: string
+ *         description:
+ *           type: string
+ *         profileImageUrl:
+ *           type: string
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *         login:
+ *           type: string
+ *         followers:
+ *           type: integer
+ *         viewCount:
+ *           type: integer
+ */
 
 export async function getPublicUserDataById(userId: string) {
   try {
