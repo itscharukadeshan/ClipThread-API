@@ -30,7 +30,7 @@ const router = Router();
  *         content:
  *           application/json:
  *              schema:
- *                $ref: '#/components/schemas/User'
+ *                $ref: '#/components/schemas/Public_User_Data'
  *       401:
  *         description: Missing, Invalid or not found threadId information.
  *         content:
