@@ -69,7 +69,7 @@ router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
     let scope: UserRole = scopeParam;
 
     const url = getAuthUrl(scope);
-    res.status(200).json({ url });
+    res.status(200).redirect(url);
   } catch (error) {
     next(error);
   }
