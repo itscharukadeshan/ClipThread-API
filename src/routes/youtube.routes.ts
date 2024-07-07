@@ -20,10 +20,10 @@ const router = Router();
  * @openapi
  * /youtube/auth:
  *   get:
- *     summary: Login with Youtube
+ *     summary: Get youtube authentication url
  *     tags:
  *       - Auth
- *     description: Redirects to Youtube authentication handlers to validate user and role data and log in the user.
+ *     description: Get Youtube authentication url to validate user, userRole and log in user.
  *     security: []
  *     responses:
  *       200:

@@ -18,10 +18,10 @@ const router = Router();
  * @openapi
  * /twitch/auth:
  *   get:
- *     summary: Login with Twitch
+ *     summary: Get Twitch login url
  *     tags:
  *       - Auth
- *     description: Redirects to Twitch authentication handlers to validate user and role data and log in the user.
+ *     description: Get Twitch authentication url to validate user, userRole and log in user.
  *     security: []
  *     parameters:
  *       - in: query
