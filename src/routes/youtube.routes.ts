@@ -61,7 +61,7 @@ router.get("/auth", (req: Request, res: Response) => {
     "https://www.googleapis.com/auth/youtube.readonly",
     "https://www.googleapis.com/auth/userinfo.email",
   ]);
-  res.status(200).redirect(url);
+  res.status(200).json({ url });
 });
 
 router.get(
