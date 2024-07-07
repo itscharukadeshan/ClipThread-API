@@ -1,3 +1,5 @@
+/** @format */
+
 import { Router, Response, Request, NextFunction } from "express";
 
 import {
@@ -14,12 +16,52 @@ import ApplicationError from "../errors/applicationError";
 
 const router = Router();
 
+/**
+ * @openapi
+ * /youtube/auth:
+ *   get:
+ *     summary: Login with Youtube
+ *     tags:
+ *       - Auth
+ *     description: Redirects to Youtube authentication handlers to validate user and role data and log in the user.
+ *     security: []
+ *     responses:
+ *       200:
+ *         description: URL to Youtube authentication
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 url:
+ *                   type: string
+ *                   description: URL to Youtube authentication
+ *       401:
+ *         description: Missing, invalid, or not found user information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       404:
+ *         description: User data not found / not available
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ */
+
 router.get("/auth", (req: Request, res: Response) => {
   const url = getAuthUrl([
     "https://www.googleapis.com/auth/youtube.readonly",
     "https://www.googleapis.com/auth/userinfo.email",
   ]);
-  res.redirect(url);
+  res.status(200).redirect(url);
 });
 
 router.get(
