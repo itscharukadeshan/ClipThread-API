@@ -1,3 +1,5 @@
+/** @format */
+
 import { Router, Response, Request, NextFunction } from "express";
 import { formatUserDataFromTwitch } from "../utils/formatUserData";
 import { UserRole } from "@prisma/client";
@@ -12,6 +14,54 @@ import ApplicationError from "../errors/applicationError";
 
 const router = Router();
 
+/**
+ * @openapi
+ * /twitch/auth:
+ *   get:
+ *     summary: Login with Twitch
+ *     tags:
+ *       - Auth
+ *     description: Redirects to Twitch authentication handlers to validate user and role data and log in the user.
+ *     security: []
+ *     parameters:
+ *       - in: query
+ *         name: scope
+ *         description: User role scope
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [user, moderator, creator]
+ *     responses:
+ *       200:
+ *         description: URL to Twitch authentication
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 url:
+ *                   type: string
+ *                   description: URL to Twitch authentication
+ *       401:
+ *         description: Missing, invalid, or not found user information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       404:
+ *         description: User data not found / not available
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ */
+
 router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
   try {
     const scopeParam = req.query.scope as UserRole;
@@ -19,7 +69,7 @@ router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
     let scope: UserRole = scopeParam;
 
     const url = getAuthUrl(scope);
-    res.redirect(url);
+    res.status(200).json({ url });
   } catch (error) {
     next(error);
   }
