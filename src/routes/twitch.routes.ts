@@ -63,6 +63,63 @@ router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
+/**
+ * @openapi
+ * /twitch/callback:
+ *   get:
+ *     summary: Twitch OAuth callback
+ *     description: Handles the callback from Twitch OAuth, processes the authorization code, returns user data, and sets a refresh token cookie
+ *     tags:
+ *       - Auth
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The authorization code received from Twitch OAuth
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *         headers:
+ *           Set-Cookie:
+ *             schema:
+ *               type: string
+ *             description: Sets a refresh_token cookie (HttpOnly, Secure, SameSite=Strict, Max-Age=30 days)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 access_token:
+ *                   type: string
+ *                   description: Bearer token for API access
+ *                 username:
+ *                   type: string
+ *                   description: User's display name
+ *                 userId:
+ *                   type: string
+ *                   description: User's ID
+ *                 profileImage:
+ *                   type: string
+ *                   description: URL of user's profile image
+ *                 twitchId:
+ *                   type: string
+ *                   description: User's Twitch ID
+ *                 role:
+ *                   type: string
+ *                   description: User's role or login
+ *                 followers:
+ *                   type: number
+ *                   description: Number of followers
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ */
+
 router.get(
   "/callback",
   async (req: Request, res: Response, next: NextFunction) => {
