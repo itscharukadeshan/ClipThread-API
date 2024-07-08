@@ -36,18 +36,6 @@ const router = Router();
  *                 url:
  *                   type: string
  *                   description: URL to Youtube authentication
- *       401:
- *         description: Missing, invalid, or not found user information
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ApplicationError'
- *       404:
- *         description: User data not found / not available
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ApplicationError'
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -63,6 +51,64 @@ router.get("/auth", (req: Request, res: Response) => {
   ]);
   res.status(200).json({ url });
 });
+
+/**
+ * @openapi
+ * /youtube/callback:
+ *   get:
+ *     summary: YouTube OAuth callback
+ *     description: Handles the callback from YouTube OAuth, processes the authorization code, returns user data, and sets a refresh token cookie
+ *     security: []
+ *     tags:
+ *       - Auth
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The authorization code received from YouTube OAuth
+ *     responses:
+ *       200:
+ *         description: Successful authentication
+ *         headers:
+ *           Set-Cookie:
+ *             schema:
+ *               type: string
+ *             description: Sets a refresh_token cookie (HttpOnly, Secure, SameSite=Strict, Max-Age=30 days)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 access_token:
+ *                   type: string
+ *                   description: Bearer token for API access
+ *                 username:
+ *                   type: string
+ *                   description: User's display name
+ *                 userId:
+ *                   type: string
+ *                   description: User's ID
+ *                 profileImage:
+ *                   type: string
+ *                   description: URL of user's profile image
+ *                 youtubeId:
+ *                   type: string
+ *                   description: User's YouTube ID
+ *                 role:
+ *                   type: string
+ *                   description: User's role or login
+ *                 followers:
+ *                   type: number
+ *                   description: Number of followers
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ */
 
 router.get(
   "/callback",
