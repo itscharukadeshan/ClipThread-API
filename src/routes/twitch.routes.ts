@@ -42,18 +42,6 @@ const router = Router();
  *                 url:
  *                   type: string
  *                   description: URL to Twitch authentication
- *       401:
- *         description: Missing, invalid, or not found user information
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ApplicationError'
- *       404:
- *         description: User data not found / not available
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ApplicationError'
  *       500:
  *         description: Internal Server Error
  *         content:
