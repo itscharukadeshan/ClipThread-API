@@ -112,6 +112,14 @@ router.get("/auth", (req: Request, res: Response, next: NextFunction) => {
  *                 followers:
  *                   type: number
  *                   description: Number of followers
+ *
+ *       400:
+ *         description: Invalid query / validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApplicationError'
+ *
  *       500:
  *         description: Internal Server Error
  *         content:
