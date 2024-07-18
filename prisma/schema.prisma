@@ -3,15 +3,15 @@ generator client {
   language = "typescript"
 }
 
+generator jsonSchema {
+  provider              = "prisma-json-schema-generator"
+  output                = "./jsonSchema"
+  includeRequiredFields = "true"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-generator jsonSchema {
-  provider = "prisma-json-schema-generator"
-  output = "./jsonSchema"
-  includeRequiredFields = "true"
 }
 
 model User {
@@ -65,7 +65,7 @@ model Thread {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   authorId      String
-  broadcasters   Broadcasters[] @relation("BroadcastersToThread")
+  broadcasters  Broadcasters[] @relation("BroadcastersToThread")
   clips         Clip[]         @relation("ClipToThread")
 }
 
