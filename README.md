@@ -25,7 +25,7 @@ We also provide a Postman collection for easier testing and integration:
 1. Open Postman
 2. Click on "Import" in the upper left corner
 3. Select the "Link" tab
-4. Enter the following URL: [/docs.json]
+4. Enter the following URL: [{port/website_url}/docs.json]
 5. Click "Continue" and then "Import"
 
 This will create a new collection in Postman with all our API endpoints. For more detailed instructions on importing Swagger docs into Postman, visit: [Postman's official guide on importing from Swagger](https://learning.postman.com/docs/getting-started/importing-and-exporting/importing-from-swagger/).
