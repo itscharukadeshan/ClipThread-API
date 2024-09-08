@@ -6,7 +6,7 @@
   "author": "charuka deshan",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^20.14.15",
+    "@types/node": "^20.16.0",
     "@types/node-cron": "^3.0.11",
     "@types/swagger-ui-express": "^4.1.6",
     "axios": "^1.7.4",
