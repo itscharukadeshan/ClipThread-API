@@ -6,7 +6,7 @@
   "author": "charuka deshan",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^20.16.1",
+    "@types/node": "^20.16.2",
     "@types/node-cron": "^3.0.11",
     "@types/swagger-ui-express": "^4.1.6",
     "axios": "^1.7.5",
@@ -24,7 +24,7 @@
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
     "node-cron": "^3.0.3",
-    "prisma": "^5.18.0",
+    "prisma": "^5.19.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.14.2"
